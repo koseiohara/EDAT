@@ -1,4 +1,4 @@
-LIB = libtoolkit.a
+LIB = libedat.a
 INTERNAL_OBJ = caseconverter.o
 EXPORT_OBJ   = physics.o binio.o statistic.o string.o
 

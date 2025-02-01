@@ -1,6 +1,6 @@
 LIB = libedat.a
-INTERNAL_OBJ = caseconverter.o
-EXPORT_OBJ   = physics.o binio.o statistic.o string.o
+INTERNAL_OBJ = physics.o caseconverter.o statistic.o binio.o
+EXPORT_OBJ   = edat.o
 
 DIR = ${HOME}/FortranLib
 

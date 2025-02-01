@@ -1,0 +1,10 @@
+*.o
+*.mod
+*.a
+*.txt
+*.dat
+*.grd
+*.bin
+*.png
+*.swp
+

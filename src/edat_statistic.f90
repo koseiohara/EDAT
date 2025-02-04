@@ -1,4 +1,4 @@
-module statistic
+module EDAT_Statistic
 
     implicit none
 
@@ -193,5 +193,5 @@ module statistic
     end function mean_dp
 
 
-end module statistic
+end module EDAT_Statistic
 

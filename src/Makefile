@@ -1,18 +1,18 @@
 LIB = libedat.a
-INTERNAL_OBJ = physics.o caseconverter.o statistic.o binio.o
-EXPORT_OBJ   = edat.o
+OBJ = edat_physics.o edat_caseconverter.o edat_string.o edat_statistic.o edat_binio.o
+EXPORT_OBJ = edat_physics.o edat_string.o edat_statistic.o edat_binio.o
 
 DIR = ${HOME}/FortranLib
 
 FC = ifort
-FLAG = -O3 -warn all -traceback
+FLAG = -O3 -warn all -traceback -convert little_endian -assume byterecl
 
 %.o : %.f90
 	${FC} -c $< ${FLAG}
 
 all : ${LIB}
 
-${LIB} : ${INTERNAL_OBJ} ${EXPORT_OBJ}
+${LIB} : ${OBJ}
 	ar rcs $@ $^
 
 

@@ -1,4 +1,4 @@
-module BinIO
+module EDAT_BinIO
 
     implicit none
 
@@ -322,5 +322,5 @@ module BinIO
     end subroutine reset_record
 
 
-end module BinIO
+end module EDAT_BinIO
 

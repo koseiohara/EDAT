@@ -1,4 +1,4 @@
-module CaseConverter
+module EDAT_CaseConverter
 
     implicit none
 
@@ -71,5 +71,5 @@ module CaseConverter
     end subroutine convert_core
 
 
-end module CaseConverter
+end module EDAT_CaseConverter
 

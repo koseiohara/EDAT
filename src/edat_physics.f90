@@ -31,20 +31,20 @@ module EDAT_Physics
     interface potential_temperature
         module procedure &
             & potential_temperature_sp, &
-            & potential_temperature_qp, &
-            & potential_temperature_dp
+            & potential_temperature_dp, &
+            & potential_temperature_qp
     end interface potential_temperature
     
     contains
 
 
     pure elemental function potential_temperature_sp(T, P) result(output)
-        integer, parameter :: kp = 4
-        real(kp), intent(in) :: T
-        real(kp), intent(in) :: P
+        integer, parameter :: rkloc = 4
+        real(rkloc), intent(in) :: T
+        real(rkloc), intent(in) :: P
 
-        real(kp), parameter :: P0=1.E+5_kp
-        real(kp) :: output
+        real(rkloc), parameter :: P0=1.E+5_rkloc
+        real(rkloc) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 
@@ -52,12 +52,12 @@ module EDAT_Physics
 
 
     pure elemental function potential_temperature_dp(T, P) result(output)
-        integer, parameter :: kp = 8
-        real(kp), intent(in) :: T
-        real(kp), intent(in) :: P
+        integer, parameter :: rkloc = 8
+        real(rkloc), intent(in) :: T
+        real(rkloc), intent(in) :: P
 
-        real(kp), parameter :: P0=1.E+5_kp
-        real(kp) :: output
+        real(rkloc), parameter :: P0=1.E+5_rkloc
+        real(rkloc) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 
@@ -65,12 +65,12 @@ module EDAT_Physics
 
 
     pure elemental function potential_temperature_qp(T, P) result(output)
-        integer, parameter :: kp = 16
-        real(kp), intent(in) :: T
-        real(kp), intent(in) :: P
+        integer, parameter :: rkloc = 16
+        real(rkloc), intent(in) :: T
+        real(rkloc), intent(in) :: P
 
-        real(kp), parameter :: P0=1.E+5_kp
-        real(kp) :: output
+        real(rkloc), parameter :: P0=1.E+5_rkloc
+        real(rkloc) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 

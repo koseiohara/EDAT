@@ -1,6 +1,6 @@
 LIB = libedat.a
-OBJ = edat_physics.o edat_caseconverter.o edat_string.o edat_statistic.o edat_binio.o
-EXPORT_OBJ = edat_physics.o edat_string.o edat_statistic.o edat_binio.o
+OBJ = edat_math.o edat_caseconverter.o edat_string.o edat_met.o edat_binio.o
+EXPORT_OBJ = edat_math.o edat_string.o edat_met.o edat_binio.o
 
 DIR = ${HOME}/FortranLib
 

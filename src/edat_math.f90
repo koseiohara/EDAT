@@ -22,7 +22,7 @@ module EDAT_Math
     real(rk), parameter :: M_SQRT2    = 1.414213562373095048801688724209698079_rk       ! sqrt(2)
     real(rk), parameter :: M_SQRT1_2  = 0.707106781186547524400844362104849039_rk       ! 1/sqrt(2)
 
-    real(rk), parameter :: qnorm(77)=[0.0125334695_rk, &  !! 01
+    real(rk), parameter :: qnorm(90)=[0.0125334695_rk, &  !! 01
                                     & 0.0250689082_rk, &  !! 02
                                     & 0.0376082876_rk, &  !! 03
                                     & 0.0501535834_rk, &  !! 04
@@ -98,7 +98,20 @@ module EDAT_Math
                                     & 1.1263911290_rk, &  !! 74
                                     & 1.1503493803_rk, &  !! 75
                                     & 1.1749867920_rk, &  !! 76
-                                    & 1.2003588580_rk &  !! 77
+                                    & 1.2003588580_rk, &  !! 77
+                                    & 1.2265281200_rk, &  !! 78
+                                    & 1.2535654384_rk, &  !! 79
+                                    & 1.2815515655_rk, &  !! 80
+                                    & 1.3105791121_rk, &  !! 81
+                                    & 1.3407550336_rk, &  !! 82
+                                    & 1.3722038089_rk, &  !! 83
+                                    & 1.4050715603_rk, &  !! 84
+                                    & 1.4395314709_rk, &  !! 85
+                                    & 1.4757910281_rk, &  !! 86
+                                    & 1.5141018876_rk, &  !! 87
+                                    & 1.5547735945_rk, &  !! 88
+                                    & 1.5981931399_rk, &  !! 89
+                                    & 1.6448536269_rk &  !! 90
                                     & ]
 
     interface corrcoef
@@ -396,15 +409,17 @@ module EDAT_Math
         total_size = n
         do while (total_size /= 1)
             i = 1
+            left = 1
+            right = min(part_size, total_size)
             do 
-                left = (i-1)*part_size + 1
-                right = min(i*part_size, total_size)
                 workspace(i) = sum(workspace(left:right))
                 if (right==total_size)then
                     total_size = i
                     exit
                 endif
                 i = i + 1
+                left = right + 1
+                right = min(left+part_size-1, total_size)
             enddo
         enddo
 
@@ -430,15 +445,17 @@ module EDAT_Math
         total_size = n
         do while (total_size /= 1)
             i = 1
+            left = 1
+            right = min(part_size, total_size)
             do 
-                left = (i-1)*part_size + 1
-                right = min(i*part_size, total_size)
                 workspace(i) = sum(workspace(left:right))
                 if (right==total_size)then
                     total_size = i
                     exit
                 endif
                 i = i + 1
+                left = right + 1
+                right = min(left+part_size-1, total_size)
             enddo
         enddo
 
@@ -464,15 +481,17 @@ module EDAT_Math
         total_size = n
         do while (total_size /= 1)
             i = 1
+            left = 1
+            right = min(part_size, total_size)
             do 
-                left = (i-1)*part_size + 1
-                right = min(i*part_size, total_size)
                 workspace(i) = sum(workspace(left:right))
                 if (right==total_size)then
                     total_size = i
                     exit
                 endif
                 i = i + 1
+                left = right + 1
+                right = min(left+part_size-1, total_size)
             enddo
         enddo
 

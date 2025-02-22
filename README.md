@@ -107,23 +107,40 @@ pure function covariance(n, array1, array2, sample) result(output)
     logical, intent(in), optional :: sample
 ```
 Returns the covariance between `array1` and `array2`.
-Both arrays must be the same type, `real32`, `real64`, or `real128`.
+Both arrays must be the same type, `real32`, `real64`, or `real128`.  
 If `sample` is provided and `sample=.TRUE.`, the return value is the sample covariance. Otherwise, the return value is the population covariance.
 
 ### variance<a id="math-variance"></a> 
 ```fortran
-pure function variance_sp(n, array, sample) result(output)
-    integer, parameter :: rkloc = 4
+pure function variance(n, array, sample) result(output)
     integer, intent(in) :: n
-    real(rkloc), intent(in) :: array(n)
+    real   , intent(in) :: array(n)
     logical, intent(in), optional :: sample
 ```
 Returns the variance of `array`.
 `array` must be `real32`, `real64`, or `real128`.  
+This routine can compute the average of data very precisely because [sum_hp](#math-sum-hp) is used.
 If `sample` is provided and `sample=.TRUE.`, the return value is the sample variance. Otherwise, the return value is the population variance.
 
+### mean<a id="math-mean"></a>
+```fortran
+pure function mean(n, array) result(output)
+    integer, intent(in) :: n
+    real   , intent(in) :: array(n)
+```
+Returns the mean of `array`.
+`array` must be `real32`, `real64`, or `real128`.  
+This routine can compute the average of data very precisely because [sum_hp](#math-sum-hp) is used.
 
-
+### sum_hp<a id="math-sum-hp"></a>
+```fortran
+pure function sum_hp(n, array) result(output)
+    integer, intent(in) :: n
+    real   , intent(in) :: array(n)
+```
+Returns the sum of `array`.
+`array` must be `real32`, `real64`, or `real128`.  
+This function can compute the sum of data more precisely than the built-in function `sum()` because the pairwise-sum algorithm is used.
 
 
 

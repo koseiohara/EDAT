@@ -70,6 +70,13 @@ real(rk), parameter :: M_SQRT2    = 1.414213562373095048801688724209698079_rk   
 real(rk), parameter :: M_SQRT1_2  = 0.707106781186547524400844362104849039_rk       ! 1/sqrt(2)
 ```
 `rk` is the local kind parameter, specifies quadruple precision.
+The variable names and their values are identical to those defined in the math.h header of the C language.  
+In addition to these parameters, `qnorm` is defined.
+qnorm is a 99-element array.
+`qnorm(i)` is the value $x$ such that for a standard normal variable $X$, $P(−x < X < x) = i/100$.
+This array is used for interval estimation of normally distributed data.
+
+
 
 
 

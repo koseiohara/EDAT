@@ -12,14 +12,14 @@ This library can be builded by Makefile.
 
 ### Makefile
 Rewrite the Makefile for your environment:
-````sh
+```sh
 cd src
 vim Makefile
 ```
 You can change the definisions of `DIR`, `FC`, and `FLAG`.
 `${DIR}/lib` and `${DIR}/include` are needed.  
 After making these settings, execute the makefile
-````sh
+```sh
 make
 ```
 `libedat.a` will be made.

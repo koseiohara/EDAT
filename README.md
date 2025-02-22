@@ -143,7 +143,82 @@ Returns the sum of `array`.
 This function can compute the sum of data more precisely than the built-in function `sum()` because the pairwise-sum algorithm is used.
 
 
+## edat_string<a id="string"></a>
+edat_string provides some routines for manipulating strings.
 
+### to_upper<a id="string-to-upper"></a>
+```fortran
+subroutine to_upper(input, output)
+    character(*), intent(in)  :: input
+    character(*), intent(out) :: output
+```
+Converts lowercase letters to uppercase, leaving all other characters unchanged.
+
+### to_lower<a id="string-to-lower"></a>
+```fortran
+subroutine to_lower(input, output)
+    character(*), intent(in)  :: input
+    character(*), intent(out) :: output
+```
+Converts uppercase letters to lowercase, leaving all other characters unchanged.
+
+
+## edat_met<a id="met"></a>
+edat_met is a module for meteorology.
+
+### Parameters<a id="met-parameters"></a>
+```fortran
+real(rk), parameter :: GRAV        = 9.80665_rk         ! Gravitational Acceleration [m/s^2]
+real(rk), parameter :: EarthRadius = 6.3710E+6_rk       ! Radius of the Earth [m]
+
+real(rk), parameter :: GasConstant = 287.04_rk          ! Gas Constant for Dry Air [J/K/kg] #used for p=rhoRT
+real(rk), parameter :: Cp          = 1004._rk           ! Specific Heat for Dry Air at Constant Pressure [J/K/kg]
+real(rk), parameter :: Cv          = GasConstant-Cp     ! Specific Heat for Dry Air at Constant Volume [J/K/kg]
+real(rk), parameter :: Lq          = 2.507E+6_rk        ! Latent Heat of vaporication [J/kg]
+```
+`rk` is the local kind parameter, specifies quadruple precision.
+
+### potential_temperature<a id="met-potential-temperature"></a>
+```fortran
+pure elemental function potential_temperature(T, P) result(output)
+    real, intent(in) :: T
+    real, intent(in) :: P
+```
+Returns potential temperature.  
+`T` and `P` are temperature and pressure, respectively.
+Both of them must be the same type, `real32`, `real64`, or `real128`.  
+
+
+## edat_binio<a id="binio"></a>
+edat_binio is a module for performing input and output of no-header binary files.
+
+### finfo<a id="binio-finfo"></a>
+```fortran
+type finfo
+    private
+    integer        :: unit
+    character(128) :: file
+    character(16)  :: action
+    integer        :: record
+    integer        :: recl
+    integer        :: recstep
+end type finfo
+```
+#### unit
+Unit number for a file.
+#### file
+File name for reading or writing.
+#### action
+`READ`, `WRITE`, or `READWRITE`.
+#### record
+The initial record for reading or writing.
+#### recl
+Record length (byte).
+#### recstep
+Increment to `record` at every reading or writing.
+`record` will be automatically updated with this value.
+
+### fopen<a id="binio-fopen"></a>
 
 
 

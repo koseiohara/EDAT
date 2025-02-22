@@ -75,6 +75,52 @@ In addition to these parameters, `qnorm` is defined.
 qnorm is a 99-element array.
 `qnorm(i)` is the value $x$ such that for a standard normal variable $X$, $P(−x < X < x) = i/100$.
 This array is used for interval estimation of normally distributed data.
+```fortran
+real(rk), parameter :: qnorm(99)=[0.01253346951_rk, &  !! 01
+                                & 0.02506890826_rk, &  !! 02
+                                & 0.03760828766_rk, &  !! 03
+                                  .
+                                  .
+                                  .
+                                & 1.95996398454_rk, &  !! 95
+                                & 2.05374891063_rk, &  !! 96
+                                & 2.17009037758_rk, &  !! 97
+                                & 2.32634787404_rk, &  !! 98
+```
+
+### corrcoef<a id="math-corrcoef"></a>
+```fortran
+pure function corrcoef(n, array1, array2) result(output)
+    integer, intent(in) :: n
+    real, intent(in) :: array1(n)
+    real, intent(in) :: array2(n)
+```
+Returns the correlation coefficient between `array1` and `array2`.
+Both arrays must be the same type, `real32`, `real64`, or `real128`.
+
+### covariance<a id="math-covariance"></a>
+```fortran
+pure function covariance(n, array1, array2, sample) result(output)
+    integer, intent(in) :: n
+    real   , intent(in) :: array1(n)
+    real   , intent(in) :: array2(n)
+    logical, intent(in), optional :: sample
+```
+Returns the covariance between `array1` and `array2`.
+Both arrays must be the same type, `real32`, `real64`, or `real128`.
+If `sample` is provided and `sample=.TRUE.`, the return value is the sample covariance. Otherwise, the return value is the population covariance.
+
+### variance<a id="math-variance"></a> 
+```fortran
+pure function variance_sp(n, array, sample) result(output)
+    integer, parameter :: rkloc = 4
+    integer, intent(in) :: n
+    real(rkloc), intent(in) :: array(n)
+    logical, intent(in), optional :: sample
+```
+Returns the variance of `array`.
+`array` must be `real32`, `real64`, or `real128`.  
+If `sample` is provided and `sample=.TRUE.`, the return value is the sample variance. Otherwise, the return value is the population variance.
 
 
 

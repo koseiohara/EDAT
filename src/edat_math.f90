@@ -154,7 +154,7 @@ module EDAT_Math
 
     pure function corrcoef_sp(n, array1, array2) result(output)
         integer, parameter :: rkloc = 4
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
 
@@ -174,7 +174,7 @@ module EDAT_Math
 
     pure function corrcoef_dp(n, array1, array2) result(output)
         integer, parameter :: rkloc = 8
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
 
@@ -194,7 +194,7 @@ module EDAT_Math
 
     pure function corrcoef_qp(n, array1, array2) result(output)
         integer, parameter :: rkloc = 16
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
 
@@ -214,10 +214,10 @@ module EDAT_Math
 
     pure function covariance_sp(n, array1, array2, sample) result(output)
         integer, parameter :: rkloc = 4
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: mean1
@@ -240,10 +240,10 @@ module EDAT_Math
 
     pure function covariance_dp(n, array1, array2, sample) result(output)
         integer, parameter :: rkloc = 8
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: mean1
@@ -266,10 +266,10 @@ module EDAT_Math
 
     pure function covariance_qp(n, array1, array2, sample) result(output)
         integer, parameter :: rkloc = 16
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array1(n)
         real(rkloc), intent(in) :: array2(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: mean1
@@ -292,9 +292,9 @@ module EDAT_Math
 
     pure function variance_sp(n, array, sample) result(output)
         integer, parameter :: rkloc = 4
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: array_mean
@@ -314,9 +314,9 @@ module EDAT_Math
 
     pure function variance_dp(n, array, sample) result(output)
         integer, parameter :: rkloc = 8
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: array_mean
@@ -336,9 +336,9 @@ module EDAT_Math
 
     pure function variance_qp(n, array, sample) result(output)
         integer, parameter :: rkloc = 16
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
-        logical , intent(in), optional :: sample
+        logical, intent(in), optional :: sample
 
         real(rkloc) :: output
         real(rkloc) :: array_mean
@@ -358,7 +358,7 @@ module EDAT_Math
 
     pure function mean_sp(n, array) result(output)
         integer, parameter :: rkloc = 4
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
 
         real(rkloc) :: output
@@ -370,7 +370,7 @@ module EDAT_Math
 
     pure function mean_dp(n, array) result(output)
         integer, parameter :: rkloc = 8
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
 
         real(rkloc) :: output
@@ -382,7 +382,7 @@ module EDAT_Math
 
     pure function mean_qp(n, array) result(output)
         integer, parameter :: rkloc = 16
-        integer , intent(in) :: n
+        integer, intent(in) :: n
         real(rkloc), intent(in) :: array(n)
 
         real(rkloc) :: output

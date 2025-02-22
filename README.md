@@ -8,7 +8,7 @@ Install the source code by cloning this repository:
 git clone https://github.com/koseiohara/EDAT.git
 cd EDAT
 ```
-This library can be builded by Makefile.
+This library can be built by Makefile.
 
 ### Makefile
 Rewrite the Makefile for your environment:
@@ -16,7 +16,7 @@ Rewrite the Makefile for your environment:
 cd src
 vim Makefile
 ```
-You can change the definisions of `DIR`, `FC`, and `FLAG`.
+You can change the definitions of `DIR`, `FC`, and `FLAG`.
 `${DIR}/lib` and `${DIR}/include` are needed.  
 After making these settings, execute the makefile
 ```sh
@@ -51,7 +51,7 @@ make install
 
 
 ## edat_math<a id="math"></a>
-edat_math provides useful parameters and tools for marthmatical analysis.
+edat_math provides useful parameters and tools for mathematical analysis.
 
 ### Parameters<a id="math-parameters"></a>
 ```fortran

@@ -185,7 +185,7 @@ pure elemental function potential_temperature(T, P) result(output)
     real, intent(in) :: P
 ```
 Returns potential temperature.  
-`T` and `P` are temperature and pressure, respectively.
+`T` and `P` are temperature[K] and pressure[Pa], respectively.
 Both of them must be the same type, `real32`, `real64`, or `real128`.  
 
 
@@ -219,6 +219,23 @@ Increment to `record` at every reading or writing.
 `record` will be automatically updated with this value.
 
 ### fopen<a id="binio-fopen"></a>
+```fortran
+subroutine fopen(ftype, unit, file, action, record, recl, recstep)
+    type(finfo) , intent(out) :: ftype
+    integer     , intent(in), optional :: unit
+    character(*), intent(in) :: file
+    character(*), intent(in) :: action
+    integer     , intent(in) :: record
+    integer     , intent(in) :: recl
+    integer     , intent(in) :: recstep
+```
+Open a file.
+This subroutine initializes `ftype` with the provided arguments.  
+It is strongly recommended not to provide `unit`.
+If you provide `unit` as an argument, its value will be used for the unit number.
+Otherwise, the unit number will be automatically decided.
+
+### fclose<a id="binio-fclose"></a>
 
 
 

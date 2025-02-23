@@ -241,7 +241,8 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
 
     end function covariance_sp
 
@@ -267,7 +268,8 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
 
     end function covariance_dp
 
@@ -293,7 +295,8 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
 
     end function covariance_qp
 

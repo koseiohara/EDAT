@@ -8,7 +8,7 @@ Install the source code by cloning this repository:
 git clone https://github.com/koseiohara/EDAT.git
 cd EDAT
 ```
-This library can be builded by Makefile.
+This library can be built by Makefile.
 
 ### Makefile
 Rewrite the Makefile for your environment:
@@ -16,7 +16,7 @@ Rewrite the Makefile for your environment:
 cd src
 vim Makefile
 ```
-You can change the definisions of `DIR`, `FC`, and `FLAG`.
+You can change the definitions of `DIR`, `FC`, and `FLAG`.
 `${DIR}/lib` and `${DIR}/include` are needed.  
 After making these settings, execute the makefile
 ```sh
@@ -51,7 +51,7 @@ make install
 
 
 ## edat_math<a id="math"></a>
-edat_math provides useful parameters and tools for marthmatical analysis.
+edat_math provides useful parameters and tools for mathematical analysis.
 
 ### Parameters<a id="math-parameters"></a>
 ```fortran
@@ -236,6 +236,52 @@ If you provide `unit` as an argument, its value will be used for the unit number
 Otherwise, the unit number will be automatically decided.
 
 ### fclose<a id="binio-fclose"></a>
+```fortran
+subroutine fclose(ftype)
+    type(finfo), intent(inout) :: ftype
+```
+Close a file.
+
+### fread<a id="binio-fread"></a>
+```fortran
+subroutine fread(ftype, input_data)
+    type(finfo), intent(inout) :: ftype
+    real(4)    , intent(out)   :: input_data
+```
+Read data from a record in a file.
+Scalar, 1dim, 2dim, or 3dim arrays are acceptable for `input_data`.
+`input_data` must be a `real32` type.
+
+### fwrite<a id="binio-fwrite"></a>
+```fortran
+subroutine fwrite(ftype, output_data)
+    type(finfo), intent(inout) :: ftype
+    real       , intent(in)    :: output_data
+```
+Write data to a record in a file.
+Scalar, 1dim, 2dim, or 3dim arrays are acceptable for `output_data`.
+`output_data` must be `real32`, `real64`, or `real128`.
+Regardless of the precision of `output_data`, the output is in single precision.
+
+### get_record<a id="binio-get-record"></a>
+```fortran
+subroutine get_record(ftype, record)
+    type(finfo), intent(in)  :: ftype
+    integer    , intent(out) :: record
+```
+Return the next record you read or write.
+
+### reset_record<a id="binio-reset-record"></a>
+```fortran
+subroutine reset_record(ftype, increment, newrecord)
+    type(finfo), intent(inout) :: ftype
+    integer    , intent(in)   , optional :: increment
+    integer    , intent(in)   , optional :: newrecord
+```
+Reset the next record you read or write.  
+If `increment` is provided, its value will be added to the present record.
+If `newrecord` is provided, the record will be changed to the value.
+If both are provided, only `increment` will be used.
 
 
 

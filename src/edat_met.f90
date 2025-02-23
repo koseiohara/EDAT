@@ -11,7 +11,7 @@ module EDAT_Met
 
     real(rk), parameter :: GasConstant = 287.04_rk          ! Gas Constant for Dry Air [J/K/kg] #used for p=rhoRT
     real(rk), parameter :: Cp          = 1004._rk           ! Specific Heat for Dry Air at Constant Pressure [J/K/kg]
-    real(rk), parameter :: Cv          = GasConstant-Cp     ! Specific Heat for Dry Air at Constant Volume [J/K/kg]
+    real(rk), parameter :: Cv          = Cp-GasConstant     ! Specific Heat for Dry Air at Constant Volume [J/K/kg]
     real(rk), parameter :: Lq          = 2.507E+6_rk        ! Latent Heat of vaporication [J/kg]
 
 

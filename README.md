@@ -120,7 +120,7 @@ pure function variance(n, array, sample) result(output)
 ```
 Returns the variance of `array`.
 `array` must be `real32`, `real64`, or `real128`.  
-This routine can compute the average of data very precisely because [sum_hp](#math-sum-hp) is used.
+This routine can compute the variance of data very precisely because [sum_hp](#math-sum-hp) is used.
 If `sample` is provided and `sample=.TRUE.`, the return value is the sample variance. Otherwise, the return value is the population variance.
 
 ### mean<a id="math-mean"></a>

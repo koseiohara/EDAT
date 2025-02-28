@@ -290,9 +290,9 @@ If both are provided, only `increment` will be used.
 pure elemental subroutine endian_converter(rawOre)
     real(4), intent(inout) :: rawOre
 ```
-Convert the endian of `rawOre`.
+Convert the endian of `rawOre`.  
 This subroutine accepts a floating-point value and returns the same value with its byte order reversed. 
-This conversion enables correct interpretation of the value when it is stored in an endianness different from that of the running system.
+This conversion enables correct interpretation of the value when it is stored in an endianness different from that of the running system independent of environment.
 
 
 

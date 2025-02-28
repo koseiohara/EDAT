@@ -1,9 +1,10 @@
 module EDAT_BinIO
+    use iso_fortran_env, only : int8
 
     implicit none
 
     private
-    public :: finfo, fopen, fclose, fread, fwrite, get_record, reset_record
+    public :: finfo, fopen, fclose, fread, fwrite, get_record, reset_record, endian_converter
 
     type finfo
         private
@@ -320,6 +321,17 @@ module EDAT_BinIO
         endif
 
     end subroutine reset_record
+
+
+    pure elemental subroutine endian_converter(rawOre)
+        integer, parameter :: rk=4
+        real(rk), intent(inout) :: rawOre
+        integer(int8) :: bits(rk)
+
+        bits(1:rk) = transfer(rawOre, bits)
+        rawOre     = transfer(bits(rk:1:-1), rawOre)
+
+    end subroutine endian_converter
 
 
 end module EDAT_BinIO

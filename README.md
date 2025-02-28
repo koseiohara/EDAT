@@ -48,6 +48,7 @@ make install
     - [fwrite](#binio-fwrite)
     - [get_record](#binio-get-record)
     - [reset_record](#binio-reset-record)
+    - [endian_converter](#binio-endian-converter)
 
 
 ## edat_math<a id="math"></a>
@@ -283,6 +284,15 @@ Reset the next record you read or write.
 If `increment` is provided, its value will be added to the present record.
 If `newrecord` is provided, the record will be changed to the value.
 If both are provided, only `increment` will be used.
+
+### endian_converter<a id="binio-endian-converter"></a>
+```fortran
+pure elemental subroutine endian_converter(rawOre)
+    real(4), intent(inout) :: rawOre
+```
+Convert the endian of `rawOre`.
+This subroutine accepts a floating-point value and returns the same value with its byte order reversed. 
+This conversion enables correct interpretation of the value when it is stored in an endianness different from that of the running system.
 
 
 

@@ -1,5 +1,4 @@
 module EDAT_BinIO
-    use iso_fortran_env, only : int8
 
     implicit none
 
@@ -324,7 +323,8 @@ module EDAT_BinIO
 
 
     pure elemental subroutine endian_converter(rawOre)
-        integer, parameter :: rk=4
+        use iso_fortran_env, only : int8, real32
+        integer, parameter :: rk=real32
         real(rk), intent(inout) :: rawOre
         integer(int8) :: bits(rk)
 

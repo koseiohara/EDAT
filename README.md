@@ -16,7 +16,7 @@ Rewrite the Makefile for your environment:
 cd src
 vim Makefile
 ```
-You can change the definitions of `DIR`, `FC`, and `FLAG`.
+You can change the definitions of `DIR`, `FC`, `CC`, `FFLAG`, and `CFLAGS`.
 `${DIR}/lib` and `${DIR}/include` are needed.  
 After making these settings, execute the makefile
 ```sh
@@ -34,6 +34,8 @@ make install
     - [variance](#math-covariance)
     - [mean](#math-mean)
     - [sum_hp](#math-sum-hp)
+- [edat_sort](#sort)
+    - [quick_sort](#sort-quick-sort)
 - [edat_string](#string)
     - [to_upper](#string-to-upper)
     - [to_lower](#string-to-lower)
@@ -143,6 +145,20 @@ pure function sum_hp(n, array) result(output)
 Returns the sum of `array`.
 `array` must be `real32`, `real64`, or `real128`.  
 This function can compute the sum of data more precisely than the built-in function `sum()` because the pairwise-sum algorithm is used.
+
+
+## edat_sort<a id="sort"></a>
+`edat_sort` provides sorting subroutine.
+
+### quick_sort<a id="sort-quick-sort"></a>
+```fortran
+subroutine quick_sort(n, array)
+    integer, intent(in)    :: n
+    real   , intent(inout) :: array(n)  !! integer array is also acceptable
+```
+Returns sorted array of `array`.
+`array` must be `real32`, `real64`, or `int32`.
+This subroutine is a wrapper of qsort defined in the `stdlib.h` header of the C language.
 
 
 ## edat_string<a id="string"></a>

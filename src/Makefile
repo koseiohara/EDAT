@@ -1,18 +1,24 @@
 LIB = libedat.a
-OBJ = edat_math.o edat_caseconverter.o edat_string.o edat_met.o edat_binio.o
-EXPORT_OBJ = edat_math.o edat_string.o edat_met.o edat_binio.o
+C_OBJ = c_qsort.o
+OBJ = edat_sort.o edat_math.o edat_caseconverter.o edat_string.o edat_met.o edat_binio.o
+EXPORT_OBJ = edat_sort.o edat_math.o edat_string.o edat_met.o edat_binio.o
 
 DIR = ${HOME}/FortranLib
 
 FC = ifort
-FLAG = -O3 -warn all -traceback -convert little_endian -assume byterecl
+CC = icc
+FFLAG = -O3 -warn all -traceback -convert little_endian -assume byterecl
+CFLAG = -O3 -Wall
 
 %.o : %.f90
-	${FC} -c $< ${FLAG}
+	${FC} -c $< ${FFLAG}
+
+%.o : %.c
+	${CC} -c $< ${CFLAG}
 
 all : ${LIB}
 
-${LIB} : ${OBJ}
+${LIB} : ${C_OBJ} ${OBJ}
 	ar rcs $@ $^
 
 

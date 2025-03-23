@@ -26,12 +26,12 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_sp(T, P) result(output)
-        integer, parameter :: rkloc = 4
-        real(rkloc), intent(in) :: T
-        real(rkloc), intent(in) :: P
+        integer, parameter :: lrk = 4
+        real(lrk), intent(in) :: T
+        real(lrk), intent(in) :: P
 
-        real(rkloc), parameter :: P0=1.E+5_rkloc
-        real(rkloc) :: output
+        real(lrk), parameter :: P0=1.E+5_lrk
+        real(lrk) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 
@@ -39,12 +39,12 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_dp(T, P) result(output)
-        integer, parameter :: rkloc = 8
-        real(rkloc), intent(in) :: T
-        real(rkloc), intent(in) :: P
+        integer, parameter :: lrk = 8
+        real(lrk), intent(in) :: T
+        real(lrk), intent(in) :: P
 
-        real(rkloc), parameter :: P0=1.E+5_rkloc
-        real(rkloc) :: output
+        real(lrk), parameter :: P0=1.E+5_lrk
+        real(lrk) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 
@@ -52,12 +52,12 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_qp(T, P) result(output)
-        integer, parameter :: rkloc = 16
-        real(rkloc), intent(in) :: T
-        real(rkloc), intent(in) :: P
+        integer, parameter :: lrk = 16
+        real(lrk), intent(in) :: T
+        real(lrk), intent(in) :: P
 
-        real(rkloc), parameter :: P0=1.E+5_rkloc
-        real(rkloc) :: output
+        real(lrk), parameter :: P0=1.E+5_lrk
+        real(lrk) :: output
 
         output = T*(P0/P)**(GasConstant/Cp)
 

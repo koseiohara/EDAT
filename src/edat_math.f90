@@ -161,15 +161,15 @@ module EDAT_Math
 
 
     pure function corrcoef_sp(n, array1, array2) result(output)
-        integer, parameter :: rkloc = 4
+        integer, parameter :: lrk = 4
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
 
-        real(rkloc) :: output
-        real(rkloc) :: variance1
-        real(rkloc) :: variance2
-        real(rkloc) :: covar
+        real(lrk) :: output
+        real(lrk) :: variance1
+        real(lrk) :: variance2
+        real(lrk) :: covar
 
         variance1 = variance(n, array1(1:n))
         variance2 = variance(n, array2(1:n))
@@ -181,15 +181,15 @@ module EDAT_Math
 
 
     pure function corrcoef_dp(n, array1, array2) result(output)
-        integer, parameter :: rkloc = 8
+        integer, parameter :: lrk = 8
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
 
-        real(rkloc) :: output
-        real(rkloc) :: variance1
-        real(rkloc) :: variance2
-        real(rkloc) :: covar
+        real(lrk) :: output
+        real(lrk) :: variance1
+        real(lrk) :: variance2
+        real(lrk) :: covar
 
         variance1 = variance(n, array1(1:n))
         variance2 = variance(n, array2(1:n))
@@ -201,15 +201,15 @@ module EDAT_Math
 
 
     pure function corrcoef_qp(n, array1, array2) result(output)
-        integer, parameter :: rkloc = 16
+        integer, parameter :: lrk = 16
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
 
-        real(rkloc) :: output
-        real(rkloc) :: variance1
-        real(rkloc) :: variance2
-        real(rkloc) :: covar
+        real(lrk) :: output
+        real(lrk) :: variance1
+        real(lrk) :: variance2
+        real(lrk) :: covar
 
         variance1 = variance(n, array1(1:n))
         variance2 = variance(n, array2(1:n))
@@ -221,15 +221,15 @@ module EDAT_Math
 
 
     pure function covariance_sp(n, array1, array2, sample) result(output)
-        integer, parameter :: rkloc = 4
+        integer, parameter :: lrk = 4
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: mean1
-        real(rkloc) :: mean2
+        real(lrk) :: output
+        real(lrk) :: mean1
+        real(lrk) :: mean2
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -241,22 +241,22 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_sp
 
 
     pure function covariance_dp(n, array1, array2, sample) result(output)
-        integer, parameter :: rkloc = 8
+        integer, parameter :: lrk = 8
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: mean1
-        real(rkloc) :: mean2
+        real(lrk) :: output
+        real(lrk) :: mean1
+        real(lrk) :: mean2
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -268,22 +268,22 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_dp
 
 
     pure function covariance_qp(n, array1, array2, sample) result(output)
-        integer, parameter :: rkloc = 16
+        integer, parameter :: lrk = 16
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array1(n)
-        real(rkloc), intent(in) :: array2(n)
+        real(lrk), intent(in) :: array1(n)
+        real(lrk), intent(in) :: array2(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: mean1
-        real(rkloc) :: mean2
+        real(lrk) :: output
+        real(lrk) :: mean1
+        real(lrk) :: mean2
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -295,20 +295,20 @@ module EDAT_Math
         mean1 = mean(n, array1(1:n))
         mean2 = mean(n, array2(1:n))
 
-        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=rkloc)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=rkloc)
+        !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
+        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_qp
 
 
     pure function variance_sp(n, array, sample) result(output)
-        integer, parameter :: rkloc = 4
+        integer, parameter :: lrk = 4
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: array_mean
+        real(lrk) :: output
+        real(lrk) :: array_mean
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -318,19 +318,19 @@ module EDAT_Math
         endif
 
         array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_sp
 
 
     pure function variance_dp(n, array, sample) result(output)
-        integer, parameter :: rkloc = 8
+        integer, parameter :: lrk = 8
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: array_mean
+        real(lrk) :: output
+        real(lrk) :: array_mean
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -340,19 +340,19 @@ module EDAT_Math
         endif
 
         array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_dp
 
 
     pure function variance_qp(n, array, sample) result(output)
-        integer, parameter :: rkloc = 16
+        integer, parameter :: lrk = 16
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
 
-        real(rkloc) :: output
-        real(rkloc) :: array_mean
+        real(lrk) :: output
+        real(lrk) :: array_mean
         integer :: sample_num
 
         if (present(sample) .AND. sample) then
@@ -362,76 +362,70 @@ module EDAT_Math
         endif
 
         array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=rkloc)
+        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_qp
 
 
     pure function mean_sp(n, array) result(output)
-        integer, parameter :: rkloc = 4
+        integer, parameter :: lrk = 4
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
 
-        real(rkloc) :: output
+        real(lrk) :: output
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=rkloc)
+        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
 
     end function mean_sp
 
 
     pure function mean_dp(n, array) result(output)
-        integer, parameter :: rkloc = 8
+        integer, parameter :: lrk = 8
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
 
-        real(rkloc) :: output
+        real(lrk) :: output
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=rkloc)
+        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
 
     end function mean_dp
 
 
     pure function mean_qp(n, array) result(output)
-        integer, parameter :: rkloc = 16
+        integer, parameter :: lrk = 16
         integer, intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        real(lrk), intent(in) :: array(n)
 
-        real(rkloc) :: output
+        real(lrk) :: output
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=rkloc)
+        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
 
     end function mean_qp
 
 
     pure function sum_hp_sp(n, array) result(output)
-        integer, parameter :: rkloc = 4
-        integer    , intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        integer, parameter :: lrk=4
+        integer  , intent(in) :: n
+        real(lrk), intent(in) :: array(n)
 
-        integer, parameter :: part_size = 2
-        real(rkloc) :: workspace(n)
-        real(rkloc) :: output
-        integer :: i
-        integer :: left
-        integer :: right
-        integer :: total_size
+        real(lrk) :: workspace(n)
+        real(lrk) :: output
+        integer :: len
+        integer :: new_len
 
         workspace(1:n) = array(1:n)
-        total_size = n
-        do while (total_size /= 1)
-            i = 1
-            left = 1
-            right = min(part_size, total_size)
-            do 
-                workspace(i) = sum(workspace(left:right))
-                if (right==total_size)then
-                    total_size = i
-                    exit
-                endif
-                i = i + 1
-                left = right + 1
-                right = min(left+part_size-1, total_size)
-            enddo
+        len = n
+
+        do while (len > 1)
+            new_len = ishft(len, -1)
+            if (mod(len, 2) == 0) then
+                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+                len = new_len
+            else
+                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
+                workspace(new_len+1) = workspace(len)
+                len = new_len + 1
+            endif
         enddo
 
         output = workspace(1)
@@ -440,34 +434,28 @@ module EDAT_Math
 
 
     pure function sum_hp_dp(n, array) result(output)
-        integer, parameter :: rkloc = 8
-        integer    , intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        integer, parameter :: lrk=8
+        integer  , intent(in) :: n
+        real(lrk), intent(in) :: array(n)
 
-        integer, parameter :: part_size = 2
-        real(rkloc) :: workspace(n)
-        real(rkloc) :: output
-        integer :: i
-        integer :: left
-        integer :: right
-        integer :: total_size
+        real(lrk) :: workspace(n)
+        real(lrk) :: output
+        integer :: len
+        integer :: new_len
 
         workspace(1:n) = array(1:n)
-        total_size = n
-        do while (total_size /= 1)
-            i = 1
-            left = 1
-            right = min(part_size, total_size)
-            do 
-                workspace(i) = sum(workspace(left:right))
-                if (right==total_size)then
-                    total_size = i
-                    exit
-                endif
-                i = i + 1
-                left = right + 1
-                right = min(left+part_size-1, total_size)
-            enddo
+        len = n
+
+        do while (len > 1)
+            new_len = ishft(len, -1)
+            if (mod(len, 2) == 0) then
+                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+                len = new_len
+            else
+                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
+                workspace(new_len+1) = workspace(len)
+                len = new_len + 1
+            endif
         enddo
 
         output = workspace(1)
@@ -476,34 +464,28 @@ module EDAT_Math
 
 
     pure function sum_hp_qp(n, array) result(output)
-        integer, parameter :: rkloc = 16
-        integer    , intent(in) :: n
-        real(rkloc), intent(in) :: array(n)
+        integer, parameter :: lrk=16
+        integer  , intent(in) :: n
+        real(lrk), intent(in) :: array(n)
 
-        integer, parameter :: part_size = 2
-        real(rkloc) :: workspace(n)
-        real(rkloc) :: output
-        integer :: i
-        integer :: left
-        integer :: right
-        integer :: total_size
+        real(lrk) :: workspace(n)
+        real(lrk) :: output
+        integer :: len
+        integer :: new_len
 
         workspace(1:n) = array(1:n)
-        total_size = n
-        do while (total_size /= 1)
-            i = 1
-            left = 1
-            right = min(part_size, total_size)
-            do 
-                workspace(i) = sum(workspace(left:right))
-                if (right==total_size)then
-                    total_size = i
-                    exit
-                endif
-                i = i + 1
-                left = right + 1
-                right = min(left+part_size-1, total_size)
-            enddo
+        len = n
+
+        do while (len > 1)
+            new_len = ishft(len, -1)
+            if (mod(len, 2) == 0) then
+                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+                len = new_len
+            else
+                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
+                workspace(new_len+1) = workspace(len)
+                len = new_len + 1
+            endif
         enddo
 
         output = workspace(1)

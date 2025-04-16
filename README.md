@@ -166,17 +166,17 @@ edat_string provides some routines for manipulating strings.
 
 ### to_upper<a id="string-to-upper"></a>
 ```fortran
-subroutine to_upper(input, output)
-    character(*), intent(in)  :: input
-    character(*), intent(out) :: output
+pure elemental function to_upper(input) result(output)
+    character(*), intent(in) :: input
+    character(len(input)) :: output
 ```
 Converts lowercase letters to uppercase, leaving all other characters unchanged.
 
 ### to_lower<a id="string-to-lower"></a>
 ```fortran
-subroutine to_lower(input, output)
-    character(*), intent(in)  :: input
-    character(*), intent(out) :: output
+pure elemental function to_lower(input) result(output)
+    character(*), intent(in) :: input
+    character(len(input)) :: output
 ```
 Converts uppercase letters to lowercase, leaving all other characters unchanged.
 

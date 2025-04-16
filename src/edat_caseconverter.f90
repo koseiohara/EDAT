@@ -1,4 +1,4 @@
-module EDAT_CaseConverter
+module edat_CaseConverter
 
     implicit none
 
@@ -8,26 +8,9 @@ module EDAT_CaseConverter
     contains
 
 
-    subroutine to_upper(input, output)
-        character(*), intent(in)  :: input
-        character(*), intent(out) :: output
-
-        integer, parameter :: code_min = iachar('A')
-        integer, parameter :: code_max = iachar('Z')
-        integer, parameter :: offset = iachar('a') - iachar('A')
-
-        call convert_core(input   , &  !! IN
-                        & output  , &  !! OUT
-                        & offset  , &  !! IN
-                        & code_min, &  !! IN
-                        & code_max  )  !! IN
-       
-    end subroutine to_upper
-
-
-    subroutine to_lower(input, output)
-        character(*), intent(in)  :: input
-        character(*), intent(out) :: output
+    pure elemental function to_upper(input) result(output)
+        character(*), intent(in) :: input
+        character(len(input)) :: output
 
         integer, parameter :: code_min = iachar('a')
         integer, parameter :: code_max = iachar('z')
@@ -39,10 +22,27 @@ module EDAT_CaseConverter
                         & code_min, &  !! IN
                         & code_max  )  !! IN
        
-    end subroutine to_lower
+    end function to_upper
 
 
-    subroutine convert_core(input, output, offset, code_min, code_max)
+    pure elemental function to_lower(input) result(output)
+        character(*), intent(in) :: input
+        character(len(input)) :: output
+
+        integer, parameter :: code_min = iachar('A')
+        integer, parameter :: code_max = iachar('Z')
+        integer, parameter :: offset = iachar('a') - iachar('A')
+
+        call convert_core(input   , &  !! IN
+                        & output  , &  !! OUT
+                        & offset  , &  !! IN
+                        & code_min, &  !! IN
+                        & code_max  )  !! IN
+       
+    end function to_lower
+
+
+    pure elemental subroutine convert_core(input, output, offset, code_min, code_max)
         character(*), intent(in)  :: input
         character(*), intent(out) :: output
         integer     , intent(in)  :: offset
@@ -53,11 +53,6 @@ module EDAT_CaseConverter
         integer :: i
 
         input_len = len(trim(input))
-        if (input_len > len(output)) then
-            write(0,'(A)') '<ERROR STOP>'
-            write(0,'(A)') 'Input string is longer than the output'
-            ERROR STOP
-        endif
 
         output = ''
         do i = 1, input_len
@@ -71,5 +66,5 @@ module EDAT_CaseConverter
     end subroutine convert_core
 
 
-end module EDAT_CaseConverter
+end module edat_CaseConverter
 

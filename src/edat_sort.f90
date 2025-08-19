@@ -14,7 +14,7 @@ module EDAT_Sort
     end interface quick_sort
 
     interface
-        subroutine c_quick_sort_i4(n, array) bind(C)
+        pure subroutine c_quick_sort_i4(n, array) bind(C)
             use iso_c_binding
             integer(c_int), intent(in)    :: n
             integer(c_int), intent(inout) :: array(n)
@@ -23,7 +23,7 @@ module EDAT_Sort
 
 
     interface
-        subroutine c_quick_sort_sp(n, array) bind(C)
+        pure subroutine c_quick_sort_sp(n, array) bind(C)
             use iso_c_binding
             integer(c_int), intent(in)    :: n
             real(c_float) , intent(inout) :: array(n)
@@ -32,7 +32,7 @@ module EDAT_Sort
 
 
     interface
-        subroutine c_quick_sort_dp(n, array) bind(C)
+        pure subroutine c_quick_sort_dp(n, array) bind(C)
             use iso_c_binding
             integer(c_int), intent(in)    :: n
             real(c_double), intent(inout) :: array(n)
@@ -52,7 +52,7 @@ module EDAT_Sort
     contains
 
 
-    subroutine quick_sort_i4(n, array)
+    pure subroutine quick_sort_i4(n, array)
         integer, intent(in)    :: n
         integer, intent(inout) :: array(n)
 
@@ -61,7 +61,7 @@ module EDAT_Sort
     end subroutine quick_sort_i4
 
 
-    subroutine quick_sort_sp(n, array)
+    pure subroutine quick_sort_sp(n, array)
         integer , parameter :: lrk = c_float
         integer , intent(in)    :: n
         real(lrk), intent(inout) :: array(n)
@@ -71,7 +71,7 @@ module EDAT_Sort
     end subroutine quick_sort_sp
 
 
-    subroutine quick_sort_dp(n, array)
+    pure subroutine quick_sort_dp(n, array)
         integer , parameter :: lrk = c_double
         integer , intent(in)    :: n
         real(lrk), intent(inout) :: array(n)

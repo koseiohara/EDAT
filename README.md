@@ -42,6 +42,7 @@ make install
 - [edat_met](#met)
     - [Parameters](#met-parameters)
     - [potential_temperature](#met-potential-temperature)
+    - [meridionalIntegral](#met-meridionalIntegral)
 - [edat_binio](#binio)
     - [finfo](#binio-finfo)
     - [fopen](#binio-fopen)
@@ -206,6 +207,25 @@ Returns potential temperature.
 `T` and `P` are temperature[K] and pressure[Pa], respectively.
 Both of them must be the same type, `real32`, `real64`, or `real128`.  
 
+### meridionalIntegral<a id="met-meridionalIntegral"></a>
+```fortran
+pure subroutine meridionalIntegral_sp(nx, ny, nz, lat, field, south, north, output, valid_south, valid_north)
+    integer, intent(in)  :: nx
+    integer, intent(in)  :: ny
+    integer, intent(in)  :: nz
+    real   , intent(in)  :: lat(ny)                 ! Latitude [rad]
+    real   , intent(in)  :: field(nx,ny,nz)         ! Target
+    real   , intent(in)  :: south                   ! Southern limit of the integral [rad]
+    real   , intent(in)  :: north                   ! Northern limit of the integral [rad]
+    real   , intent(out) :: output(nx,nz)           ! Result of meridional integral
+    real   , intent(out), optional :: valid_south   ! Actual southern limit of the integral [rad]
+    real   , intent(out), optional :: valid_north   ! Actual northern limit of the integral [rad]
+```
+Returns mridionally integrated field.  
+If `south` and `north` are exist in `lat`, `valid_south` and `valid_north` are equal to `south` and `north`.
+Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_north` and the interval of integration.
+
+
 
 ## edat_binio<a id="binio"></a>
 edat_binio is a module for performing input and output of no-header binary files.
@@ -220,6 +240,15 @@ type finfo
     integer        :: record
     integer        :: recl
     integer        :: recstep
+    contains
+    procedure, pass, public :: fclose
+    procedure, pass, public :: get_record
+    procedure, pass, public :: reset_record
+    generic, public :: fread  => fread_s, fread_1, fread_2, fread_3, fread_4, fread_5
+    generic, public :: fwrite => fwrite_ss, fwrite_sd, fwrite_sq, &
+                               ... 
+                               & fwrite_5s, fwrite_5d, fwrite_5q
+    ...
 end type finfo
 ```
 #### unit
@@ -238,63 +267,66 @@ Increment to `record` at every reading or writing.
 
 ### fopen<a id="binio-fopen"></a>
 ```fortran
-subroutine fopen(ftype, unit, file, action, record, recl, recstep)
-    type(finfo) , intent(out) :: ftype
+function fopen(unit, file, action, record, recl, recstep) result(self)
+    type(finfo) :: self
+
     integer     , intent(in), optional :: unit
+
     character(*), intent(in) :: file
     character(*), intent(in) :: action
     integer     , intent(in) :: record
     integer     , intent(in) :: recl
     integer     , intent(in) :: recstep
 ```
-Open a file.
-This subroutine initializes `ftype` with the provided arguments.  
+Constructor.  
+You can call this routine as name `finfo`.
+This subroutine initializes this class with the provided arguments.  
 It is strongly recommended not to provide `unit`.
 If you provide `unit` as an argument, its value will be used for the unit number.
 Otherwise, the unit number will be automatically decided.
 
 ### fclose<a id="binio-fclose"></a>
 ```fortran
-subroutine fclose(ftype)
-    type(finfo), intent(inout) :: ftype
+subroutine fclose(self)
+    class(finfo), intent(inout) :: self
 ```
 Close a file.
 
 ### fread<a id="binio-fread"></a>
 ```fortran
-subroutine fread(ftype, input_data)
-    type(finfo), intent(inout) :: ftype
-    real(4)    , intent(out)   :: input_data
+subroutine fread(self, input_data)
+    class(finfo), intent(inout) :: self
+    real(4)     , intent(out)   :: input_data
 ```
 Read data from a record in a file.
-Scalar, 1dim, 2dim, or 3dim arrays are acceptable for `input_data`.
+Scalar and 1-5 dimension arrays are acceptable for `input_data`.
 `input_data` must be a `real32` type.
 
 ### fwrite<a id="binio-fwrite"></a>
 ```fortran
-subroutine fwrite(ftype, output_data)
-    type(finfo), intent(inout) :: ftype
-    real       , intent(in)    :: output_data
+subroutine fwrite(self, output_data)
+    class(finfo), intent(inout) :: self
+    real        , intent(in)    :: output_data
 ```
 Write data to a record in a file.
-Scalar, 1dim, 2dim, or 3dim arrays are acceptable for `output_data`.
+Scalar and 1-5 dimension arrays are acceptable for `output_data`.
 `output_data` must be `real32`, `real64`, or `real128`.
 Regardless of the precision of `output_data`, the output is in single precision.
 
 ### get_record<a id="binio-get-record"></a>
 ```fortran
-subroutine get_record(ftype, record)
-    type(finfo), intent(in)  :: ftype
-    integer    , intent(out) :: record
+subroutine get_record(self, record)
+    class(finfo), intent(in)  :: self
+    integer     , intent(out) :: record
 ```
 Return the next record you read or write.
 
 ### reset_record<a id="binio-reset-record"></a>
 ```fortran
-subroutine reset_record(ftype, increment, newrecord)
-    type(finfo), intent(inout) :: ftype
-    integer    , intent(in)   , optional :: increment
-    integer    , intent(in)   , optional :: newrecord
+subroutine reset_record(self, increment, newrecord)
+    class(finfo), intent(inout) :: self
+    integer     , intent(in)   , optional :: increment
+    integer     , intent(in)   , optional :: newrecord
 ```
 Reset the next record you read or write.  
 If `increment` is provided, its value will be added to the present record.

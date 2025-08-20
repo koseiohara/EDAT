@@ -3,7 +3,7 @@ module EDAT_BinIO
     implicit none
 
     private
-    public :: finfo, fopen, fclose, fread, fwrite, get_record, reset_record, endian_converter
+    public :: finfo, endian_converter
 
     type finfo
         private
@@ -13,47 +13,58 @@ module EDAT_BinIO
         integer        :: record
         integer        :: recl
         integer        :: recstep
+
+        contains
+
+        procedure, pass, public :: fclose
+        procedure, pass, public :: get_record
+        procedure, pass, public :: reset_record
+
+        generic, public :: fread  => fread_s, fread_1, fread_2, fread_3, fread_4, fread_5
+        generic, public :: fwrite => fwrite_ss, fwrite_sd, fwrite_sq, &
+                                   & fwrite_1s, fwrite_1d, fwrite_1q, &
+                                   & fwrite_2s, fwrite_2d, fwrite_2q, &
+                                   & fwrite_3s, fwrite_3d, fwrite_3q, &
+                                   & fwrite_4s, fwrite_4d, fwrite_4q, &
+                                   & fwrite_5s, fwrite_5d, fwrite_5q
+
+        procedure, pass, private :: fread_s
+        procedure, pass, private :: fread_1
+        procedure, pass, private :: fread_2
+        procedure, pass, private :: fread_3
+        procedure, pass, private :: fread_4
+        procedure, pass, private :: fread_5
+        procedure, pass, private :: fwrite_ss
+        procedure, pass, private :: fwrite_sd
+        procedure, pass, private :: fwrite_sq
+        procedure, pass, private :: fwrite_1s
+        procedure, pass, private :: fwrite_1d
+        procedure, pass, private :: fwrite_1q
+        procedure, pass, private :: fwrite_2s
+        procedure, pass, private :: fwrite_2d
+        procedure, pass, private :: fwrite_2q
+        procedure, pass, private :: fwrite_3s
+        procedure, pass, private :: fwrite_3d
+        procedure, pass, private :: fwrite_3q
+        procedure, pass, private :: fwrite_4s
+        procedure, pass, private :: fwrite_4d
+        procedure, pass, private :: fwrite_4q
+        procedure, pass, private :: fwrite_5s
+        procedure, pass, private :: fwrite_5d
+        procedure, pass, private :: fwrite_5q
     end type finfo
 
-
-    interface fread
-        module procedure &
-            & fread_s, &
-            & fread_1, &
-            & fread_2, &
-            & fread_3, &
-            & fread_4, &
-            & fread_5
-    end interface fread
-
-    interface fwrite
-        module procedure &
-            & fwrite_ss, &
-            & fwrite_sd, &
-            & fwrite_sq, &
-            & fwrite_1s, &
-            & fwrite_1d, &
-            & fwrite_1q, &
-            & fwrite_2s, &
-            & fwrite_2d, &
-            & fwrite_2q, &
-            & fwrite_3s, &
-            & fwrite_3d, &
-            & fwrite_3q, &
-            & fwrite_4s, &
-            & fwrite_4d, &
-            & fwrite_4q, &
-            & fwrite_5s, &
-            & fwrite_5d, &
-            & fwrite_5q
-    end interface fwrite
+    
+    interface finfo
+        module procedure fopen
+    end interface finfo
 
 
     contains
 
 
-    subroutine fopen(ftype, unit, file, action, record, recl, recstep)
-        type(finfo) , intent(out) :: ftype
+    function fopen(unit, file, action, record, recl, recstep) result(self)
+        type(finfo) :: self
 
         integer     , intent(in), optional :: unit
 
@@ -85,9 +96,9 @@ module EDAT_BinIO
                & ACCESS='DIRECT'     , &
                & RECL  =recl           )
             
-            ftype%unit    = unit
+            self%unit    = unit
         else
-            open(NEWUNIT=ftype%unit   , &
+            open(NEWUNIT=self%unit    , &
                & FILE   =file         , &
                & ACTION =action       , &
                & FORM   ='UNFORMATTED', &
@@ -95,31 +106,31 @@ module EDAT_BinIO
                & RECL   =recl           )
         endif
 
-        ftype%file    = file
-        ftype%action  = action
-        ftype%record  = record
-        ftype%recl    = recl
-        ftype%recstep = recstep
+        self%file    = file
+        self%action  = action
+        self%record  = record
+        self%recl    = recl
+        self%recstep = recstep
 
-    end subroutine fopen
+    end function fopen
 
 
-    subroutine fclose(ftype)
-        type(finfo), intent(inout) :: ftype
+    subroutine fclose(self)
+        class(finfo), intent(inout) :: self
         logical :: open_status
 
-        INQUIRE(ftype%unit      , &  !! IN
+        INQUIRE(self%unit      , &  !! IN
               & OPENED=open_status)  !! OUT
 
         if (open_status) then
-            close(ftype%unit)
+            close(self%unit)
             
-            ftype%unit    = 0
-            ftype%file    = 'ERROR'
-            ftype%action  = 'ERROR'
-            ftype%record  = -999
-            ftype%recl    = -999
-            ftype%recstep = -999
+            self%unit    = 0
+            self%file    = 'ERROR'
+            self%action  = 'ERROR'
+            self%record  = -999
+            self%recl    = -999
+            self%recstep = -999
 
             return
         else
@@ -129,283 +140,283 @@ module EDAT_BinIO
     end subroutine fclose
 
 
-    subroutine fread_s(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data
+    subroutine fread_s(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data
 
-        read(ftype%unit,rec=ftype%record) input_data
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data
+        self%record = self%record + self%recstep
 
     end subroutine fread_s
 
 
-    subroutine fread_1(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data(:)
+    subroutine fread_1(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data(:)
 
-        read(ftype%unit,rec=ftype%record) input_data(:)
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data(:)
+        self%record = self%record + self%recstep
 
     end subroutine fread_1
 
 
-    subroutine fread_2(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data(:,:)
+    subroutine fread_2(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data(:,:)
 
-        read(ftype%unit,rec=ftype%record) input_data(:,:)
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data(:,:)
+        self%record = self%record + self%recstep
 
     end subroutine fread_2
 
 
-    subroutine fread_3(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data(:,:,:)
+    subroutine fread_3(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data(:,:,:)
 
-        read(ftype%unit,rec=ftype%record) input_data(:,:,:)
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data(:,:,:)
+        self%record = self%record + self%recstep
 
     end subroutine fread_3
 
 
-    subroutine fread_4(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data(:,:,:,:)
+    subroutine fread_4(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data(:,:,:,:)
 
-        read(ftype%unit,rec=ftype%record) input_data(:,:,:,:)
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data(:,:,:,:)
+        self%record = self%record + self%recstep
 
     end subroutine fread_4
 
 
-    subroutine fread_5(ftype, input_data)
-        type(finfo), intent(inout) :: ftype
-        real(4)    , intent(out)   :: input_data(:,:,:,:,:)
+    subroutine fread_5(self, input_data)
+        class(finfo), intent(inout) :: self
+        real(4)     , intent(out)   :: input_data(:,:,:,:,:)
 
-        read(ftype%unit,rec=ftype%record) input_data(:,:,:,:,:)
-        ftype%record = ftype%record + ftype%recstep
+        read(self%unit,rec=self%record) input_data(:,:,:,:,:)
+        self%record = self%record + self%recstep
 
     end subroutine fread_5
 
 
-    subroutine fwrite_ss(ftype, output_data)
+    subroutine fwrite_ss(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data
 
-        write(ftype%unit,rec=ftype%record) real(output_data, kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data, kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_ss
 
 
-    subroutine fwrite_sd(ftype, output_data)
+    subroutine fwrite_sd(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data
 
-        write(ftype%unit,rec=ftype%record) real(output_data, kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data, kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_sd
 
 
-    subroutine fwrite_sq(ftype, output_data)
+    subroutine fwrite_sq(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data
 
-        write(ftype%unit,rec=ftype%record) real(output_data, kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data, kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_sq
 
 
-    subroutine fwrite_1s(ftype, output_data)
+    subroutine fwrite_1s(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_1s
 
 
-    subroutine fwrite_1d(ftype, output_data)
+    subroutine fwrite_1d(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_1d
 
 
-    subroutine fwrite_1q(ftype, output_data)
+    subroutine fwrite_1q(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_1q
 
 
-    subroutine fwrite_2s(ftype, output_data)
+    subroutine fwrite_2s(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_2s
 
 
-    subroutine fwrite_2d(ftype, output_data)
+    subroutine fwrite_2d(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_2d
 
 
-    subroutine fwrite_2q(ftype, output_data)
+    subroutine fwrite_2q(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_2q
 
 
-    subroutine fwrite_3s(ftype, output_data)
+    subroutine fwrite_3s(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_3s
 
 
-    subroutine fwrite_3d(ftype, output_data)
+    subroutine fwrite_3d(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_3d
 
 
-    subroutine fwrite_3q(ftype, output_data)
+    subroutine fwrite_3q(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_3q
 
 
-    subroutine fwrite_4s(ftype, output_data)
+    subroutine fwrite_4s(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_4s
 
 
-    subroutine fwrite_4d(ftype, output_data)
+    subroutine fwrite_4d(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_4d
 
 
-    subroutine fwrite_4q(ftype, output_data)
+    subroutine fwrite_4q(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_4q
 
 
-    subroutine fwrite_5s(ftype, output_data)
+    subroutine fwrite_5s(self, output_data)
         integer, parameter :: kind=4
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_5s
 
 
-    subroutine fwrite_5d(ftype, output_data)
+    subroutine fwrite_5d(self, output_data)
         integer, parameter :: kind=8
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_5d
 
 
-    subroutine fwrite_5q(ftype, output_data)
+    subroutine fwrite_5q(self, output_data)
         integer, parameter :: kind=16
-        type(finfo), intent(inout) :: ftype
-        real(kind) , intent(in)    :: output_data(:,:,:,:,:)
+        class(finfo), intent(inout) :: self
+        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(ftype%unit,rec=ftype%record) real(output_data(:,:,:,:,:), kind=4)
-        ftype%record = ftype%record + ftype%recstep
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        self%record = self%record + self%recstep
 
     end subroutine fwrite_5q
 
 
-    subroutine get_record(ftype, record)
-        type(finfo), intent(in)  :: ftype
-        integer    , intent(out) :: record
+    subroutine get_record(self, record)
+        class(finfo), intent(in)  :: self
+        integer     , intent(out) :: record
 
-        record = ftype%record
+        record = self%record
 
     end subroutine get_record
 
 
-    subroutine reset_record(ftype, increment, newrecord)
-        type(finfo), intent(inout) :: ftype
-        integer    , intent(in)   , optional :: increment
-        integer    , intent(in)   , optional :: newrecord
+    subroutine reset_record(self, increment, newrecord)
+        class(finfo), intent(inout) :: self
+        integer     , intent(in)   , optional :: increment
+        integer     , intent(in)   , optional :: newrecord
 
         if (present(increment)) then
-            ftype%record = ftype%record + increment
+            self%record = self%record + increment
             return
         else if (present(newrecord)) then
-            ftype%record = newrecord
+            self%record = newrecord
             return
         else
             write(*,'(A)') 'ERROR STOP'

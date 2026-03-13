@@ -248,8 +248,14 @@ pure subroutine zonalDerivative(lon, input, output, periodic, status)
     integer, intent(out), optional :: status        ! Positive if successfully computed
 ```
 Returns zonal derivative.
+Both west-to-east and east-to-west longitude are acceptable.  
 Derivative is computed with central difference method at most grid points.
-If `periodic=.FALSE.`, xaxis boundaries are computed with one-sided difference method.
+If `periodic=.FALSE.`, eastern and western boundaries are computed with one-sided difference method.
+| Status | Cause |
+|--------|-------|
+| -1 | Inconsistency of input array shapes |
+| -2 | Array size is too small to compute derivative |
+| -3 | Derivative axis is not a monotone sequence |
 
 ### meridionalDerivative<a id="met-meridionalDerivative"></a>
 ```fortran
@@ -260,8 +266,14 @@ pure subroutine meridionalDerivative(lat, input, output, status)
     integer, intent(out), optional :: status        ! Positive if successfully computed
 ```
 Returns meridional derivative.
-Derivative is computed with central difference method at most grid points, except the polar boundaries.
-Polar boundaries are computed with one-sided difference method.
+Both north-to-south and south-to-north latitude are acceptable.  
+Derivative is computed with central difference method at most grid points, except the northern and southern boundaries.
+Northern and southern boundaries are computed with one-sided difference method.
+| Status | Cause |
+|--------|-------|
+| -1 | Inconsistency of input array shapes |
+| -2 | Array size is too small to compute derivative |
+| -3 | Derivative axis is not a monotone sequence |
 
 ### verticalDerivative<a id="met-verticalDerivative"></a>
 ```fortran
@@ -274,8 +286,14 @@ pure subroutine verticalDerivative(lev, input, psfc, output, undef, status)
     integer, intent(out), optional :: status        ! Positive if successfully computed
 ```
 Returns Vertical derivative.
+Both upper-to-lower and lower-to-upper levels are acceptable.  
 Derivative is computed with central difference method at most grid points, except the lower and upper boundaries.
 Lower and upper boundaries are computed with one-sided difference method.
+| Status | Cause |
+|--------|-------|
+| -1 | Inconsistency of input array shapes |
+| -2 | Array size is too small to compute derivative |
+| -3 | Derivative axis is not a monotone sequence |
 
 ## edat_binio<a id="binio"></a>
 edat_binio is a module for performing input and output of no-header binary files.

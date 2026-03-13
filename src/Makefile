@@ -1,6 +1,6 @@
 LIB = libedat.a
 #C_OBJ = c_qsort.o
-OBJ = c_qsort.o edat_sort.o edat_math.o edat_caseconverter.o edat_string.o edat_met.o edat_binio.o
+OBJ = c_qsort.o edat_sort.o edat_math.o edat_caseconverter.o edat_string.o integral_sp.o integral_dp.o derivative_sp.o derivative_dp.o edat_met.o edat_binio.o
 EXPORT_OBJ = edat_sort.o edat_math.o edat_string.o edat_met.o edat_binio.o
 
 DIR = ${HOME}/FortranLib

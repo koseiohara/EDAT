@@ -1,10 +1,18 @@
 module EDAT_Met
 
-    use EDAT_Math, only : sum_hp
+    use EDAT_Math    , only : sum_hp
+    use integral_sp  , only : meridionalIntegral_sp, verticalIntegral_sp
+    use integral_dp  , only : meridionalIntegral_dp, verticalIntegral_dp
+    use derivative_sp, only : zonalDerivative_sp, meridionalDerivative_sp, verticalDerivative_sp
+    use derivative_dp, only : zonalDerivative_dp, meridionalDerivative_dp, verticalDerivative_dp
 
     implicit none
 
-    private :: rk
+    private
+    public :: GRAV, EarthRadius, GasConstant, Cp, Cv, Lq               , &
+            & potential_temperature                                    , &
+            & meridionalIntegral, verticalIntegral                     , &
+            & zonalDerivative, meridionalDerivative, verticalDerivative
 
     integer , parameter :: rk = 16
 
@@ -25,12 +33,30 @@ module EDAT_Met
     end interface potential_temperature
 
     interface meridionalIntegral
-        module procedure &
-            & meridionalIntegral_sp, &
-            & meridionalIntegral_dp, &
-            & meridionalIntegral_qp
+        module procedure meridionalIntegral_sp, &
+                       & meridionalIntegral_dp
     end interface meridionalIntegral
-    
+
+    interface verticalIntegral
+        module procedure verticalIntegral_sp, &
+                       & verticalIntegral_dp
+    end interface verticalIntegral
+
+    interface zonalDerivative
+        module procedure zonalDerivative_sp, &
+                       & zonalDerivative_dp
+    end interface zonalDerivative
+
+    interface meridionalDerivative
+        module procedure meridionalDerivative_sp, &
+                       & meridionalDerivative_dp
+    end interface meridionalDerivative
+
+    interface verticalDerivative
+        module procedure verticalDerivative_sp, &
+                       & verticalDerivative_dp
+    end interface verticalDerivative
+
     contains
 
 
@@ -71,237 +97,6 @@ module EDAT_Met
         output = T*(P0/P)**(GasConstant/Cp)
 
     end function potential_temperature_qp
-
-
-    pure subroutine meridionalIntegral_sp(nx, ny, nz, lat, field, south, north, output, valid_south, valid_north)
-        integer  , parameter   :: lrk = 4
-        integer  , intent(in)  :: nx
-        integer  , intent(in)  :: ny
-        integer  , intent(in)  :: nz
-        real(lrk), intent(in)  :: lat(ny)
-        real(lrk), intent(in)  :: field(nx,ny,nz)
-        real(lrk), intent(in)  :: south
-        real(lrk), intent(in)  :: north
-        real(lrk), intent(out) :: output(nx,nz)
-        real(lrk), intent(out), optional :: valid_south
-        real(lrk), intent(out), optional :: valid_north
-
-        real(lrk), allocatable :: work_field(:,:)
-
-        real(lrk) :: costbl(ny)
-        real(lrk) :: dlat(ny)
-        real(lrk) :: dl
-        real(lrk) :: c0
-        real(lrk) :: c1
-        integer :: south_idx
-        integer :: north_idx
-        integer :: jl
-        integer :: ju
-        integer :: i
-        integer :: j
-        integer :: k
-
-        south_idx = minloc(abs(lat(1:ny) - south), dim=1)
-        north_idx = minloc(abs(lat(1:ny) - north), dim=1)
-
-        if (present(valid_south)) then
-            valid_south = lat(south_idx)
-        endif
-        if (present(valid_north)) then
-            valid_north = lat(north_idx)
-        endif
-
-        if (south_idx < north_idx) then
-            jl = south_idx
-            ju = north_idx
-        else if (south_idx > north_idx) then
-            jl = north_idx
-            ju = south_idx
-        else
-            output(1:nx,1:nz) = 0._lrk
-            return
-        endif
-
-        costbl(jl:ju) = cos(lat(jl:ju)) * 0.5_lrk
-
-        if (lat(2) < lat(1)) then
-            costbl(jl:ju) = - costbl(jl:ju)
-        endif
-
-        allocate(work_field(jl:ju-1,nx))
-
-        dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
-        do k = 1, nz
-            do j = jl, ju-1
-                dl = dlat(j)
-                c0 = costbl(j)
-                c1 = costbl(j+1)
-                do i = 1, nx
-                    work_field(j,i) = (field(i,j+1,k)*c1 + field(i,j,k)*c0) * dl
-                enddo
-            enddo
-            do i = 1, nx
-                output(i,k) = sum_hp(ju-jl, work_field(jl:ju-1,i))
-            enddo
-        enddo
-
-        deallocate(work_field)
-
-    end subroutine meridionalIntegral_sp
-
-
-    pure subroutine meridionalIntegral_dp(nx, ny, nz, lat, field, south, north, output, valid_south, valid_north)
-        integer  , parameter   :: lrk = 8
-        integer  , intent(in)  :: nx
-        integer  , intent(in)  :: ny
-        integer  , intent(in)  :: nz
-        real(lrk), intent(in)  :: lat(ny)
-        real(lrk), intent(in)  :: field(nx,ny,nz)
-        real(lrk), intent(in)  :: south
-        real(lrk), intent(in)  :: north
-        real(lrk), intent(out) :: output(nx,nz)
-        real(lrk), intent(out), optional :: valid_south
-        real(lrk), intent(out), optional :: valid_north
-
-        real(lrk), allocatable :: work_field(:,:)
-
-        real(lrk) :: costbl(ny)
-        real(lrk) :: dlat(ny)
-        real(lrk) :: dl
-        real(lrk) :: c0
-        real(lrk) :: c1
-        integer :: south_idx
-        integer :: north_idx
-        integer :: jl
-        integer :: ju
-        integer :: i
-        integer :: j
-        integer :: k
-
-        south_idx = minloc(abs(lat(1:ny) - south), dim=1)
-        north_idx = minloc(abs(lat(1:ny) - north), dim=1)
-
-        if (present(valid_south)) then
-            valid_south = lat(south_idx)
-        endif
-        if (present(valid_north)) then
-            valid_north = lat(north_idx)
-        endif
-
-        if (south_idx < north_idx) then
-            jl = south_idx
-            ju = north_idx
-        else if (south_idx > north_idx) then
-            jl = north_idx
-            ju = south_idx
-        else
-            output(1:nx,1:nz) = 0._lrk
-            return
-        endif
-
-        costbl(jl:ju) = cos(lat(jl:ju)) * 0.5_lrk
-
-        if (lat(2) < lat(1)) then
-            costbl(jl:ju) = - costbl(jl:ju)
-        endif
-
-        allocate(work_field(jl:ju-1,nx))
-
-        dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
-        do k = 1, nz
-            do j = jl, ju-1
-                dl = dlat(j)
-                c0 = costbl(j)
-                c1 = costbl(j+1)
-                do i = 1, nx
-                    work_field(j,i) = (field(i,j+1,k)*c1 + field(i,j,k)*c0) * dl
-                enddo
-            enddo
-            do i = 1, nx
-                output(i,k) = sum_hp(ju-jl, work_field(jl:ju-1,i))
-            enddo
-        enddo
-
-        deallocate(work_field)
-
-    end subroutine meridionalIntegral_dp
-
-
-    pure subroutine meridionalIntegral_qp(nx, ny, nz, lat, field, south, north, output, valid_south, valid_north)
-        integer  , parameter   :: lrk = 16
-        integer  , intent(in)  :: nx
-        integer  , intent(in)  :: ny
-        integer  , intent(in)  :: nz
-        real(lrk), intent(in)  :: lat(ny)
-        real(lrk), intent(in)  :: field(nx,ny,nz)
-        real(lrk), intent(in)  :: south
-        real(lrk), intent(in)  :: north
-        real(lrk), intent(out) :: output(nx,nz)
-        real(lrk), intent(out), optional :: valid_south
-        real(lrk), intent(out), optional :: valid_north
-
-        real(lrk), allocatable :: work_field(:,:)
-
-        real(lrk) :: costbl(ny)
-        real(lrk) :: dlat(ny)
-        real(lrk) :: dl
-        real(lrk) :: c0
-        real(lrk) :: c1
-        integer :: south_idx
-        integer :: north_idx
-        integer :: jl
-        integer :: ju
-        integer :: i
-        integer :: j
-        integer :: k
-
-        south_idx = minloc(abs(lat(1:ny) - south), dim=1)
-        north_idx = minloc(abs(lat(1:ny) - north), dim=1)
-
-        if (present(valid_south)) then
-            valid_south = lat(south_idx)
-        endif
-        if (present(valid_north)) then
-            valid_north = lat(north_idx)
-        endif
-
-        if (south_idx < north_idx) then
-            jl = south_idx
-            ju = north_idx
-        else if (south_idx > north_idx) then
-            jl = north_idx
-            ju = south_idx
-        else
-            output(1:nx,1:nz) = 0._lrk
-            return
-        endif
-
-        costbl(jl:ju) = cos(lat(jl:ju)) * 0.5_lrk
-
-        if (lat(2) < lat(1)) then
-            costbl(jl:ju) = - costbl(jl:ju)
-        endif
-
-        allocate(work_field(jl:ju-1,nx))
-
-        dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
-        do k = 1, nz
-            do j = jl, ju-1
-                dl = dlat(j)
-                c0 = costbl(j)
-                c1 = costbl(j+1)
-                do i = 1, nx
-                    work_field(j,i) = (field(i,j+1,k)*c1 + field(i,j,k)*c0) * dl
-                enddo
-            enddo
-            do i = 1, nx
-                output(i,k) = sum_hp(ju-jl, work_field(jl:ju-1,i))
-            enddo
-        enddo
-
-        deallocate(work_field)
-
-    end subroutine meridionalIntegral_qp
 
 end module EDAT_Met
 

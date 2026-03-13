@@ -43,6 +43,10 @@ make install
     - [Parameters](#met-parameters)
     - [potential_temperature](#met-potential-temperature)
     - [meridionalIntegral](#met-meridionalIntegral)
+    - [verticalIntegral](#met-verticalIntegral)
+    - [zonalDerivative](#met-zonalDerivative)
+    - [meridionalDerivative](#met-meridionalDerivative)
+    - [verticalDerivative](#met-verticalDerivative)
 - [edat_binio](#binio)
     - [finfo](#binio-finfo)
     - [fopen](#binio-fopen)
@@ -209,15 +213,13 @@ Both of them must be the same type, `real32`, `real64`, or `real128`.
 
 ### meridionalIntegral<a id="met-meridionalIntegral"></a>
 ```fortran
-pure subroutine meridionalIntegral_sp(nx, ny, nz, lat, field, south, north, output, valid_south, valid_north)
-    integer, intent(in)  :: nx
-    integer, intent(in)  :: ny
-    integer, intent(in)  :: nz
-    real   , intent(in)  :: lat(ny)                 ! Latitude [rad]
-    real   , intent(in)  :: field(nx,ny,nz)         ! Target
+pure subroutine meridionalIntegral(lat, field, south, north, output, status, valid_south, valid_north)
+    real   , intent(in)  :: lat(:)                  ! Latitude [rad]. shape must be [ny]
+    real   , intent(in)  :: field(:,:,:)            ! Target. shape must be [nx,ny,nz]
     real   , intent(in)  :: south                   ! Southern limit of the integral [rad]
     real   , intent(in)  :: north                   ! Northern limit of the integral [rad]
-    real   , intent(out) :: output(nx,nz)           ! Result of meridional integral
+    real   , intent(out) :: output(:,:)             ! Result of meridional integral. shape must be [nx,nz]
+    integer, intent(out) :: status                  ! Positive if successfully computed
     real   , intent(out), optional :: valid_south   ! Actual southern limit of the integral [rad]
     real   , intent(out), optional :: valid_north   ! Actual northern limit of the integral [rad]
 ```
@@ -225,7 +227,55 @@ Returns mridionally integrated field.
 If `south` and `north` are exist in `lat`, `valid_south` and `valid_north` are equal to `south` and `north`.
 Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_north` and the interval of integration.
 
+### verticalIntegral<a id="met-verticalIntegral"></a>
+```fortran
+subroutine verticalIntegral(lev, field, psfc, output, status)
+    real   , intent(in), contiguous :: lev(:)          ! Vertical Levels [Pa] or [hPa]. shape must be [nz]
+    real   , intent(in), contiguous :: field(:,:,:)    ! Target. shape must be [nx,ny,nz]
+    real   , intent(in), contiguous :: psfc(:,:)       ! Surface Pressure [Pa] or [hPa]. shape must be [nx,ny]
+    real   , intent(out) :: output(:,:)                ! Result of vertical integral. shape must be [nx,ny]
+    integer, intent(out) :: status                     ! Positive if successfully computed
+```
+Returns vertically integrated field.  
 
+### zonalDerivative<a id="met-zonalDerivative"></a>
+```fortran
+pure subroutine zonalDerivative(lon, input, output, periodic, status)
+    real   , intent(in)  :: lon(:)                  ! Longitude [rad]. shape must be [nx]
+    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
+    real   , intent(out) :: output(:,:,:)           ! Result of zonal derivative. shape must be [nx,ny,nz]
+    logical, intent(in) , optional :: periodic      ! Whether the boundary condition of the input is periodic
+    integer, intent(out), optional :: status        ! Positive if successfully computed
+```
+Returns zonal derivative.
+Derivative is computed with central difference method at most grid points.
+If `periodic=.FALSE.`, xaxis boundaries are computed with one-sided difference method.
+
+### meridionalDerivative<a id="met-meridionalDerivative"></a>
+```fortran
+pure subroutine meridionalDerivative(lat, input, output, status)
+    real   , intent(in)  :: lat(:)                  ! Latitude [rad]. shape must be [ny]
+    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
+    real   , intent(out) :: output(:,:,:)           ! Result of meridional derivative. shape must be [nx,ny,nz]
+    integer, intent(out), optional :: status        ! Positive if successfully computed
+```
+Returns meridional derivative.
+Derivative is computed with central difference method at most grid points, except the polar boundaries.
+Polar boundaries are computed with one-sided difference method.
+
+### verticalDerivative<a id="met-verticalDerivative"></a>
+```fortran
+pure subroutine verticalDerivative(lev, input, psfc, output, undef, status)
+    real   , intent(in)  :: lev(:)                  ! Vertical Levels [hPa] or [Pa]. shape must be [nz]
+    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
+    real   , intent(in)  :: psfc(:,:)               ! Surface Pressure [Pa] or [hPa]. shape must be [nx,ny]
+    real   , intent(out) :: output(:,:,:)           ! Result of vertical derivative. shape must be [nx,ny,nz]
+    real   , intent(in) , optional :: undef         ! Any value filling under ground with. Default: -999.E+30_rk
+    integer, intent(out), optional :: status        ! Positive if successfully computed
+```
+Returns Vertical derivative.
+Derivative is computed with central difference method at most grid points, except the lower and upper boundaries.
+Lower and upper boundaries are computed with one-sided difference method.
 
 ## edat_binio<a id="binio"></a>
 edat_binio is a module for performing input and output of no-header binary files.

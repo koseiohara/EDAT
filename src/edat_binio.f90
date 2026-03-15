@@ -64,6 +64,7 @@ module EDAT_BinIO
 
 
     function fopen(unit, file, action, record, recl, recstep) result(self)
+        use, intrinsic :: iso_fortran_env, only : err=>error_unit
         type(finfo) :: self
 
         integer     , intent(in), optional :: unit
@@ -75,16 +76,16 @@ module EDAT_BinIO
         integer     , intent(in) :: recstep
 
         if (record <= 0) then
-            write(0,'(A)')    'ERROR STOP'
-            write(0,'(A,I0)') 'Invalid initial record : ', record
-            write(0,'(A)')    'Argument "record" should be more than 0'
+            write(err,'(A)')    'ERROR STOP'
+            write(err,'(A,I0)') 'Invalid initial record : ', record
+            write(err,'(A)')    'Argument "record" should be more than 0'
             ERROR STOP
         endif
 
         if (recl <= 0) then
-            write(0,'(A)')    'ERROR STOP'
-            write(0,'(A,I0)') 'Invalid record length : ', recl
-            write(0,'(A)')    'Argument "recl" should be more than 0'
+            write(err,'(A)')    'ERROR STOP'
+            write(err,'(A,I0)') 'Invalid record length : ', recl
+            write(err,'(A)')    'Argument "recl" should be more than 0'
             ERROR STOP
         endif
 
@@ -119,8 +120,8 @@ module EDAT_BinIO
         class(finfo), intent(inout) :: self
         logical :: open_status
 
-        INQUIRE(self%unit      , &  !! IN
-              & OPENED=open_status)  !! OUT
+        INQUIRE(self%unit         , &  !! IN
+              & OPENED=open_status  )  !! OUT
 
         if (open_status) then
             close(self%unit)
@@ -141,8 +142,9 @@ module EDAT_BinIO
 
 
     subroutine fread_s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data
+        real(rk)    , intent(out)   :: input_data
 
         read(self%unit,rec=self%record) input_data
         self%record = self%record + self%recstep
@@ -151,8 +153,9 @@ module EDAT_BinIO
 
 
     subroutine fread_1(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data(:)
+        real(rk)    , intent(out)   :: input_data(:)
 
         read(self%unit,rec=self%record) input_data(:)
         self%record = self%record + self%recstep
@@ -161,8 +164,9 @@ module EDAT_BinIO
 
 
     subroutine fread_2(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data(:,:)
+        real(rk)    , intent(out)   :: input_data(:,:)
 
         read(self%unit,rec=self%record) input_data(:,:)
         self%record = self%record + self%recstep
@@ -171,8 +175,9 @@ module EDAT_BinIO
 
 
     subroutine fread_3(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data(:,:,:)
+        real(rk)    , intent(out)   :: input_data(:,:,:)
 
         read(self%unit,rec=self%record) input_data(:,:,:)
         self%record = self%record + self%recstep
@@ -181,8 +186,9 @@ module EDAT_BinIO
 
 
     subroutine fread_4(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data(:,:,:,:)
+        real(rk)    , intent(out)   :: input_data(:,:,:,:)
 
         read(self%unit,rec=self%record) input_data(:,:,:,:)
         self%record = self%record + self%recstep
@@ -191,8 +197,9 @@ module EDAT_BinIO
 
 
     subroutine fread_5(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : rk=>real32
         class(finfo), intent(inout) :: self
-        real(4)     , intent(out)   :: input_data(:,:,:,:,:)
+        real(rk)    , intent(out)   :: input_data(:,:,:,:,:)
 
         read(self%unit,rec=self%record) input_data(:,:,:,:,:)
         self%record = self%record + self%recstep
@@ -201,198 +208,199 @@ module EDAT_BinIO
 
 
     subroutine fwrite_ss(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data
+        real(rk)  , intent(in)    :: output_data
 
-        write(self%unit,rec=self%record) real(output_data, kind=4)
+        write(self%unit,rec=self%record) real(output_data, kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_ss
 
 
     subroutine fwrite_sd(self, output_data)
-        integer, parameter :: kind=8
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data
+        real(rk)    , intent(in)    :: output_data
 
-        write(self%unit,rec=self%record) real(output_data, kind=4)
+        write(self%unit,rec=self%record) real(output_data, kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_sd
 
 
     subroutine fwrite_sq(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data
+        real(rk)    , intent(in)    :: output_data
 
-        write(self%unit,rec=self%record) real(output_data, kind=4)
+        write(self%unit,rec=self%record) real(output_data, kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_sq
 
 
     subroutine fwrite_1s(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:)
+        real(rk)    , intent(in)    :: output_data(:)
 
-        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_1s
 
 
     subroutine fwrite_1d(self, output_data)
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         integer, parameter :: kind=8
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:)
+        real(rk)    , intent(in)    :: output_data(:)
 
-        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_1d
 
 
     subroutine fwrite_1q(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:)
+        real(rk)    , intent(in)    :: output_data(:)
 
-        write(self%unit,rec=self%record) real(output_data(:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_1q
 
 
     subroutine fwrite_2s(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:)
+        real(rk)    , intent(in)    :: output_data(:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_2s
 
 
     subroutine fwrite_2d(self, output_data)
-        integer, parameter :: kind=8
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:)
+        real(rk)    , intent(in)    :: output_data(:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_2d
 
 
     subroutine fwrite_2q(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:)
+        real(rk)    , intent(in)    :: output_data(:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_2q
 
 
     subroutine fwrite_3s(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_3s
 
 
     subroutine fwrite_3d(self, output_data)
-        integer, parameter :: kind=8
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_3d
 
 
     subroutine fwrite_3q(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_3q
 
 
     subroutine fwrite_4s(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_4s
 
 
     subroutine fwrite_4d(self, output_data)
-        integer, parameter :: kind=8
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_4d
 
 
     subroutine fwrite_4q(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_4q
 
 
     subroutine fwrite_5s(self, output_data)
-        integer, parameter :: kind=4
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real32
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_5s
 
 
     subroutine fwrite_5d(self, output_data)
-        integer, parameter :: kind=8
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real64
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_5d
 
 
     subroutine fwrite_5q(self, output_data)
-        integer, parameter :: kind=16
+        use, intrinsic :: iso_fortran_env, only : r32=>real32, rk=>real128
         class(finfo), intent(inout) :: self
-        real(kind)  , intent(in)    :: output_data(:,:,:,:,:)
+        real(rk)    , intent(in)    :: output_data(:,:,:,:,:)
 
-        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=4)
+        write(self%unit,rec=self%record) real(output_data(:,:,:,:,:), kind=r32)
         self%record = self%record + self%recstep
 
     end subroutine fwrite_5q
@@ -428,8 +436,7 @@ module EDAT_BinIO
 
 
     pure elemental subroutine endian_converter(rawOre)
-        use iso_fortran_env, only : int8, real32
-        integer, parameter :: rk=real32
+        use, intrinsic :: iso_fortran_env, only : int8, rk=>real32
         real(rk), intent(inout) :: rawOre
         integer(int8) :: bits(rk)
 

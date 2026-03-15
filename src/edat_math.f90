@@ -1,12 +1,12 @@
 module EDAT_Math
 
+    use, intrinsic :: iso_fortran_env, only : rk=>real128
+
     implicit none
 
     private :: rk
     public :: M_E, M_LOG2E, M_LOG10E, M_LN2, M_LN10, M_PI, M_PI_2, M_PI_4, M_1_PI, M_2_PI, M_2_SQRTPI, M_SQRT2, M_SQRT1_2, &
             & qnorm, corrcoef, covariance, variance, mean, sum_hp
-
-    integer , parameter :: rk = 16
 
     real(rk), parameter :: M_E        = 2.718281828459045235360287471352662498_rk       ! e
     real(rk), parameter :: M_LOG2E    = 1.442695040888963407359924681001892137_rk       ! log_2 e
@@ -161,7 +161,7 @@ module EDAT_Math
 
 
     pure function corrcoef_sp(n, array1, array2) result(output)
-        integer, parameter :: lrk = 4
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -181,7 +181,7 @@ module EDAT_Math
 
 
     pure function corrcoef_dp(n, array1, array2) result(output)
-        integer, parameter :: lrk = 8
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -201,7 +201,7 @@ module EDAT_Math
 
 
     pure function corrcoef_qp(n, array1, array2) result(output)
-        integer, parameter :: lrk = 16
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -221,7 +221,7 @@ module EDAT_Math
 
 
     pure function covariance_sp(n, array1, array2, sample) result(output)
-        integer, parameter :: lrk = 4
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -248,7 +248,7 @@ module EDAT_Math
 
 
     pure function covariance_dp(n, array1, array2, sample) result(output)
-        integer, parameter :: lrk = 8
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -275,7 +275,7 @@ module EDAT_Math
 
 
     pure function covariance_qp(n, array1, array2, sample) result(output)
-        integer, parameter :: lrk = 16
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         integer, intent(in) :: n
         real(lrk), intent(in) :: array1(n)
         real(lrk), intent(in) :: array2(n)
@@ -302,7 +302,7 @@ module EDAT_Math
 
 
     pure function variance_sp(n, array, sample) result(output)
-        integer, parameter :: lrk = 4
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
@@ -324,7 +324,7 @@ module EDAT_Math
 
 
     pure function variance_dp(n, array, sample) result(output)
-        integer, parameter :: lrk = 8
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
@@ -346,7 +346,7 @@ module EDAT_Math
 
 
     pure function variance_qp(n, array, sample) result(output)
-        integer, parameter :: lrk = 16
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
         logical, intent(in), optional :: sample
@@ -368,7 +368,7 @@ module EDAT_Math
 
 
     pure function mean_sp(n, array) result(output)
-        integer, parameter :: lrk = 4
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
 
@@ -380,7 +380,7 @@ module EDAT_Math
 
 
     pure function mean_dp(n, array) result(output)
-        integer, parameter :: lrk = 8
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
 
@@ -392,7 +392,7 @@ module EDAT_Math
 
 
     pure function mean_qp(n, array) result(output)
-        integer, parameter :: lrk = 16
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         integer, intent(in) :: n
         real(lrk), intent(in) :: array(n)
 
@@ -404,7 +404,7 @@ module EDAT_Math
 
 
     pure function sum_hp_sp(n, array) result(output)
-        integer, parameter :: lrk=4
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         integer  , intent(in) :: n
         real(lrk), intent(in) :: array(n)
 
@@ -434,7 +434,7 @@ module EDAT_Math
 
 
     pure function sum_hp_dp(n, array) result(output)
-        integer, parameter :: lrk=8
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         integer  , intent(in) :: n
         real(lrk), intent(in) :: array(n)
 
@@ -464,7 +464,7 @@ module EDAT_Math
 
 
     pure function sum_hp_qp(n, array) result(output)
-        integer, parameter :: lrk=16
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         integer  , intent(in) :: n
         real(lrk), intent(in) :: array(n)
 

@@ -68,7 +68,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_sp(T, P) result(output)
-        use, intrinsic :: iso_fortran_env, only : lek=>real32
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 
@@ -81,7 +81,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_dp(T, P) result(output)
-        use, intrinsic :: iso_fortran_env, only : lek=>real64
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 
@@ -94,7 +94,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_qp(T, P) result(output)
-        use, intrinsic :: iso_fortran_env, only : lek=>real128
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 

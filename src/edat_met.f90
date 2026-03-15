@@ -1,5 +1,7 @@
 module EDAT_Met
 
+    use, intrinsic :: iso_fortran_env, only : rk=>real128
+
     use EDAT_Math    , only : sum_hp
     use integral_sp  , only : meridionalIntegral_sp, verticalIntegral_sp
     use integral_dp  , only : meridionalIntegral_dp, verticalIntegral_dp
@@ -15,8 +17,6 @@ module EDAT_Met
             & potential_temperature                                    , &
             & meridionalIntegral, verticalIntegral                     , &
             & zonalDerivative, meridionalDerivative, verticalDerivative
-
-    integer , parameter :: rk = 16
 
     real(rk), parameter :: GRAV        = 9.80665_rk         ! Gravitational Acceleration [m/s^2]
     real(rk), parameter :: EarthRadius = 6.3710E+6_rk       ! Radius of the Earth [m]
@@ -68,7 +68,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_sp(T, P) result(output)
-        integer, parameter :: lrk = 4
+        use, intrinsic :: iso_fortran_env, only : lek=>real32
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 
@@ -81,7 +81,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_dp(T, P) result(output)
-        integer, parameter :: lrk = 8
+        use, intrinsic :: iso_fortran_env, only : lek=>real64
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 
@@ -94,7 +94,7 @@ module EDAT_Met
 
 
     pure elemental function potential_temperature_qp(T, P) result(output)
-        integer, parameter :: lrk = 16
+        use, intrinsic :: iso_fortran_env, only : lek=>real128
         real(lrk), intent(in) :: T
         real(lrk), intent(in) :: P
 

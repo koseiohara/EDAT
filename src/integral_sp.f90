@@ -15,14 +15,14 @@ module integral_sp
 
 
     pure subroutine meridionalIntegral_sp(lat, field, south, north, output, status, valid_south, valid_north)
-        real(rk), intent(in)  :: lat(:)
-        real(rk), intent(in)  :: field(:,:,:)
-        real(rk), intent(in)  :: south
-        real(rk), intent(in)  :: north
-        real(rk), intent(out) :: output(:,:)
-        integer , intent(out) :: status
-        real(rk), intent(out), optional :: valid_south
-        real(rk), intent(out), optional :: valid_north
+        real(rk), intent(in) , contiguous :: lat(:)
+        real(rk), intent(in) , contiguous :: field(:,:,:)
+        real(rk), intent(in)              :: south
+        real(rk), intent(in)              :: north
+        real(rk), intent(out), contiguous :: output(:,:)
+        integer , intent(out)             :: status
+        real(rk), intent(out), optional   :: valid_south
+        real(rk), intent(out), optional   :: valid_north
 
         real(rk), allocatable :: work_field(:,:)
 

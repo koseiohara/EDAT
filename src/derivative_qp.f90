@@ -21,9 +21,9 @@ module derivative_qp
     !!   -3 ... derivative axis is not a monotone sequence
     !!   any positive ... computed successfully
     pure subroutine zonalDerivative_qp(lon, input, output, periodic, status)
-        real(rk), intent(in)  :: lon(:)
-        real(rk), intent(in)  :: input(:,:,:)
-        real(rk), intent(out) :: output(:,:,:)
+        real(rk), contiguous, intent(in)  :: lon(:)
+        real(rk), contiguous, intent(in)  :: input(:,:,:)
+        real(rk), contiguous, intent(out) :: output(:,:,:)
         logical , intent(in) , optional :: periodic
         integer , intent(out), optional :: status
 
@@ -151,9 +151,9 @@ module derivative_qp
 
 
     pure subroutine meridionalDerivative_qp(lat, input, output, status)
-        real(rk), intent(in)  :: lat(:)
-        real(rk), intent(in)  :: input(:,:,:)
-        real(rk), intent(out) :: output(:,:,:)
+        real(rk), contiguous, intent(in)  :: lat(:)
+        real(rk), contiguous, intent(in)  :: input(:,:,:)
+        real(rk), contiguous, intent(out) :: output(:,:,:)
         integer , intent(out), optional :: status
 
         real(rk) :: dlat(size(lat))
@@ -242,10 +242,10 @@ module derivative_qp
 
 
     pure subroutine verticalDerivative_qp(lev, input, psfc, output, undef, status)
-        real(rk), intent(in)  :: lev(:)
-        real(rk), intent(in)  :: input(:,:,:)
-        real(rk), intent(in)  :: psfc(:,:)
-        real(rk), intent(out) :: output(:,:,:)
+        real(rk), contiguous, intent(in)  :: lev(:)
+        real(rk), contiguous, intent(in)  :: input(:,:,:)
+        real(rk), contiguous, intent(in)  :: psfc(:,:)
+        real(rk), contiguous, intent(out) :: output(:,:,:)
         real(rk), intent(in) , optional :: undef       !! Default: -999.E+30_rk
         integer , intent(out), optional :: status
 

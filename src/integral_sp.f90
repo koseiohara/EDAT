@@ -114,7 +114,7 @@ module integral_sp
     end subroutine meridionalIntegral_sp
 
 
-    subroutine verticalIntegral_sp(lev, field, psfc, output, status)
+    pure subroutine verticalIntegral_sp(lev, field, psfc, output, status)
         real(rk), intent(in), contiguous :: lev(:)
         real(rk), intent(in), contiguous :: field(:,:,:)
         real(rk), intent(in), contiguous :: psfc(:,:)

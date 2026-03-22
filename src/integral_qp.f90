@@ -114,7 +114,7 @@ module integral_qp
     end subroutine meridionalIntegral_qp
 
 
-    subroutine verticalIntegral_qp(lev, field, psfc, output, status)
+    pure subroutine verticalIntegral_qp(lev, field, psfc, output, status)
         real(rk), intent(in), contiguous :: lev(:)
         real(rk), intent(in), contiguous :: field(:,:,:)
         real(rk), intent(in), contiguous :: psfc(:,:)

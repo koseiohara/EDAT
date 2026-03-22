@@ -114,7 +114,7 @@ module integral_dp
     end subroutine meridionalIntegral_dp
 
 
-    subroutine verticalIntegral_dp(lev, field, psfc, output, status)
+    pure subroutine verticalIntegral_dp(lev, field, psfc, output, status)
         real(rk), intent(in), contiguous :: lev(:)
         real(rk), intent(in), contiguous :: field(:,:,:)
         real(rk), intent(in), contiguous :: psfc(:,:)

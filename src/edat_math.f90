@@ -32,7 +32,7 @@ module EDAT_Math
                                       & 0.10043372051_rk, &  !! 08
                                       & 0.11303854064_rk, &  !! 09
                                       & 0.12566134686_rk, &  !! 10
-                                      & 0.13830420796_rk, &  !! 10
+                                      & 0.13830420796_rk, &  !! 11
                                       & 0.15096921550_rk, &  !! 11
                                       & 0.16365848623_rk, &  !! 12
                                       & 0.17637416478_rk, &  !! 13
@@ -413,6 +413,16 @@ module EDAT_Math
         integer :: len
         integer :: new_len
 
+        if (n <= 1) then
+            if (n <= 0) then
+                output = 0._lrk
+                return
+            else if (n == 1) then
+                output = array(1)
+                return
+            endif
+        endif
+
         workspace(1:n) = array(1:n)
         len = n
 
@@ -443,6 +453,16 @@ module EDAT_Math
         integer :: len
         integer :: new_len
 
+        if (n <= 1) then
+            if (n <= 0) then
+                output = 0._lrk
+                return
+            else if (n == 1) then
+                output = array(1)
+                return
+            endif
+        endif
+
         workspace(1:n) = array(1:n)
         len = n
 
@@ -472,6 +492,16 @@ module EDAT_Math
         real(lrk) :: output
         integer :: len
         integer :: new_len
+
+        if (n <= 1) then
+            if (n <= 0) then
+                output = 0._lrk
+                return
+            else if (n == 1) then
+                output = array(1)
+                return
+            endif
+        endif
 
         workspace(1:n) = array(1:n)
         len = n

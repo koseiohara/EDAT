@@ -312,7 +312,9 @@ type finfo
     procedure, pass, public :: fclose
     procedure, pass, public :: get_record
     procedure, pass, public :: reset_record
-    generic, public :: fread  => fread_s, fread_1, fread_2, fread_3, fread_4, fread_5
+    generic, public :: fread => fread_ss, fread_sd, fread_sq, &
+                               ... 
+                               & fread_5s, fread_5d, fread_5q
     generic, public :: fwrite => fwrite_ss, fwrite_sd, fwrite_sq, &
                                ... 
                                & fwrite_5s, fwrite_5d, fwrite_5q
@@ -368,7 +370,7 @@ subroutine fread(self, input_data)
 ```
 Read data from a record in a file.
 Scalar and 1-5 dimension arrays are acceptable for `input_data`.
-`input_data` must be a `real32` type.
+`input_data` must be `real32`, `real64`, or `real128`.
 
 ### fwrite<a id="binio-fwrite"></a>
 ```fortran

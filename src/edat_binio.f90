@@ -20,7 +20,13 @@ module EDAT_BinIO
         procedure, pass, public :: get_record
         procedure, pass, public :: reset_record
 
-        generic, public :: fread  => fread_s, fread_1, fread_2, fread_3, fread_4, fread_5
+        generic, public :: fread => fread_ss, fread_sd, fread_sq, &
+                                  & fread_1s, fread_1d, fread_1q, &
+                                  & fread_2s, fread_2d, fread_2q, &
+                                  & fread_3s, fread_3d, fread_3q, &
+                                  & fread_4s, fread_4d, fread_4q, &
+                                  & fread_5s, fread_5d, fread_5q
+
         generic, public :: fwrite => fwrite_ss, fwrite_sd, fwrite_sq, &
                                    & fwrite_1s, fwrite_1d, fwrite_1q, &
                                    & fwrite_2s, fwrite_2d, fwrite_2q, &
@@ -28,12 +34,24 @@ module EDAT_BinIO
                                    & fwrite_4s, fwrite_4d, fwrite_4q, &
                                    & fwrite_5s, fwrite_5d, fwrite_5q
 
-        procedure, pass, private :: fread_s
-        procedure, pass, private :: fread_1
-        procedure, pass, private :: fread_2
-        procedure, pass, private :: fread_3
-        procedure, pass, private :: fread_4
-        procedure, pass, private :: fread_5
+        procedure, pass, private :: fread_ss
+        procedure, pass, private :: fread_sd
+        procedure, pass, private :: fread_sq
+        procedure, pass, private :: fread_1s
+        procedure, pass, private :: fread_1d
+        procedure, pass, private :: fread_1q
+        procedure, pass, private :: fread_2s
+        procedure, pass, private :: fread_2d
+        procedure, pass, private :: fread_2q
+        procedure, pass, private :: fread_3s
+        procedure, pass, private :: fread_3d
+        procedure, pass, private :: fread_3q
+        procedure, pass, private :: fread_4s
+        procedure, pass, private :: fread_4d
+        procedure, pass, private :: fread_4q
+        procedure, pass, private :: fread_5s
+        procedure, pass, private :: fread_5d
+        procedure, pass, private :: fread_5q
         procedure, pass, private :: fwrite_ss
         procedure, pass, private :: fwrite_sd
         procedure, pass, private :: fwrite_sq
@@ -141,70 +159,238 @@ module EDAT_BinIO
     end subroutine fclose
 
 
-    subroutine fread_s(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_ss(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data
+        real(irk) :: work_input
 
-        read(self%unit,rec=self%record) input_data
+        read(self%unit,rec=self%record) work_input
+        input_data  = real(work_input, kind=rk)
         self%record = self%record + self%recstep
 
-    end subroutine fread_s
+    end subroutine fread_ss
 
 
-    subroutine fread_1(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_sd(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data
+        real(irk) :: work_input
+
+        read(self%unit,rec=self%record) work_input
+        input_data  = real(work_input, kind=rk)
+        self%record = self%record + self%recstep
+
+    end subroutine fread_sd
+
+
+    subroutine fread_sq(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data
+        real(irk) :: work_input
+
+        read(self%unit,rec=self%record) work_input
+        input_data  = real(work_input, kind=rk)
+        self%record = self%record + self%recstep
+
+    end subroutine fread_sq
+
+
+    subroutine fread_1s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data(:)
+        real(irk) :: work_input(size(input_data))
 
-        read(self%unit,rec=self%record) input_data(:)
-        self%record = self%record + self%recstep
+        read(self%unit,rec=self%record) work_input(:)
+        input_data(:) = real(work_input(:), kind=rk)
+        self%record   = self%record + self%recstep
 
-    end subroutine fread_1
+    end subroutine fread_1s
 
 
-    subroutine fread_2(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_1d(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:)
+        real(irk) :: work_input(size(input_data))
+
+        read(self%unit,rec=self%record) work_input(:)
+        input_data(:) = real(work_input(:), kind=rk)
+        self%record   = self%record + self%recstep
+
+    end subroutine fread_1d
+
+
+    subroutine fread_1q(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:)
+        real(irk) :: work_input(size(input_data))
+
+        read(self%unit,rec=self%record) work_input(:)
+        input_data(:) = real(work_input(:), kind=rk)
+        self%record   = self%record + self%recstep
+
+    end subroutine fread_1q
+
+
+    subroutine fread_2s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data(:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2))
 
-        read(self%unit,rec=self%record) input_data(:,:)
-        self%record = self%record + self%recstep
+        read(self%unit,rec=self%record) work_input(:,:)
+        input_data(:,:) = real(work_input(:,:), kind=rk)
+        self%record     = self%record + self%recstep
 
-    end subroutine fread_2
+    end subroutine fread_2s
 
 
-    subroutine fread_3(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_2d(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2))
+
+        read(self%unit,rec=self%record) work_input(:,:)
+        input_data(:,:) = real(work_input(:,:), kind=rk)
+        self%record     = self%record + self%recstep
+
+    end subroutine fread_2d
+
+
+    subroutine fread_2q(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2))
+
+        read(self%unit,rec=self%record) work_input(:,:)
+        input_data(:,:) = real(work_input(:,:), kind=rk)
+        self%record     = self%record + self%recstep
+
+    end subroutine fread_2q
+
+
+    subroutine fread_3s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data(:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3))
 
-        read(self%unit,rec=self%record) input_data(:,:,:)
-        self%record = self%record + self%recstep
+        read(self%unit,rec=self%record) work_input(:,:,:)
+        input_data(:,:,:) = real(work_input(:,:,:), kind=rk)
+        self%record       = self%record + self%recstep
 
-    end subroutine fread_3
+    end subroutine fread_3s
 
 
-    subroutine fread_4(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_3d(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3))
+
+        read(self%unit,rec=self%record) work_input(:,:,:)
+        input_data(:,:,:) = real(work_input(:,:,:), kind=rk)
+        self%record       = self%record + self%recstep
+
+    end subroutine fread_3d
+
+
+    subroutine fread_3q(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3))
+
+        read(self%unit,rec=self%record) work_input(:,:,:)
+        input_data(:,:,:) = real(work_input(:,:,:), kind=rk)
+        self%record       = self%record + self%recstep
+
+    end subroutine fread_3q
+
+
+    subroutine fread_4s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data(:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4))
 
-        read(self%unit,rec=self%record) input_data(:,:,:,:)
-        self%record = self%record + self%recstep
+        read(self%unit,rec=self%record) work_input(:,:,:,:)
+        input_data(:,:,:,:) = real(work_input(:,:,:,:), kind=rk)
+        self%record         = self%record + self%recstep
 
-    end subroutine fread_4
+    end subroutine fread_4s
 
 
-    subroutine fread_5(self, input_data)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
+    subroutine fread_4d(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4))
+
+        read(self%unit,rec=self%record) work_input(:,:,:,:)
+        input_data(:,:,:,:) = real(work_input(:,:,:,:), kind=rk)
+        self%record         = self%record + self%recstep
+
+    end subroutine fread_4d
+
+
+    subroutine fread_4q(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4))
+
+        read(self%unit,rec=self%record) work_input(:,:,:,:)
+        input_data(:,:,:,:) = real(work_input(:,:,:,:), kind=rk)
+        self%record         = self%record + self%recstep
+
+    end subroutine fread_4q
+
+
+    subroutine fread_5s(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real32
         class(finfo), intent(inout) :: self
         real(rk)    , intent(out)   :: input_data(:,:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4),size(input_data,5))
 
-        read(self%unit,rec=self%record) input_data(:,:,:,:,:)
-        self%record = self%record + self%recstep
+        read(self%unit,rec=self%record) work_input(:,:,:,:,:)
+        input_data(:,:,:,:,:) = real(work_input(:,:,:,:,:), kind=rk)
+        self%record           = self%record + self%recstep
 
-    end subroutine fread_5
+    end subroutine fread_5s
+
+
+    subroutine fread_5d(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real64
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4),size(input_data,5))
+
+        read(self%unit,rec=self%record) work_input(:,:,:,:,:)
+        input_data(:,:,:,:,:) = real(work_input(:,:,:,:,:), kind=rk)
+        self%record           = self%record + self%recstep
+
+    end subroutine fread_5d
+
+
+    subroutine fread_5q(self, input_data)
+        use, intrinsic :: iso_fortran_env, only : irk=>real32, rk=>real128
+        class(finfo), intent(inout) :: self
+        real(rk)    , intent(out)   :: input_data(:,:,:,:,:)
+        real(irk) :: work_input(size(input_data,1),size(input_data,2),size(input_data,3),size(input_data,4),size(input_data,5))
+
+        read(self%unit,rec=self%record) work_input(:,:,:,:,:)
+        input_data(:,:,:,:,:) = real(work_input(:,:,:,:,:), kind=rk)
+        self%record           = self%record + self%recstep
+
+    end subroutine fread_5q
 
 
     subroutine fwrite_ss(self, output_data)

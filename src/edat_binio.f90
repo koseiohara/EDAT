@@ -1,4 +1,5 @@
 module EDAT_BinIO
+    use, intrinsic :: iso_fortran_env, only : i64=>int64
 
     implicit none
 
@@ -10,15 +11,14 @@ module EDAT_BinIO
         integer        :: unit
         character(128) :: file
         character(16)  :: action
-        integer        :: record
+        integer(i64)   :: record
         integer        :: recl
-        integer        :: recstep
+        integer(i64)   :: recstep
 
         contains
 
-        procedure, pass, public :: fclose
-        procedure, pass, public :: get_record
-        procedure, pass, public :: reset_record
+        generic, public :: get_record => get_record32, &
+                                       & get_record64
 
         generic, public :: fread => fread_ss, fread_sd, fread_sq, &
                                   & fread_1s, fread_1d, fread_1q, &
@@ -33,6 +33,11 @@ module EDAT_BinIO
                                    & fwrite_3s, fwrite_3d, fwrite_3q, &
                                    & fwrite_4s, fwrite_4d, fwrite_4q, &
                                    & fwrite_5s, fwrite_5d, fwrite_5q
+
+        procedure, pass, public  :: fclose
+
+        procedure, pass, private :: get_record32
+        procedure, pass, private :: get_record64
 
         procedure, pass, private :: fread_ss
         procedure, pass, private :: fread_sd
@@ -52,6 +57,7 @@ module EDAT_BinIO
         procedure, pass, private :: fread_5s
         procedure, pass, private :: fread_5d
         procedure, pass, private :: fread_5q
+
         procedure, pass, private :: fwrite_ss
         procedure, pass, private :: fwrite_sd
         procedure, pass, private :: fwrite_sq
@@ -94,14 +100,14 @@ module EDAT_BinIO
         integer     , intent(in) :: recstep
 
         if (record <= 0) then
-            write(err,'(A)')    'ERROR STOP'
+            write(err,'(A)')    '<ERROR STOP>'
             write(err,'(A,I0)') 'Invalid initial record : ', record
             write(err,'(A)')    'Argument "record" should be more than 0'
             ERROR STOP
         endif
 
         if (recl <= 0) then
-            write(err,'(A)')    'ERROR STOP'
+            write(err,'(A)')    '<ERROR STOP>'
             write(err,'(A,I0)') 'Invalid record length : ', recl
             write(err,'(A)')    'Argument "recl" should be more than 0'
             ERROR STOP
@@ -592,28 +598,56 @@ module EDAT_BinIO
     end subroutine fwrite_5q
 
 
-    subroutine get_record(self, record)
+    subroutine get_record32(self, record)
+        use, intrinsic :: iso_fortran_env, only : lik=>int32
         class(finfo), intent(in)  :: self
-        integer     , intent(out) :: record
+        integer(lik), intent(out) :: record
 
         record = self%record
 
-    end subroutine get_record
+    end subroutine get_record32
+
+
+    subroutine get_record64(self, record)
+        use, intrinsic :: iso_fortran_env, only : lik=>int64
+        class(finfo), intent(in)  :: self
+        integer(lik), intent(out) :: record
+
+        record = self%record
+
+    end subroutine get_record64
 
 
     subroutine reset_record(self, increment, newrecord)
+        use, intrinsic :: iso_fortran_env, only : int32, int64, err=>error_unit
         class(finfo), intent(inout) :: self
-        integer     , intent(in)   , optional :: increment
-        integer     , intent(in)   , optional :: newrecord
+        class(*), intent(in), optional :: increment
+        class(*), intent(in), optional :: newrecord
 
         if (present(increment)) then
-            self%record = self%record + increment
-            return
+            select type (increment)
+            type is (integer(int32))
+                self%record = self%record + int(increment, kind=int64)
+            type is (integer(int64))
+                self%record = self%record + int(increment, kind=int64)
+            class default
+                write(err,'(A)') '<ERROR STOP>'
+                write(err,'(A)') '"increment" must be integer(int32) or integer(int64).'
+                ERROR STOP
+            end select
         else if (present(newrecord)) then
-            self%record = newrecord
-            return
+            select type (newrecord)
+            type is (integer(int32))
+                self%record = newrecord
+            type is (integer(int64))
+                self%record = newrecord
+            class default
+                write(err,'(A)') '<ERROR STOP>'
+                write(err,'(A)') '"increment" must be integer(int32) or integer(int64).'
+                ERROR STOP
+            end select
         else
-            write(*,'(A)') 'ERROR STOP'
+            write(*,'(A)') '<ERROR STOP>'
             write(*,'(A)') 'Both "increment" and "newrecord" were not specified in the argument of reset_record()'
             ERROR STOP
         endif

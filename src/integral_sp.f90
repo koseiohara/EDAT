@@ -105,7 +105,7 @@ module integral_sp
                 enddo
             enddo
             do i = 1, nx
-                output(i,k) = sum_hp(ju-jl, work_field(i,jl:ju-1))
+                output(i,k) = sum_hp(work_field(i,jl:ju-1))
             enddo
         enddo
 
@@ -228,7 +228,7 @@ module integral_sp
             do i = 1, nx
                 if (lev(zbeg) < psfc(i,j)) then
                     k = (sfc_k(i,j) - zbeg) * zdir + 1
-                    output(i,j) = sum_hp(k, work_field(i,j,zbeg:sfc_k(i,j):zdir))
+                    output(i,j) = sum_hp(work_field(i,j,zbeg:sfc_k(i,j):zdir))
                     cycle
                 endif
                 output(i,j) = 0._rk

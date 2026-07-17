@@ -99,31 +99,30 @@ real(rk), parameter :: qnorm(99)=[0.01253346951_rk, &  !! 01
 
 ### corrcoef<a id="math-corrcoef"></a>
 ```fortran
-pure function corrcoef(n, array1, array2) result(output)
-    integer, intent(in) :: n
-    real, intent(in) :: array1(n)
-    real, intent(in) :: array2(n)
+pure function corrcoef(array1, array2) result(output)
+    real, intent(in) :: array1(:)
+    real, intent(in) :: array2(:)
 ```
 Returns the correlation coefficient between `array1` and `array2`.
 Both arrays must be the same type, `real32`, `real64`, or `real128`.
+`NaN` is returned if the sizes of two arrays are different.
 
 ### covariance<a id="math-covariance"></a>
 ```fortran
-pure function covariance(n, array1, array2, sample) result(output)
-    integer, intent(in) :: n
-    real   , intent(in) :: array1(n)
-    real   , intent(in) :: array2(n)
+pure function covariance(array1, array2, sample) result(output)
+    real   , intent(in) :: array1(:)
+    real   , intent(in) :: array2(:)
     logical, intent(in), optional :: sample
 ```
 Returns the covariance between `array1` and `array2`.
 Both arrays must be the same type, `real32`, `real64`, or `real128`.  
 If `sample` is provided and `sample=.TRUE.`, the return value is the sample covariance. Otherwise, the return value is the population covariance.
+`NaN` is returned if the sizes of two arrays are different.
 
 ### variance<a id="math-variance"></a> 
 ```fortran
-pure function variance(n, array, sample) result(output)
-    integer, intent(in) :: n
-    real   , intent(in) :: array(n)
+pure function variance(array, sample) result(output)
+    real   , intent(in) :: array(:)
     logical, intent(in), optional :: sample
 ```
 Returns the variance of `array`.
@@ -133,9 +132,8 @@ If `sample` is provided and `sample=.TRUE.`, the return value is the sample vari
 
 ### mean<a id="math-mean"></a>
 ```fortran
-pure function mean(n, array) result(output)
-    integer, intent(in) :: n
-    real   , intent(in) :: array(n)
+pure function mean(array) result(output)
+    real   , intent(in) :: array(:)
 ```
 Returns the mean of `array`.
 `array` must be `real32`, `real64`, or `real128`.  
@@ -143,9 +141,8 @@ This routine can compute the average of data very precisely because [sum_hp](#ma
 
 ### sum_hp<a id="math-sum-hp"></a>
 ```fortran
-pure function sum_hp(n, array) result(output)
-    integer, intent(in) :: n
-    real   , intent(in) :: array(n)
+pure function sum_hp(array) result(output)
+    real   , intent(in) :: array(:)
 ```
 Returns the sum of `array`.
 `array` must be `real32`, `real64`, or `real128`.  

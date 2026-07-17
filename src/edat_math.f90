@@ -160,264 +160,317 @@ module EDAT_Math
     contains
 
 
-    pure function corrcoef_sp(n, array1, array2) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function corrcoef_sp(array1, array2) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real32
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
 
         real(lrk) :: output
         real(lrk) :: variance1
         real(lrk) :: variance2
         real(lrk) :: covar
+        integer(int64) :: n
 
-        variance1 = variance(n, array1(1:n))
-        variance2 = variance(n, array2(1:n))
-        covar = covariance(n, array1(1:n), array2(1:n))
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
+
+        variance1 = variance(array1(1:n))
+        variance2 = variance(array2(1:n))
+        covar = covariance(array1(1:n), array2(1:n))
 
         output = covar / sqrt(variance1*variance2)
-
+        
     end function corrcoef_sp
 
 
-    pure function corrcoef_dp(n, array1, array2) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function corrcoef_dp(array1, array2) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real64
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
 
         real(lrk) :: output
         real(lrk) :: variance1
         real(lrk) :: variance2
         real(lrk) :: covar
+        integer(int64) :: n
 
-        variance1 = variance(n, array1(1:n))
-        variance2 = variance(n, array2(1:n))
-        covar = covariance(n, array1(1:n), array2(1:n))
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
+
+        variance1 = variance(array1(1:n))
+        variance2 = variance(array2(1:n))
+        covar = covariance(array1(1:n), array2(1:n))
 
         output = covar / sqrt(variance1*variance2)
-
+        
     end function corrcoef_dp
 
 
-    pure function corrcoef_qp(n, array1, array2) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function corrcoef_qp(array1, array2) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real128
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
 
         real(lrk) :: output
         real(lrk) :: variance1
         real(lrk) :: variance2
         real(lrk) :: covar
+        integer(int64) :: n
 
-        variance1 = variance(n, array1(1:n))
-        variance2 = variance(n, array2(1:n))
-        covar = covariance(n, array1(1:n), array2(1:n))
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
+
+        variance1 = variance(array1(1:n))
+        variance2 = variance(array2(1:n))
+        covar = covariance(array1(1:n), array2(1:n))
 
         output = covar / sqrt(variance1*variance2)
-
+        
     end function corrcoef_qp
 
 
-    pure function covariance_sp(n, array1, array2, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function covariance_sp(array1, array2, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real32
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: mean1
         real(lrk) :: mean2
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        mean1 = mean(n, array1(1:n))
-        mean2 = mean(n, array2(1:n))
+        mean1 = mean(array1(1:n))
+        mean2 = mean(array2(1:n))
 
         !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
+        output = sum_hp((array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_sp
 
 
-    pure function covariance_dp(n, array1, array2, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function covariance_dp(array1, array2, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real64
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: mean1
         real(lrk) :: mean2
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        mean1 = mean(n, array1(1:n))
-        mean2 = mean(n, array2(1:n))
+        mean1 = mean(array1(1:n))
+        mean2 = mean(array2(1:n))
 
         !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
+        output = sum_hp((array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_dp
 
 
-    pure function covariance_qp(n, array1, array2, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array1(n)
-        real(lrk), intent(in) :: array2(n)
+    pure function covariance_qp(array1, array2, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real128
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
+        real(lrk), intent(in) :: array1(:)
+        real(lrk), intent(in) :: array2(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: mean1
         real(lrk) :: mean2
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array1, kind=int64)
+        if (size(array2, kind=int64) /= n) then
+            output = ieee_value(output, ieee_quiet_nan)
+            return
+        endif
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        mean1 = mean(n, array1(1:n))
-        mean2 = mean(n, array2(1:n))
+        mean1 = mean(array1(1:n))
+        mean2 = mean(array2(1:n))
 
         !output = dot_product(array1(1:n)-mean1, array2(1:n)-mean2) / real(sample_num, kind=lrk)
-        output = sum_hp(n, (array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
+        output = sum_hp((array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_qp
 
 
-    pure function variance_sp(n, array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function variance_sp(array, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real32
+        real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: array_mean
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array, kind=int64)
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
+        array_mean = mean(array(1:n))
+        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_sp
 
 
-    pure function variance_dp(n, array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function variance_dp(array, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real64
+        real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: array_mean
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array, kind=int64)
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
+        array_mean = mean(array(1:n))
+        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_dp
 
 
-    pure function variance_qp(n, array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function variance_qp(array, sample) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real128
+        real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
         real(lrk) :: output
         real(lrk) :: array_mean
-        integer :: sample_num
+        integer(int64) :: n
+        integer(int64) :: sample_num
+
+        n = size(array, kind=int64)
 
         if (present(sample) .AND. sample) then
-            sample_num = n-1
+            sample_num = n-1_int64
         else
             sample_num = n
         endif
 
-        array_mean = mean(n, array)
-        output = sum_hp(n, (array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
+        array_mean = mean(array(1:n))
+        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
 
     end function variance_qp
 
 
-    pure function mean_sp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function mean_sp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real32
+        real(lrk), intent(in) :: array(:)
 
         real(lrk) :: output
+        integer(int64) :: n
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
+        n = size(array)
+        output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
     end function mean_sp
 
 
-    pure function mean_dp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function mean_dp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real64
+        real(lrk), intent(in) :: array(:)
 
         real(lrk) :: output
+        integer(int64) :: n
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
+        n = size(array)
+        output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
     end function mean_dp
 
 
-    pure function mean_qp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128
-        integer, intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function mean_qp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : int64, lrk=>real128
+        real(lrk), intent(in) :: array(:)
 
         real(lrk) :: output
+        integer(int64) :: n
 
-        output = sum_hp(n, array(1:n)) / real(n, kind=lrk)
+        n = size(array)
+        output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
     end function mean_qp
 
 
-    pure function sum_hp_sp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        integer  , intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function sum_hp_sp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : lrk=>real32, int64
+        real(lrk), intent(in) :: array(:)
 
-        real(lrk) :: workspace(n)
+        real(lrk) :: workspace(size(array))
         real(lrk) :: output
-        integer :: len
-        integer :: new_len
+        integer(int64) :: n
+        integer(int64) :: len
+        integer(int64) :: new_len
 
-        if (n <= 1) then
-            if (n <= 0) then
+        n = size(array, kind=int64)
+
+        if (n <= 1_int64) then
+            if (n <= 0_int64) then
                 output = 0._lrk
                 return
-            else if (n == 1) then
+            else if (n == 1_int64) then
                 output = array(1)
                 return
             endif
@@ -426,15 +479,15 @@ module EDAT_Math
         workspace(1:n) = array(1:n)
         len = n
 
-        do while (len > 1)
+        do while (len > 1_int64)
             new_len = ishft(len, -1)
-            if (mod(len, 2) == 0) then
-                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+            if (mod(len, 2_int64) == 0_int64) then
+                workspace(1:new_len) = workspace(1:len-1_int64:2) + workspace(2:len:2)
                 len = new_len
             else
-                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
-                workspace(new_len+1) = workspace(len)
-                len = new_len + 1
+                workspace(1:new_len) = workspace(1:len-2_int64:2) + workspace(2:len-1_int64:2)
+                workspace(new_len+1_int64) = workspace(len)
+                len = new_len + 1_int64
             endif
         enddo
 
@@ -443,21 +496,23 @@ module EDAT_Math
     end function sum_hp_sp
 
 
-    pure function sum_hp_dp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        integer  , intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function sum_hp_dp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : lrk=>real64, int64
+        real(lrk), intent(in) :: array(:)
 
-        real(lrk) :: workspace(n)
+        real(lrk) :: workspace(size(array))
         real(lrk) :: output
-        integer :: len
-        integer :: new_len
+        integer(int64) :: n
+        integer(int64) :: len
+        integer(int64) :: new_len
 
-        if (n <= 1) then
-            if (n <= 0) then
+        n = size(array, kind=int64)
+
+        if (n <= 1_int64) then
+            if (n <= 0_int64) then
                 output = 0._lrk
                 return
-            else if (n == 1) then
+            else if (n == 1_int64) then
                 output = array(1)
                 return
             endif
@@ -466,15 +521,15 @@ module EDAT_Math
         workspace(1:n) = array(1:n)
         len = n
 
-        do while (len > 1)
+        do while (len > 1_int64)
             new_len = ishft(len, -1)
-            if (mod(len, 2) == 0) then
-                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+            if (mod(len, 2_int64) == 0_int64) then
+                workspace(1:new_len) = workspace(1:len-1_int64:2) + workspace(2:len:2)
                 len = new_len
             else
-                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
-                workspace(new_len+1) = workspace(len)
-                len = new_len + 1
+                workspace(1:new_len) = workspace(1:len-2_int64:2) + workspace(2:len-1_int64:2)
+                workspace(new_len+1_int64) = workspace(len)
+                len = new_len + 1_int64
             endif
         enddo
 
@@ -483,21 +538,23 @@ module EDAT_Math
     end function sum_hp_dp
 
 
-    pure function sum_hp_qp(n, array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128
-        integer  , intent(in) :: n
-        real(lrk), intent(in) :: array(n)
+    pure function sum_hp_qp(array) result(output)
+        use, intrinsic :: iso_fortran_env, only : lrk=>real128, int64
+        real(lrk), intent(in) :: array(:)
 
-        real(lrk) :: workspace(n)
+        real(lrk) :: workspace(size(array))
         real(lrk) :: output
-        integer :: len
-        integer :: new_len
+        integer(int64) :: n
+        integer(int64) :: len
+        integer(int64) :: new_len
 
-        if (n <= 1) then
-            if (n <= 0) then
+        n = size(array, kind=int64)
+
+        if (n <= 1_int64) then
+            if (n <= 0_int64) then
                 output = 0._lrk
                 return
-            else if (n == 1) then
+            else if (n == 1_int64) then
                 output = array(1)
                 return
             endif
@@ -506,15 +563,15 @@ module EDAT_Math
         workspace(1:n) = array(1:n)
         len = n
 
-        do while (len > 1)
+        do while (len > 1_int64)
             new_len = ishft(len, -1)
-            if (mod(len, 2) == 0) then
-                workspace(1:new_len) = workspace(1:len-1:2) + workspace(2:len:2)
+            if (mod(len, 2_int64) == 0_int64) then
+                workspace(1:new_len) = workspace(1:len-1_int64:2) + workspace(2:len:2)
                 len = new_len
             else
-                workspace(1:new_len) = workspace(1:len-2:2) + workspace(2:len-1:2)
-                workspace(new_len+1) = workspace(len)
-                len = new_len + 1
+                workspace(1:new_len) = workspace(1:len-2_int64:2) + workspace(2:len-1_int64:2)
+                workspace(new_len+1_int64) = workspace(len)
+                len = new_len + 1_int64
             endif
         enddo
 

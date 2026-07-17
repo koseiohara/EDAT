@@ -2,7 +2,6 @@ module EDAT_Met
 
     use, intrinsic :: iso_fortran_env, only : rk=>real128
 
-    use EDAT_Math    , only : sum_hp
     use integral_sp  , only : meridionalIntegral_sp, verticalIntegral_sp
     use integral_dp  , only : meridionalIntegral_dp, verticalIntegral_dp
     use integral_qp  , only : meridionalIntegral_qp, verticalIntegral_qp

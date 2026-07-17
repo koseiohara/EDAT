@@ -1,5 +1,5 @@
 module EDAT_BinIO
-    use, intrinsic :: iso_fortran_env, only : i64=>int64
+    use, intrinsic :: iso_fortran_env, only : int64
 
     implicit none
 
@@ -11,9 +11,9 @@ module EDAT_BinIO
         integer        :: unit
         character(128) :: file
         character(16)  :: action
-        integer(i64)   :: record
-        integer        :: recl
-        integer(i64)   :: recstep
+        integer(int64) :: record
+        integer(int64) :: recl
+        integer(int64) :: recstep
 
         contains
 
@@ -35,6 +35,7 @@ module EDAT_BinIO
                                    & fwrite_5s, fwrite_5d, fwrite_5q
 
         procedure, pass, public  :: fclose
+        procedure, pass, public  :: reset_record
 
         procedure, pass, private :: get_record32
         procedure, pass, private :: get_record64
@@ -88,27 +89,64 @@ module EDAT_BinIO
 
 
     function fopen(unit, file, action, record, recl, recstep) result(self)
-        use, intrinsic :: iso_fortran_env, only : err=>error_unit
+        use, intrinsic :: iso_fortran_env, only : err=>error_unit, int32, int64
         type(finfo) :: self
 
         integer     , intent(in), optional :: unit
 
         character(*), intent(in) :: file
         character(*), intent(in) :: action
-        integer     , intent(in) :: record
-        integer     , intent(in) :: recl
-        integer     , intent(in) :: recstep
+        class(*)    , intent(in) :: record
+        class(*)    , intent(in) :: recl
+        class(*)    , intent(in) :: recstep
 
-        if (record <= 0) then
+        integer(int64) :: work_record
+        integer(int64) :: work_recl
+        integer(int64) :: work_recstep
+
+        select type (record)
+        type is (integer(int32))
+            work_record = int(record, kind=int64)
+        type is (integer(int64))
+            work_record = int(record, kind=int64)
+        class default
+            write(err,'(A)') '<ERROR STOP>'
+            write(err,'(A)') '"record" must be integer(int32) or integer(int64).'
+            ERROR STOP
+        end select
+
+        select type (recl)
+        type is (integer(int32))
+            work_recl = int(recl, kind=int64)
+        type is (integer(int64))
+            work_recl = int(recl, kind=int64)
+        class default
+            write(err,'(A)') '<ERROR STOP>'
+            write(err,'(A)') '"recl" must be integer(int32) or integer(int64).'
+            ERROR STOP
+        end select
+
+        select type (recstep)
+        type is (integer(int32))
+            work_recstep = int(recstep, kind=int64)
+        type is (integer(int64))
+            work_recstep = int(recstep, kind=int64)
+        class default
+            write(err,'(A)') '<ERROR STOP>'
+            write(err,'(A)') '"recstep" must be integer(int32) or integer(int64).'
+            ERROR STOP
+        end select
+
+        if (work_record <= 0) then
             write(err,'(A)')    '<ERROR STOP>'
-            write(err,'(A,I0)') 'Invalid initial record : ', record
+            write(err,'(A,I0)') 'Invalid initial record : ', work_record
             write(err,'(A)')    'Argument "record" should be more than 0'
             ERROR STOP
         endif
 
-        if (recl <= 0) then
+        if (work_recl <= 0) then
             write(err,'(A)')    '<ERROR STOP>'
-            write(err,'(A,I0)') 'Invalid record length : ', recl
+            write(err,'(A,I0)') 'Invalid record length : ', work_recl
             write(err,'(A)')    'Argument "recl" should be more than 0'
             ERROR STOP
         endif
@@ -119,7 +157,7 @@ module EDAT_BinIO
                & ACTION=action       , &
                & FORM  ='UNFORMATTED', &
                & ACCESS='DIRECT'     , &
-               & RECL  =recl           )
+               & RECL  =work_recl      )
             
             self%unit    = unit
         else
@@ -128,14 +166,14 @@ module EDAT_BinIO
                & ACTION =action       , &
                & FORM   ='UNFORMATTED', &
                & ACCESS ='DIRECT'     , &
-               & RECL   =recl           )
+               & RECL   =work_recl      )
         endif
 
         self%file    = file
         self%action  = action
-        self%record  = record
-        self%recl    = recl
-        self%recstep = recstep
+        self%record  = work_record
+        self%recl    = work_recl
+        self%recstep = work_recstep
 
     end function fopen
 

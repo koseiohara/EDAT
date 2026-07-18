@@ -2,6 +2,8 @@ LIB = libedat.a
 #C_OBJ = c_qsort.o
 OBJ = c_qsort.o \
 	  edat_sort.o \
+	  c_sum_hp.o \
+	  c_sum_hp_interface.o \
 	  edat_math.o \
 	  edat_caseconverter.o \
 	  edat_string.o \

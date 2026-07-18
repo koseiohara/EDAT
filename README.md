@@ -248,6 +248,10 @@ pure subroutine meridionalIntegral(lat, field, south, north, output, status, val
 Returns mridionally integrated field.  
 If `south` and `north` are exist in `lat`, `valid_south` and `valid_north` are equal to `south` and `north`.
 Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_north` and the interval of integration.
+| Status | Cause |
+|--------|-------|
+| -1 | Inconsistency of input array shapes |
+| -2 | Derivative axis is not a monotone sequence |
 
 ### verticalIntegral<a id="met-verticalIntegral"></a>
 ```fortran
@@ -259,6 +263,10 @@ subroutine verticalIntegral(lev, field, psfc, output, status)
     integer, intent(out) :: status                     ! Positive if successfully computed
 ```
 Returns vertically integrated field.  
+| Status | Cause |
+|--------|-------|
+| -1 | Inconsistency of input array shapes |
+| -2 | Derivative axis is not a monotone sequence |
 
 ### zonalDerivative<a id="met-zonalDerivative"></a>
 ```fortran
@@ -276,8 +284,8 @@ If `periodic=.FALSE.`, eastern and western boundaries are computed with one-side
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
-| -2 | Array size is too small to compute derivative |
-| -3 | Derivative axis is not a monotone sequence |
+| -2 | Derivative axis is not a monotone sequence |
+| -3 | Array size is too small to compute derivative |
 
 ### meridionalDerivative<a id="met-meridionalDerivative"></a>
 ```fortran
@@ -294,8 +302,8 @@ Northern and southern boundaries are computed with one-sided difference method.
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
-| -2 | Array size is too small to compute derivative |
-| -3 | Derivative axis is not a monotone sequence |
+| -2 | Derivative axis is not a monotone sequence |
+| -3 | Array size is too small to compute derivative |
 
 ### verticalDerivative<a id="met-verticalDerivative"></a>
 ```fortran
@@ -314,8 +322,8 @@ Lower and upper boundaries are computed with one-sided difference method.
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
-| -2 | Array size is too small to compute derivative |
-| -3 | Derivative axis is not a monotone sequence |
+| -2 | Derivative axis is not a monotone sequence |
+| -3 | Array size is too small to compute derivative |
 
 ## edat_binio<a id="binio"></a>
 edat_binio is a module for performing input and output of no-header binary files.

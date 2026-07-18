@@ -93,8 +93,13 @@ module integral_sp
         endif
 
         allocate(work_field(nx,jl:ju-1))
+        dlat(1:ny-1) = lat(2:ny) - lat(1:ny-1)
+        if (any(dlat(1:ny-1) <= 0._rk) .AND. any(dlat(1:ny-1) >= 0._rk)) then
+            status = -2
+            return
+        endif
 
-        dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
+        ! dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
         do k = 1, nz
             do j = jl, ju-1
                 dl = dlat(j)
@@ -198,6 +203,10 @@ module integral_sp
             work_lev       = lev(k)
             work_lev_upper = lev(kupper)
             work_dlev      = (work_lev - work_lev_upper) * 0.5_rk
+            if (work_dlev < 0._rk) then
+                status = -2
+                return
+            endif
             ! Input the area of trapezoids to work_field
             do j = 1, ny
                 do i = 1, nx

@@ -54,13 +54,13 @@ module derivative_dp
         if (nx <= 2) then
             if (work_periodic) then
                 if (present(status)) then
-                    status = -2
+                    status = -3
                 endif
                 return
             else
                 if (nx <= 1) then
                     if (present(status)) then
-                        status = -2
+                        status = -3
                     endif
                     return
                 endif
@@ -88,7 +88,7 @@ module derivative_dp
             dlon(1) = lon(1) - lon(nx) - M_PI*2._rk
         else
             if (present(status)) then
-                status = -3
+                status = -2
             endif
             return
         endif
@@ -178,7 +178,7 @@ module derivative_dp
 
         if (ny <= 1) then
             if (present(status)) then
-                status = -2
+                status = -3
             endif
             return
         endif
@@ -200,7 +200,7 @@ module derivative_dp
 
         if (any(dlat(1:ny-1) < 0) .AND. any(dlat(1:ny-1) > 0)) then
             if (present(status)) then
-                status = -3
+                status = -2
             endif
             return
         endif
@@ -276,7 +276,7 @@ module derivative_dp
 
         if (nz <= 1) then
             if (present(status)) then
-                status = -2
+                status = -3
             endif
             return
         endif
@@ -321,7 +321,7 @@ module derivative_dp
             ! bottom_dlev_inv = 1._rk / dlev(nz-1)
         else
             if (present(status)) then
-                status = -3
+                status = -2
             endif
             return
         endif

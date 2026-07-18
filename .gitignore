@@ -9,3 +9,9 @@
 *.swp
 
 /test
+/autom4te.cache
+/src/.deps
+/config.log
+/config.status
+/src/Makefile
+/Makefile

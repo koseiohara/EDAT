@@ -185,7 +185,7 @@ pure elemental function to_lower(input) result(output)
 Converts uppercase letters to lowercase, leaving all other characters unchanged.
 
 
-## edat_float<a id=float"></a>
+## edat_float<a id="float"></a>
 edat_float provides some routines for manipulation floating-point data.
 
 ### isclose<a id="float-isclose"></a>

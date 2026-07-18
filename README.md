@@ -8,22 +8,17 @@ Install the source code by cloning this repository:
 git clone https://github.com/koseiohara/EDAT.git
 cd EDAT
 ```
-This library can be built by Makefile.
 
-### Makefile
-Rewrite the Makefile for your environment:
+### Build
 ```sh
-cd src
-vim Makefile
-```
-You can change the definitions of `DIR`, `FC`, `CC`, `FFLAG`, and `CFLAGS`.
-`${DIR}/lib` and `${DIR}/include` are needed.  
-After making these settings, execute the makefile
-```sh
+# ifort
+./configure --prefix=$HOME/FortranLib FC="ifort" CC="icc" FCFLAGS="-O3 -traceback -warn all -convert little_endian -assume byterecl" CFLAGS="-O3 -Wall"
+# gfortran
+./configure --prefix=$HOME/FortranLib FC="gfortran" CC="gcc" FCFLAGS="-O3 -Wall -fconvert=little-endian" CFLAGS="-O3 -Wall"
+
 make
 make install
 ```
-`libedat.a` and `*.mod` will be made and copied to `${DIR}/lib` and `${DIR}/include`, respectively.
 
 
 ## Tools

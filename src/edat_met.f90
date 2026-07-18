@@ -74,7 +74,7 @@ module EDAT_Met
         real(lrk), parameter :: P0=1.E+5_lrk
         real(lrk) :: output
 
-        output = T*(P0/P)**(GasConstant/Cp)
+        output = T*(P0/P)**real(GasConstant/Cp, kind=lrk)
 
     end function potential_temperature_sp
 
@@ -87,7 +87,7 @@ module EDAT_Met
         real(lrk), parameter :: P0=1.E+5_lrk
         real(lrk) :: output
 
-        output = T*(P0/P)**(GasConstant/Cp)
+        output = T*(P0/P)**real(GasConstant/Cp, kind=lrk)
 
     end function potential_temperature_dp
 
@@ -100,7 +100,7 @@ module EDAT_Met
         real(lrk), parameter :: P0=1.E+5_lrk
         real(lrk) :: output
 
-        output = T*(P0/P)**(GasConstant/Cp)
+        output = T*(P0/P)**real(GasConstant/Cp, kind=lrk)
 
     end function potential_temperature_qp
 

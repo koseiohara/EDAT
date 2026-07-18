@@ -78,7 +78,7 @@ POST_UNINSTALL = :
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	build-aux/install-sh build-aux/missing \
+	build-aux/depcomp build-aux/install-sh build-aux/missing \
 	$(top_srcdir)/build-aux/install-sh \
 	$(top_srcdir)/build-aux/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

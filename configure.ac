@@ -9,7 +9,6 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([
   foreign
-  1.13
   silent-rules
   subdir-objects
 ])

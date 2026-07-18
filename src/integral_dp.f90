@@ -247,7 +247,7 @@ module integral_dp
         do j = 1, ny
             do i = 1, nx
                 if (lev(zbeg) < psfc(i,j)) then
-                    k = (sfc_k(i,j) - zbeg) * zdir + 1
+                    ! k = (sfc_k(i,j) - zbeg) * zdir + 1
                     output(i,j) = sum_hp(work_field(i,j,zbeg:sfc_k(i,j):zdir))
                     cycle
                 endif

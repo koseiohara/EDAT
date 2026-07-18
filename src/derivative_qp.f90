@@ -83,9 +83,9 @@ module derivative_qp
         dlon(2:nx) = lon(2:nx) - lon(1:nx-1)
 
         if (all(dlon(2:nx) > 0)) then
-            dlon(1) = lon(1) - lon(nx) + M_PI*2._rk
+            dlon(1) = lon(1) - lon(nx) + real(M_PI+M_PI, kind=rk)
         else if (all(dlon(2:nx) < 0)) then
-            dlon(1) = lon(1) - lon(nx) - M_PI*2._rk
+            dlon(1) = lon(1) - lon(nx) - real(M_PI+M_PI, kind=rk)
         else
             if (present(status)) then
                 status = -2

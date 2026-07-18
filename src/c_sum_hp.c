@@ -6,6 +6,7 @@
 #endif
 
 
+
 static inline long largest_power_2(unsigned long n){
     long output;
 
@@ -53,12 +54,38 @@ float c_sum_hp_sp(long* n, const float* arr){
         work_arr1[dist] = work_arr1[dist] + remain_first[i];
     }
 
-    while (len > 1L){
+    while (len >= 8L){
         new_len = len >> 1;
-        for (i = 0L; i < new_len; i = i + 2L){
+        for (i = 0L; i < new_len; i = i + 4L){
             i2 = i + i;
             work_arr2[i]    = work_arr1[i2]    + work_arr1[i2+1L];
             work_arr2[i+1L] = work_arr1[i2+2L] + work_arr1[i2+3L];
+            work_arr2[i+2L] = work_arr1[i2+4L] + work_arr1[i2+5L];
+            work_arr2[i+3L] = work_arr1[i2+6L] + work_arr1[i2+7L];
+        }
+
+        // if (new_len == 1L){
+        //     output = work_arr2[0];
+        //     free(work_arr1);
+        //     free(work_arr2);
+        //     return output;
+        // }
+
+        new_len = new_len >> 1;
+        for (i = 0L; i < new_len; i = i + 2L){
+            i2 = i + i;
+            work_arr1[i]   = work_arr2[i2]    + work_arr2[i2+1L];
+            work_arr1[i+1] = work_arr2[i2+2L] + work_arr2[i2+3L];
+        }
+
+        len = new_len;
+    }
+
+    while (len > 1L){
+        new_len = len >> 1;
+        for (i = 0L; i < new_len; i = i + 1L){
+            i2 = i + i;
+            work_arr2[i] = work_arr1[i2] + work_arr1[i2+1L];
         }
 
         if (new_len == 1L){
@@ -71,7 +98,7 @@ float c_sum_hp_sp(long* n, const float* arr){
         new_len = new_len >> 1;
         for (i = 0L; i < new_len; i = i + 1L){
             i2 = i + i;
-            work_arr1[i]    = work_arr2[i2]    + work_arr2[i2+1L];
+            work_arr1[i] = work_arr2[i2] + work_arr2[i2+1L];
         }
 
         len = new_len;

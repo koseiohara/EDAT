@@ -641,7 +641,7 @@ module EDAT_BinIO
         class(finfo), intent(in)  :: self
         integer(lik), intent(out) :: record
 
-        record = self%record
+        record = int(self%record, kind=lik)
 
     end subroutine get_record32
 
@@ -651,7 +651,7 @@ module EDAT_BinIO
         class(finfo), intent(in)  :: self
         integer(lik), intent(out) :: record
 
-        record = self%record
+        record = int(self%record, kind=lik)
 
     end subroutine get_record64
 
@@ -681,7 +681,7 @@ module EDAT_BinIO
                 self%record = newrecord
             class default
                 write(err,'(A)') '<ERROR STOP>'
-                write(err,'(A)') '"increment" must be integer(int32) or integer(int64).'
+                write(err,'(A)') '"newRecord" must be integer(int32) or integer(int64).'
                 ERROR STOP
             end select
         else

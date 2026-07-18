@@ -180,6 +180,7 @@ module EDAT_Math
 
         if (n <= 1) then
             output = 0._lrk
+            return
         endif
 
         variance1 = variance(array1(1:n))
@@ -211,6 +212,7 @@ module EDAT_Math
 
         if (n <= 1) then
             output = 0._lrk
+            return
         endif
 
         variance1 = variance(array1(1:n))
@@ -242,6 +244,7 @@ module EDAT_Math
 
         if (n <= 1) then
             output = 0._lrk
+            return
         endif
 
         variance1 = variance(array1(1:n))
@@ -274,12 +277,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         mean1 = mean(array1(1:n))
@@ -312,12 +323,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         mean1 = mean(array1(1:n))
@@ -350,12 +369,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         mean1 = mean(array1(1:n))
@@ -369,6 +396,7 @@ module EDAT_Math
 
     pure function variance_sp(array, sample) result(output)
         use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real32
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
         real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
@@ -381,12 +409,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         array_mean = mean(array(1:n))
@@ -397,6 +433,7 @@ module EDAT_Math
 
     pure function variance_dp(array, sample) result(output)
         use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real64
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
         real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
@@ -409,12 +446,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         array_mean = mean(array(1:n))
@@ -425,6 +470,7 @@ module EDAT_Math
 
     pure function variance_qp(array, sample) result(output)
         use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real128
+        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
         real(lrk), intent(in) :: array(:)
         logical, intent(in), optional :: sample
 
@@ -437,12 +483,20 @@ module EDAT_Math
 
         if (present(sample) .AND. sample) then
             sample_num = n - 1_lik
+            if (sample_num <= 0_lik) then
+                if (sample_num == 0_lik) then
+                    output = ieee_value(output, ieee_quiet_nan)
+                else
+                    output = 0._lrk
+                endif
+                return
+            endif
         else
             sample_num = n
-        endif
-
-        if (sample_num <= 1) then
-            output = 0._lrk
+            if (n <= 0_lik) then
+                output = 0._lrk
+                return
+            endif
         endif
 
         array_mean = mean(array(1:n))
@@ -461,6 +515,7 @@ module EDAT_Math
         n = size(array, kind=lik)
         if (n == 0_lik) then
             output = 0._lrk
+            return
         endif
 
         output = sum_hp(array(1:n)) / real(n, kind=lrk)
@@ -478,6 +533,7 @@ module EDAT_Math
         n = size(array, kind=lik)
         if (n == 0_lik) then
             output = 0._lrk
+            return
         endif
 
         output = sum_hp(array(1:n)) / real(n, kind=lrk)
@@ -495,6 +551,7 @@ module EDAT_Math
         n = size(array, kind=lik)
         if (n == 0_lik) then
             output = 0._lrk
+            return
         endif
 
         output = sum_hp(array(1:n)) / real(n, kind=lrk)

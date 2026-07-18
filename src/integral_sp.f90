@@ -50,6 +50,11 @@ module integral_sp
         ny = size(field, 2)
         nz = size(field, 3)
 
+        if (ny < 2) then
+            status = -3
+            return
+        endif
+
         dim_consist = .TRUE.
 
         work_ny = size(lat)
@@ -92,12 +97,13 @@ module integral_sp
             costbl(jl:ju) = - costbl(jl:ju)
         endif
 
-        allocate(work_field(nx,jl:ju-1))
         dlat(1:ny-1) = lat(2:ny) - lat(1:ny-1)
         if (any(dlat(1:ny-1) <= 0._rk) .AND. any(dlat(1:ny-1) >= 0._rk)) then
             status = -2
             return
         endif
+
+        allocate(work_field(nx,jl:ju-1))
 
         ! dlat(jl:ju-1) = lat(jl+1:ju) - lat(jl:ju-1)
         do k = 1, nz
@@ -150,6 +156,11 @@ module integral_sp
         nx = size(field, 1)
         ny = size(field, 2)
         nz = size(field, 3)
+
+        if (nz < 2) then
+            status = -3
+            return
+        endif
 
         dim_consistent = .True.
         dim_consistent = dim_consistent .AND. (size(lev) == nz)

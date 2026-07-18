@@ -251,7 +251,8 @@ Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
-| -2 | Derivative axis is not a monotone sequence |
+| -2 | Integral axis is not a monotone sequence |
+| -3 | Array size is too small to compute integral |
 
 ### verticalIntegral<a id="met-verticalIntegral"></a>
 ```fortran
@@ -266,7 +267,8 @@ Returns vertically integrated field.
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
-| -2 | Derivative axis is not a monotone sequence |
+| -2 | Integral axis is not a monotone sequence |
+| -3 | Array size is too small to compute integral |
 
 ### zonalDerivative<a id="met-zonalDerivative"></a>
 ```fortran

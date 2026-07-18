@@ -40,7 +40,7 @@ make install
     - [to_upper](#string-to-upper)
     - [to_lower](#string-to-lower)
 - [edat_float](#float)
-    - [isclose](float-isclose)
+    - [isclose](#float-isclose)
 - [edat_met](#met)
     - [Parameters](#met-parameters)
     - [potential_temperature](#met-potential-temperature)

@@ -214,7 +214,7 @@ module integral_dp
             work_lev       = lev(k)
             work_lev_upper = lev(kupper)
             work_dlev      = (work_lev - work_lev_upper) * 0.5_rk
-            if (work_dlev < 0._rk) then
+            if (work_dlev <= 0._rk) then
                 status = -2
                 return
             endif

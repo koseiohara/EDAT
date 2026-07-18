@@ -179,7 +179,11 @@ module EDAT_Math
         endif
 
         if (n <= 1) then
-            output = 0._lrk
+            if (n == 1) then
+                output = ieee_value(output, ieee_quiet_nan)
+            else
+                output = 0._lrk
+            endif
             return
         endif
 
@@ -211,7 +215,11 @@ module EDAT_Math
         endif
 
         if (n <= 1) then
-            output = 0._lrk
+            if (n == 1) then
+                output = ieee_value(output, ieee_quiet_nan)
+            else
+                output = 0._lrk
+            endif
             return
         endif
 
@@ -243,7 +251,11 @@ module EDAT_Math
         endif
 
         if (n <= 1) then
-            output = 0._lrk
+            if (n == 1) then
+                output = ieee_value(output, ieee_quiet_nan)
+            else
+                output = 0._lrk
+            endif
             return
         endif
 
@@ -275,15 +287,23 @@ module EDAT_Math
             return
         endif
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n
@@ -321,15 +341,23 @@ module EDAT_Math
             return
         endif
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n
@@ -367,15 +395,23 @@ module EDAT_Math
             return
         endif
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n
@@ -407,15 +443,23 @@ module EDAT_Math
 
         n = size(array, kind=lik)
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n
@@ -444,15 +488,23 @@ module EDAT_Math
 
         n = size(array, kind=lik)
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n
@@ -481,15 +533,23 @@ module EDAT_Math
 
         n = size(array, kind=lik)
 
-        if (present(sample) .AND. sample) then
-            sample_num = n - 1_lik
-            if (sample_num <= 0_lik) then
-                if (sample_num == 0_lik) then
-                    output = ieee_value(output, ieee_quiet_nan)
-                else
-                    output = 0._lrk
+        if (present(sample)) then
+            if (sample) then
+                sample_num = n - 1_lik
+                if (sample_num <= 0_lik) then
+                    if (sample_num == 0_lik) then
+                        output = ieee_value(output, ieee_quiet_nan)
+                    else
+                        output = 0._lrk
+                    endif
+                    return
                 endif
-                return
+            else
+                sample_num = n
+                if (n <= 0_lik) then
+                    output = 0._lrk
+                    return
+                endif
             endif
         else
             sample_num = n

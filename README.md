@@ -39,6 +39,8 @@ make install
 - [edat_string](#string)
     - [to_upper](#string-to-upper)
     - [to_lower](#string-to-lower)
+- [edat_float](#float)
+    - [isclose](float-isclose)
 - [edat_met](#met)
     - [Parameters](#met-parameters)
     - [potential_temperature](#met-potential-temperature)
@@ -181,6 +183,29 @@ pure elemental function to_lower(input) result(output)
     character(len(input)) :: output
 ```
 Converts uppercase letters to lowercase, leaving all other characters unchanged.
+
+
+## edat_float<a id=float"></a>
+edat_float provides some routines for manipulation floating-point data.
+
+### isclose<a id="float-isclose"></a>
+```fortran
+pure elemental function isclose(a, b, rel_tol, abs_tol) result(output)
+    real, intent(in) :: a
+    real, intent(in) :: b
+    real, intent(in), optional :: rel_tol
+    real, intent(in), optional :: abs_tol
+    logical :: output
+```
+Returns `.True.` if `a` and `b` are close.  
+All arguments must be the same type, `real32`, `real64`, or `real128`.  
+The default value of `abs_tol` is `0.`.
+The default value of `rel_tol` depends on the type of the arguments.
+| Kind | Default `rel_tol` |
+|------|-------------------|
+| `real32`  | `1.E-4`  |
+| `real64`  | `1.E-13` |
+| `real128` | `1.E-31` |
 
 
 ## edat_met<a id="met"></a>

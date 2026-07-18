@@ -151,9 +151,8 @@ This function can compute the sum of data more precisely than the built-in funct
 
 ### quick_sort<a id="sort-quick-sort"></a>
 ```fortran
-subroutine quick_sort(n, array)
-    integer, intent(in)    :: n
-    real   , intent(inout) :: array(n)  !! integer array is also acceptable
+subroutine quick_sort(array)
+    real, intent(inout) :: array(:)  !! integer array is also acceptable
 ```
 Returns sorted array of `array`.
 `array` must be `real32`, `real64`, or `int32`.

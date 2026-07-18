@@ -52,29 +52,35 @@ module EDAT_Sort
     contains
 
 
-    pure subroutine quick_sort_i4(n, array)
-        integer, intent(in)    :: n
-        integer, intent(inout) :: array(n)
+    pure subroutine quick_sort_i4(array)
+        integer, intent(inout) :: array(:)
+        integer :: n
+
+        n = size(array)
 
         call c_quick_sort_i4(n, array(1:n))
 
     end subroutine quick_sort_i4
 
 
-    pure subroutine quick_sort_sp(n, array)
+    pure subroutine quick_sort_sp(array)
         integer , parameter :: lrk = c_float
-        integer , intent(in)    :: n
-        real(lrk), intent(inout) :: array(n)
+        real(lrk), intent(inout) :: array(:)
+        integer :: n
+
+        n = size(array)
 
         call c_quick_sort_sp(n, array(1:n))
 
     end subroutine quick_sort_sp
 
 
-    pure subroutine quick_sort_dp(n, array)
+    pure subroutine quick_sort_dp(array)
         integer , parameter :: lrk = c_double
-        integer , intent(in)    :: n
-        real(lrk), intent(inout) :: array(n)
+        real(lrk), intent(inout) :: array(:)
+        integer :: n
+
+        n = size(array)
 
         call c_quick_sort_dp(n, array(1:n))
 

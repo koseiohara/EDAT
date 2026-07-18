@@ -625,7 +625,7 @@ module EDAT_Math
         use :: c_sum_hp_interface, only : c_sum_hp_sp
         real(lrk), intent(in) :: array(:)
 
-        real(crk)       :: workspace(size(array))
+        real(crk), allocatable :: workspace(:)
         real(lrk)       :: output
         integer(C_LONG) :: n
 
@@ -641,9 +641,13 @@ module EDAT_Math
             endif
         endif
 
+        allocate(workspace(n))
+
         workspace(1:n) = real(array(1:n), kind=crk)
         output = c_sum_hp_sp(n, workspace(1:n))
         output = real(output, lrk)
+
+        deallocate(workspace)
 
     end function sum_hp_sp
 

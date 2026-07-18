@@ -54,14 +54,18 @@ float c_sum_hp_sp(long* n, const float* arr){
         work_arr1[dist] = work_arr1[dist] + remain_first[i];
     }
 
-    while (len >= 8L){
+    while (len >= 16L){
         new_len = len >> 1;
-        for (i = 0L; i < new_len; i = i + 4L){
+        for (i = 0L; i < new_len; i = i + 8L){
             i2 = i + i;
-            work_arr2[i]    = work_arr1[i2]    + work_arr1[i2+1L];
-            work_arr2[i+1L] = work_arr1[i2+2L] + work_arr1[i2+3L];
-            work_arr2[i+2L] = work_arr1[i2+4L] + work_arr1[i2+5L];
-            work_arr2[i+3L] = work_arr1[i2+6L] + work_arr1[i2+7L];
+            work_arr2[i]    = work_arr1[i2]     + work_arr1[i2+ 1L];
+            work_arr2[i+1L] = work_arr1[i2+ 2L] + work_arr1[i2+ 3L];
+            work_arr2[i+2L] = work_arr1[i2+ 4L] + work_arr1[i2+ 5L];
+            work_arr2[i+3L] = work_arr1[i2+ 6L] + work_arr1[i2+ 7L];
+            work_arr2[i+4L] = work_arr1[i2+ 8L] + work_arr1[i2+ 9L];
+            work_arr2[i+5L] = work_arr1[i2+10L] + work_arr1[i2+11L];
+            work_arr2[i+6L] = work_arr1[i2+12L] + work_arr1[i2+13L];
+            work_arr2[i+7L] = work_arr1[i2+14L] + work_arr1[i2+15L];
         }
 
         // if (new_len == 1L){
@@ -72,10 +76,12 @@ float c_sum_hp_sp(long* n, const float* arr){
         // }
 
         new_len = new_len >> 1;
-        for (i = 0L; i < new_len; i = i + 2L){
+        for (i = 0L; i < new_len; i = i + 4L){
             i2 = i + i;
-            work_arr1[i]   = work_arr2[i2]    + work_arr2[i2+1L];
-            work_arr1[i+1] = work_arr2[i2+2L] + work_arr2[i2+3L];
+            work_arr1[i]    = work_arr2[i2]    + work_arr2[i2+1L];
+            work_arr1[i+1L] = work_arr2[i2+2L] + work_arr2[i2+3L];
+            work_arr1[i+2L] = work_arr2[i2+4L] + work_arr2[i2+5L];
+            work_arr1[i+3L] = work_arr2[i2+6L] + work_arr2[i2+7L];
         }
 
         len = new_len;

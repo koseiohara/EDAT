@@ -377,6 +377,7 @@ contains
             sum_hp(cancellation), &
             n_real, &
             1.0e-10_real64, &
+            0.0_real64, &
             'sum_hp cancellation 10002 elements', &
             failures &
         )

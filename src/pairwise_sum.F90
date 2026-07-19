@@ -69,8 +69,8 @@ module pairwise_sum
         workspace(1:n) = arr(1:n)
 
         call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! IN
-                       & output          )  !! IN
+                       & workspace(1:n), &  !! INOUT
+                       & output          )  !! OUT
 
     end function sum_hp_sp
 
@@ -102,8 +102,8 @@ module pairwise_sum
         workspace(1:n) = arr(1:n)
 
         call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! IN
-                       & output          )  !! IN
+                       & workspace(1:n), &  !! INOUT
+                       & output          )  !! OUT
 
     end function sum_hp_dp
 
@@ -135,8 +135,8 @@ module pairwise_sum
         workspace(1:n) = arr(1:n)
 
         call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! IN
-                       & output          )  !! IN
+                       & workspace(1:n), &  !! INOUT
+                       & output          )  !! OUT
 
     end function sum_hp_qp
 

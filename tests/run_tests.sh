@@ -116,9 +116,9 @@ printf '%s\n' "Fortran compiler: $FC" "Compiler version: $compiler_banner" "C co
 "$CC" $TEST_CFLAGS -c "$ROOT/src/c_qsort.c" -o "$OBJDIR/c_qsort.o"
 
 for source_name in $FORTRAN_SOURCES; do
-  fc_compile "$ROOT/src/$source_name.f90" "$OBJDIR/$source_name.o"
+  fc_compile "$ROOT/src/$source_name.F90" "$OBJDIR/$source_name.o"
 done
-fc_compile "$ROOT/tests/test_support.f90" "$OBJDIR/test_support.o"
+fc_compile "$ROOT/tests/test_support.F90" "$OBJDIR/test_support.o"
 
 OBJECTS="
 $OBJDIR/c_qsort.o
@@ -140,11 +140,11 @@ $OBJDIR/test_support.o
 "
 
 for test_name in $TEST_PROGRAMS; do
-  fc_link "$BINDIR/$test_name" "$ROOT/tests/$test_name.f90" $OBJECTS
+  fc_link "$BINDIR/$test_name" "$ROOT/tests/$test_name.F90" $OBJECTS
   "$BINDIR/$test_name"
 done
 
-fc_link "$BINDIR/test_negative_binio" "$ROOT/tests/test_negative_binio.f90" $OBJECTS
+fc_link "$BINDIR/test_negative_binio" "$ROOT/tests/test_negative_binio.F90" $OBJECTS
 for mode in record recl missing; do
   if "$BINDIR/test_negative_binio" "$mode" >"$BUILD/negative_$mode.log" 2>&1; then
     echo "FAIL: negative binio case '$mode' unexpectedly succeeded" >&2
@@ -153,7 +153,7 @@ for mode in record recl missing; do
 done
 echo "test_negative_binio: PASS"
 
-cat > "$BUILD/external_consumer.f90" <<'EOF_EXTERNAL'
+cat > "$BUILD/external_consumer.F90" <<'EOF_EXTERNAL'
 program external_consumer
   use, intrinsic :: iso_fortran_env, only: real64
   use EDAT_Math, only: mean
@@ -161,6 +161,6 @@ program external_consumer
   if (mean([1.0_real64, 3.0_real64]) /= 2.0_real64) error stop 1
 end program external_consumer
 EOF_EXTERNAL
-fc_link "$BINDIR/external_consumer" "$BUILD/external_consumer.f90" $OBJECTS
+fc_link "$BINDIR/external_consumer" "$BUILD/external_consumer.F90" $OBJECTS
 "$BINDIR/external_consumer"
 echo "test_external_consumer: PASS"

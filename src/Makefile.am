@@ -3,20 +3,20 @@ lib_LIBRARIES = libedat.a
 
 libedat_a_SOURCES = \
   c_qsort.c \
-  edat_sort.f90 \
-  pairwise_sum.f90 \
-  edat_math.f90 \
-  edat_caseconverter.f90 \
-  edat_string.f90 \
-  edat_float.f90 \
-  integral_sp.f90 \
-  integral_dp.f90 \
-  integral_qp.f90 \
-  derivative_sp.f90 \
-  derivative_dp.f90 \
-  derivative_qp.f90 \
-  edat_met.f90 \
-  edat_binio.f90
+  edat_sort.F90 \
+  pairwise_sum.F90 \
+  edat_math.F90 \
+  edat_caseconverter.F90 \
+  edat_string.F90 \
+  edat_float.F90 \
+  integral_sp.F90 \
+  integral_dp.F90 \
+  integral_qp.F90 \
+  derivative_sp.F90 \
+  derivative_dp.F90 \
+  derivative_qp.F90 \
+  edat_met.F90 \
+  edat_binio.F90
 
 modincludedir = $(includedir)
 

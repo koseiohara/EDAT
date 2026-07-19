@@ -16,3 +16,4 @@
 /src/Makefile
 /Makefile
 edat-*.tar.gz
+/tests/.build

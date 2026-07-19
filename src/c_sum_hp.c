@@ -20,11 +20,10 @@ static inline long largest_power_2(unsigned long n){
 }
 
 
-float c_sum_hp_sp(long* n, const float* arr){
-    float* restrict work_arr1;
-    float* restrict work_arr2;
+float c_sum_hp_sp(long* n, float* arr){
+    float* restrict work_arr;
     float           output;
-    const float* remain_first;
+    float* remain_first;
 
     unsigned long work_n;
     long len;
@@ -38,50 +37,50 @@ float c_sum_hp_sp(long* n, const float* arr){
     len    = largest_power_2(work_n);
     k      = (long)work_n - len;
 
-    work_arr1    = malloc(sizeof(float) * len);
-    work_arr2    = malloc(sizeof(float) * len);
+    // arr    = malloc(sizeof(float) * len);
+    work_arr     = malloc(sizeof(float) * (len >> 1));
     remain_first = &arr[len];
 
-    for (i = 0L; i < len; i = i + 1L){
-        work_arr1[i] = arr[i];
-    }
+    // for (i = 0L; i < len; i = i + 1L){
+    //     arr[i] = arr[i];
+    // }
 
     for (i = 0L; i < k; i = i + 1L){
         dist = (i+i+1L) * len / (k+k);
         #ifdef DEBUG
         printf("DEBUG: Distribute arr[%ld] to %ld\n", i+len, dist);
         #endif
-        work_arr1[dist] = work_arr1[dist] + remain_first[i];
+        arr[dist] = arr[dist] + remain_first[i];
     }
 
     while (len >= 16L){
         new_len = len >> 1;
         for (i = 0L; i < new_len; i = i + 8L){
             i2 = i + i;
-            work_arr2[i]    = work_arr1[i2]     + work_arr1[i2+ 1L];
-            work_arr2[i+1L] = work_arr1[i2+ 2L] + work_arr1[i2+ 3L];
-            work_arr2[i+2L] = work_arr1[i2+ 4L] + work_arr1[i2+ 5L];
-            work_arr2[i+3L] = work_arr1[i2+ 6L] + work_arr1[i2+ 7L];
-            work_arr2[i+4L] = work_arr1[i2+ 8L] + work_arr1[i2+ 9L];
-            work_arr2[i+5L] = work_arr1[i2+10L] + work_arr1[i2+11L];
-            work_arr2[i+6L] = work_arr1[i2+12L] + work_arr1[i2+13L];
-            work_arr2[i+7L] = work_arr1[i2+14L] + work_arr1[i2+15L];
+            work_arr[i]    = arr[i2]     + arr[i2+ 1L];
+            work_arr[i+1L] = arr[i2+ 2L] + arr[i2+ 3L];
+            work_arr[i+2L] = arr[i2+ 4L] + arr[i2+ 5L];
+            work_arr[i+3L] = arr[i2+ 6L] + arr[i2+ 7L];
+            work_arr[i+4L] = arr[i2+ 8L] + arr[i2+ 9L];
+            work_arr[i+5L] = arr[i2+10L] + arr[i2+11L];
+            work_arr[i+6L] = arr[i2+12L] + arr[i2+13L];
+            work_arr[i+7L] = arr[i2+14L] + arr[i2+15L];
         }
 
         // if (new_len == 1L){
-        //     output = work_arr2[0];
-        //     free(work_arr1);
-        //     free(work_arr2);
+        //     output = work_arr[0];
+        //     free(arr);
+        //     free(work_arr);
         //     return output;
         // }
 
         new_len = new_len >> 1;
         for (i = 0L; i < new_len; i = i + 4L){
             i2 = i + i;
-            work_arr1[i]    = work_arr2[i2]    + work_arr2[i2+1L];
-            work_arr1[i+1L] = work_arr2[i2+2L] + work_arr2[i2+3L];
-            work_arr1[i+2L] = work_arr2[i2+4L] + work_arr2[i2+5L];
-            work_arr1[i+3L] = work_arr2[i2+6L] + work_arr2[i2+7L];
+            arr[i]    = work_arr[i2]    + work_arr[i2+1L];
+            arr[i+1L] = work_arr[i2+2L] + work_arr[i2+3L];
+            arr[i+2L] = work_arr[i2+4L] + work_arr[i2+5L];
+            arr[i+3L] = work_arr[i2+6L] + work_arr[i2+7L];
         }
 
         len = new_len;
@@ -91,28 +90,28 @@ float c_sum_hp_sp(long* n, const float* arr){
         new_len = len >> 1;
         for (i = 0L; i < new_len; i = i + 1L){
             i2 = i + i;
-            work_arr2[i] = work_arr1[i2] + work_arr1[i2+1L];
+            work_arr[i] = arr[i2] + arr[i2+1L];
         }
 
         if (new_len == 1L){
-            output = work_arr2[0];
-            free(work_arr1);
-            free(work_arr2);
+            output = work_arr[0];
+            // free(arr);
+            free(work_arr);
             return output;
         }
 
         new_len = new_len >> 1;
         for (i = 0L; i < new_len; i = i + 1L){
             i2 = i + i;
-            work_arr1[i] = work_arr2[i2] + work_arr2[i2+1L];
+            arr[i] = work_arr[i2] + work_arr[i2+1L];
         }
 
         len = new_len;
     }
 
-    output = work_arr1[0];
-    free(work_arr1);
-    free(work_arr2);
+    output = arr[0];
+    // free(arr);
+    free(work_arr);
     return output;
 }
 

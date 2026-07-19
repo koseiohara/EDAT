@@ -693,13 +693,14 @@ module EDAT_BinIO
     end subroutine reset_record
 
 
-    pure elemental subroutine endian_converter(rawOre)
+    pure elemental subroutine endian_converter(a)
         use, intrinsic :: iso_fortran_env, only : int8, rk=>real32
-        real(rk), intent(inout) :: rawOre
-        integer(int8) :: bits(rk)
+        integer , parameter :: bytes = storage_size(0._rk) / 8
+        real(rk), intent(inout) :: a
+        integer(int8) :: bits(bytes)
 
-        bits(1:rk) = transfer(rawOre, bits)
-        rawOre     = transfer(bits(rk:1:-1), rawOre)
+        bits(1:bytes) = transfer(a, bits)
+        a             = transfer(bits(bytes:1:-1), a)
 
     end subroutine endian_converter
 

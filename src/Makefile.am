@@ -3,9 +3,8 @@ lib_LIBRARIES = libedat.a
 
 libedat_a_SOURCES = \
   c_qsort.c \
-  c_sum_hp.c \
-  c_sum_hp_interface.f90 \
   edat_sort.f90 \
+  pairwise_sum.f90 \
   edat_math.f90 \
   edat_caseconverter.f90 \
   edat_string.f90 \
@@ -29,7 +28,7 @@ nodist_modinclude_DATA = \
   edat_met.mod \
   edat_binio.mod
 
-edat_math.$(OBJEXT): c_sum_hp_interface.$(OBJEXT)
+edat_math.$(OBJEXT): pairwise_sum.$(OBJEXT)
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 

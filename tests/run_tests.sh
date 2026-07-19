@@ -58,7 +58,7 @@ TEST_FFLAGS=${TEST_FFLAGS:-$DEFAULT_TEST_FFLAGS}
 TEST_CFLAGS=${TEST_CFLAGS:--O0 -g}
 
 FORTRAN_SOURCES="
-  c_sum_hp_interface
+  pairwise_sum
   edat_math
   edat_float
   edat_sort
@@ -112,7 +112,6 @@ mkdir -p "$MODDIR" "$OBJDIR" "$BINDIR"
 printf '%s\n' "Fortran compiler: $FC" "Compiler version: $compiler_banner" "C compiler: $CC" "Build directory: $BUILD"
 
 # shellcheck disable=SC2086
-"$CC" $TEST_CFLAGS -c "$ROOT/src/c_sum_hp.c" -o "$OBJDIR/c_sum_hp.o"
 # shellcheck disable=SC2086
 "$CC" $TEST_CFLAGS -c "$ROOT/src/c_qsort.c" -o "$OBJDIR/c_qsort.o"
 
@@ -122,9 +121,8 @@ done
 fc_compile "$ROOT/tests/test_support.f90" "$OBJDIR/test_support.o"
 
 OBJECTS="
-$OBJDIR/c_sum_hp.o
 $OBJDIR/c_qsort.o
-$OBJDIR/c_sum_hp_interface.o
+$OBJDIR/pairwise_sum.o
 $OBJDIR/edat_math.o
 $OBJDIR/edat_float.o
 $OBJDIR/edat_sort.o

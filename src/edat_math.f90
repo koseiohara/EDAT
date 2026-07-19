@@ -1,6 +1,7 @@
 module EDAT_Math
 
     use, intrinsic :: iso_fortran_env, only : rk=>real128
+    use :: pairwise_sum, only : sum_hp
 
     implicit none
 
@@ -149,13 +150,6 @@ module EDAT_Math
             & mean_dp, &
             & mean_qp
     end interface mean
-
-    interface sum_hp
-        module procedure &
-            & sum_hp_sp, &
-            & sum_hp_dp, &
-            & sum_hp_qp
-    end interface sum_hp
 
     contains
 
@@ -617,115 +611,6 @@ module EDAT_Math
         output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
     end function mean_qp
-
-
-    pure function sum_hp_sp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real32
-        use, intrinsic :: iso_c_binding  , only : crk=>C_FLOAT, C_LONG
-        use :: c_sum_hp_interface, only : c_sum=>c_sum_hp_sp
-        real(lrk), intent(in) :: array(:)
-
-        real(crk), allocatable :: workspace(:)
-        real(lrk)       :: output
-        integer(C_LONG) :: n
-
-        n = size(array, kind=C_LONG)
-
-        if (n <= 1_C_LONG) then
-            if (n <= 0_C_LONG) then
-                output = 0._lrk
-                return
-            else if (n == 1_C_LONG) then
-                output = array(1)
-                return
-            endif
-        endif
-
-        allocate(workspace(n))
-
-        workspace(1:n) = real(array(1:n), kind=crk)
-        output = c_sum(n, workspace(1:n))
-        output = real(output, lrk)
-
-        deallocate(workspace)
-
-    end function sum_hp_sp
-
-
-    pure function sum_hp_dp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real64
-        use, intrinsic :: iso_c_binding  , only : crk=>C_DOUBLE, C_LONG
-        use :: c_sum_hp_interface, only : c_sum=>c_sum_hp_dp
-        real(lrk), intent(in) :: array(:)
-
-        real(crk), allocatable :: workspace(:)
-        real(lrk)       :: output
-        integer(C_LONG) :: n
-
-        n = size(array, kind=C_LONG)
-
-        if (n <= 1_C_LONG) then
-            if (n <= 0_C_LONG) then
-                output = 0._lrk
-                return
-            else if (n == 1_C_LONG) then
-                output = array(1)
-                return
-            endif
-        endif
-
-        allocate(workspace(n))
-
-        workspace(1:n) = real(array(1:n), kind=crk)
-        output = c_sum(n, workspace(1:n))
-        output = real(output, lrk)
-
-        deallocate(workspace)
-
-    end function sum_hp_dp
-
-
-    pure function sum_hp_qp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lrk=>real128, int64
-        real(lrk), intent(in) :: array(:)
-
-        real(lrk) :: workspace(size(array))
-        real(lrk) :: output
-        integer(int64) :: n
-        integer(int64) :: len
-        integer(int64) :: new_len
-
-        n = size(array, kind=int64)
-
-        if (n <= 1_int64) then
-            if (n <= 0_int64) then
-                output = 0._lrk
-                return
-            else if (n == 1_int64) then
-                output = array(1)
-                return
-            endif
-        endif
-
-        workspace(1:n) = array(1:n)
-        len = n
-
-        do while (len > 1_int64)
-            new_len = ishft(len, -1)
-            if (mod(len, 2_int64) == 0_int64) then
-                workspace(1:new_len) = workspace(1:len-1_int64:2) + workspace(2:len:2)
-                len = new_len
-            else
-                workspace(1:new_len) = workspace(1:len-2_int64:2) + workspace(2:len-1_int64:2)
-                workspace(new_len+1_int64) = workspace(len)
-                len = new_len + 1_int64
-            endif
-        enddo
-
-        output = workspace(1)
-
-    end function sum_hp_qp
-
 
 end module EDAT_Math
 

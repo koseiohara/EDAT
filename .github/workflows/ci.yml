@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: GNU Fortran
+            compiler: gcc
+            version: latest
+          - name: Intel Fortran (ifx)
+            compiler: intel
+            version: '2025.2'
+          - name: Intel Fortran Classic (ifort)
+            compiler: intel-classic
+            version: '2021.10'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Fortran toolchain
+        uses: fortran-lang/setup-fortran@v1.9.2
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+
+      - name: Install Autotools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes autoconf automake libtool make
+
+      - name: Report toolchain
+        run: |
+          echo "FC=$FC"
+          echo "CC=$CC"
+          "$FC" --version
+          "$CC" --version
+
+      - name: Regenerate build system
+        run: autoreconf --install --force
+
+      - name: Configure
+        run: ./configure FC="$FC" CC="$CC"
+
+      # Keep the library build serial because Fortran module dependencies are
+      # not fully represented in the current Automake dependency graph.
+      - name: Build library
+        run: make --jobs=1 V=1
+
+      # run_tests.sh reads FC and CC from the configured root Makefile, so each
+      # test is compiled by the same compiler that built the library.
+      - name: Run full test suite
+        run: ./tests/run_tests.sh
+
+

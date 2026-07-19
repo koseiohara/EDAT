@@ -198,7 +198,7 @@ module derivative_qp
 
         dlat(1:ny-1) = lat(2:ny) - lat(1:ny-1)
 
-        if (any(dlat(1:ny-1) < 0) .AND. any(dlat(1:ny-1) > 0)) then
+        if (any(dlat(1:ny-1) <= 0) .AND. any(dlat(1:ny-1) >= 0)) then
             if (present(status)) then
                 status = -2
             endif

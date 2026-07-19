@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 
 
@@ -57,17 +58,17 @@ int compare_dp(const void* a, const void* b){
 // }
 
 
-void c_quick_sort_i4(const int* n, int array[]){
+void c_quick_sort_i4(const long* n, int array[]){
     qsort(array, *n, sizeof(int), compare_i4);
 }
 
 
-void c_quick_sort_sp(const int* n, float array[]){
+void c_quick_sort_sp(const long* n, float array[]){
     qsort(array, *n, sizeof(float), compare_sp);
 }
 
 
-void c_quick_sort_dp(const int* n, double array[]){
+void c_quick_sort_dp(const long* n, double array[]){
     qsort(array, *n, sizeof(double), compare_dp);
 }
 

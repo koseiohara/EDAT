@@ -12,6 +12,7 @@ AM_INIT_AUTOMAKE([
   silent-rules
   subdir-objects
 ])
+AM_MAINTAINER_MODE([disable])
 
 AC_PROG_CC
 AC_PROG_FC

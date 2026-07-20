@@ -72,6 +72,8 @@ module pairwise_sum
                        & workspace(1:n), &  !! INOUT
                        & output          )  !! OUT
 
+        deallocate(workspace)
+
     end function sum_hp_sp
 
 
@@ -105,6 +107,8 @@ module pairwise_sum
                        & workspace(1:n), &  !! INOUT
                        & output          )  !! OUT
 
+        deallocate(workspace)
+
     end function sum_hp_dp
 
 
@@ -137,6 +141,8 @@ module pairwise_sum
         call sum_hp_core(n             , &  !! IN
                        & workspace(1:n), &  !! INOUT
                        & output          )  !! OUT
+
+        deallocate(workspace)
 
     end function sum_hp_qp
 

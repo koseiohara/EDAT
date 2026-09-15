@@ -61,6 +61,8 @@ FORTRAN_SOURCES="
   pairwise_sum
   pairwise_mean
   pairwise_variance
+  pairwise_covariance
+  pairwise_corrcoef
   edat_math
   edat_float
   edat_sort
@@ -127,6 +129,8 @@ $OBJDIR/c_qsort.o
 $OBJDIR/pairwise_sum.o
 $OBJDIR/pairwise_mean.o
 $OBJDIR/pairwise_variance.o
+$OBJDIR/pairwise_covariance.o
+$OBJDIR/pairwise_corrcoef.o
 $OBJDIR/edat_math.o
 $OBJDIR/edat_float.o
 $OBJDIR/edat_sort.o
@@ -156,6 +160,24 @@ for mode in record recl missing; do
   fi
 done
 echo "test_negative_binio: PASS"
+
+fc_link "$BINDIR/test_negative_math" "$ROOT/tests/test_negative_math.F90" $OBJECTS
+for mode in covariance_shape corrcoef_shape; do
+  log="$BUILD/negative_$mode.log"
+  if "$BINDIR/test_negative_math" "$mode" >"$log" 2>&1; then
+    echo "FAIL: negative math case '$mode' unexpectedly succeeded" >&2
+    exit 1
+  fi
+  case "$mode" in
+    covariance_shape)
+      grep -q 'covariance: array shapes must match' "$log"
+      ;;
+    corrcoef_shape)
+      grep -q 'corrcoef: array shapes must match' "$log"
+      ;;
+  esac
+done
+echo "test_negative_math: PASS"
 
 cat > "$BUILD/external_consumer.F90" <<'EOF_EXTERNAL'
 program external_consumer

@@ -266,7 +266,8 @@ pure function CORRCOEF_DIM_4(arr1, arr2, dim) result(output)
         return
     endif
 
-    output(:,:,:) = covariance(arr1(:,:,:,:), arr2(:,:,:,:), dim) / sqrt(variance(arr1(:,:,:,:), dim)*variance(arr2(:,:,:,:), dim))
+    output(:,:,:) = covariance(arr1(:,:,:,:), arr2(:,:,:,:), dim) / &
+                  & sqrt(variance(arr1(:,:,:,:), dim) * variance(arr2(:,:,:,:), dim))
 
 end function CORRCOEF_DIM_4
 

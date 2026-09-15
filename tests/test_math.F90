@@ -6,8 +6,7 @@ program test_math
 
   call test_all_array_sizes
   call test_cancellation
-  call test_size_mismatch
-  call test_multidimensional_variance
+  call test_multidimensional_statistics
   call test_supported_precisions
 
   call finish_tests('test_math')
@@ -66,6 +65,13 @@ contains
       call check_close(variance(x, sample=.true.), 0.0_real64, &
                        0.0_real64, 0.0_real64, &
                        'sample variance of an empty array')
+      call check_close(covariance(x, y), 0.0_real64, 0.0_real64, &
+                       0.0_real64, 'covariance of empty arrays')
+      call check_close(covariance(x, y, sample=.true.), 0.0_real64, &
+                       0.0_real64, 0.0_real64, &
+                       'sample covariance of empty arrays')
+      call check_close(corrcoef(x, y), 0.0_real64, 0.0_real64, &
+                       0.0_real64, 'correlation of empty arrays')
       return
     end if
 
@@ -91,6 +97,10 @@ contains
     if (array_size == 1) then
       call check_nan(variance(x, sample=.true.), &
                      'sample variance of one value is NaN')
+      call check_nan(covariance(x, y, sample=.true.), &
+                     'sample covariance of one pair is NaN')
+      call check_nan(corrcoef(x, y), &
+                     'correlation of one pair is NaN')
     end if
 
     if (array_size > 1) then
@@ -118,26 +128,15 @@ contains
   end subroutine test_cancellation
 
 
-  subroutine test_size_mismatch
-    real(real64) :: x(5)
-    real(real64) :: y(2)
-
-    x = [1.0e16_real64, -1.0e16_real64, &
-         1.0_real64, 2.0_real64, 3.0_real64]
-    y = [1.0_real64, 2.0_real64]
-
-    call check_nan(covariance(x, y), &
-                   'covariance returns NaN for mismatched array sizes')
-  end subroutine test_size_mismatch
-
-
-  subroutine test_multidimensional_variance
+  subroutine test_multidimensional_statistics
     real(real64) :: values(2,3)
+    real(real64) :: related_values(2,3)
     real(real64) :: variance_dim1(3)
     real(real64) :: variance_dim2(2)
 
     values = reshape([1.0_real64, 2.0_real64, 3.0_real64, &
                       4.0_real64, 5.0_real64, 6.0_real64], shape(values))
+    related_values = 2.0_real64 * values + 1.0_real64
     variance_dim1 = variance(values, dim=1)
     variance_dim2 = variance(values, dim=2)
 
@@ -158,7 +157,41 @@ contains
     call check(all(abs(variance(values, dim=1, sample=.true.) - 0.5_real64) &
                    < 5.0e-14_real64), &
                'sample variance supports dimensional reduction')
-  end subroutine test_multidimensional_variance
+
+    call check_close(covariance(values(:,1), related_values(:,1), dim=1), &
+                     0.5_real64, 5.0e-14_real64, 5.0e-14_real64, &
+                     'covariance supports rank-1 dim reduction')
+    call check_close(covariance(values, related_values), &
+                     35.0_real64 / 6.0_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'covariance supports full rank-2 reduction')
+    call check_close(covariance(values, related_values, sample=.true.), &
+                     7.0_real64, 5.0e-14_real64, 5.0e-14_real64, &
+                     'sample covariance supports full rank-2 reduction')
+    call check(all(abs(covariance(values, related_values, dim=1) &
+                       - 0.5_real64) < 5.0e-14_real64), &
+               'covariance supports dim=1 reduction')
+    call check(all(abs(covariance(values, related_values, dim=2) &
+                       - 16.0_real64 / 3.0_real64) < 5.0e-14_real64), &
+               'covariance supports dim=2 reduction')
+    call check(all(abs(covariance(values, related_values, dim=1, &
+                                  sample=.true.) - 1.0_real64) &
+                   < 5.0e-14_real64), &
+               'sample covariance supports dimensional reduction')
+
+    call check_close(corrcoef(values(:,1), related_values(:,1), dim=1), &
+                     1.0_real64, 5.0e-14_real64, 5.0e-14_real64, &
+                     'corrcoef supports rank-1 dim reduction')
+    call check_close(corrcoef(values, related_values), 1.0_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'corrcoef supports full rank-2 reduction')
+    call check(all(abs(corrcoef(values, related_values, dim=1) &
+                       - 1.0_real64) < 5.0e-14_real64), &
+               'corrcoef supports dim=1 reduction')
+    call check(all(abs(corrcoef(values, related_values, dim=2) &
+                       - 1.0_real64) < 5.0e-14_real64), &
+               'corrcoef supports dim=2 reduction')
+  end subroutine test_multidimensional_statistics
 
 
   subroutine test_supported_precisions
@@ -182,6 +215,22 @@ contains
     call check_close(real(variance(real(values, real128)), real64), &
                      2.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
                      'variance supports real128')
+    call check_close(real(covariance(real(values, real32), &
+                                     real(values, real32)), real64), &
+                     2.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
+                     'covariance supports real32')
+    call check_close(real(covariance(real(values, real128), &
+                                     real(values, real128)), real64), &
+                     2.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
+                     'covariance supports real128')
+    call check_close(real(corrcoef(real(values, real32), &
+                                   real(values, real32)), real64), &
+                     1.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
+                     'corrcoef supports real32')
+    call check_close(real(corrcoef(real(values, real128), &
+                                   real(values, real128)), real64), &
+                     1.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
+                     'corrcoef supports real128')
   end subroutine test_supported_precisions
 
 end program test_math

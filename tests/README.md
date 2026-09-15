@@ -46,7 +46,7 @@ Checks every array size from 0 through 150. The suite covers:
 - population and sample variance;
 - covariance;
 - correlation;
-- mismatched input sizes;
+- multidimensional variance, covariance, and correlation reductions;
 - `real32`, `real64`, and `real128` entry points;
 - cancellation-sensitive input.
 
@@ -114,6 +114,8 @@ reader can identify the intent of each test before reading its mechanics.
 - direct byte-order reversal rather than only testing that conversion is self-inverse.
 
 `test_negative_binio.f90` is run as a subprocess. Nonzero termination is required for invalid record numbers, invalid record lengths, and missing input files.
+
+`test_negative_math.F90` is also run as a subprocess. It verifies that covariance and correlation reject mismatched array shapes with the documented `ERROR STOP` messages.
 
 The main runner also compiles and runs an external consumer program against the generated module files and objects.
 

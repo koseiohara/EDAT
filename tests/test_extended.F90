@@ -46,7 +46,6 @@ contains
     call check_nan(corrcoef(constant, constant), 'constant-array correlation is NaN')
     call check_close(corrcoef(x, y), -1.0_real64, 1.0e-14_real64, 1.0e-14_real64, 'perfect negative correlation')
     call check_close(covariance(x, y, sample=.true.), -40.0_real64/3.0_real64, 1.0e-14_real64, 1.0e-14_real64, 'sample covariance')
-    call check_nan(corrcoef(x, y(1:3)), 'correlation size mismatch is NaN')
     deallocate(empty)
   end subroutine
 

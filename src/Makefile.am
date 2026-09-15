@@ -1,11 +1,14 @@
 
 lib_LIBRARIES = libedat.a
 
+EXTRA_DIST = pairwise_variance_spec.F90
+
 libedat_a_SOURCES = \
   c_qsort.c \
   edat_sort.F90 \
   pairwise_sum.F90 \
   pairwise_mean.F90 \
+  pairwise_variance.F90 \
   edat_math.F90 \
   edat_caseconverter.F90 \
   edat_string.F90 \
@@ -31,9 +34,15 @@ nodist_modinclude_DATA = \
 
 pairwise_mean.$(OBJEXT): pairwise_sum.$(OBJEXT)
 
-edat_math.$(OBJEXT): \
+pairwise_variance.$(OBJEXT): \
+  pairwise_variance_spec.F90 \
   pairwise_sum.$(OBJEXT) \
   pairwise_mean.$(OBJEXT)
+
+edat_math.$(OBJEXT): \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT) \
+  pairwise_variance.$(OBJEXT)
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 

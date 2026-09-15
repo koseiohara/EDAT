@@ -6,7 +6,7 @@ function MEAN_1(arr, dim) result(output)
 pure function MEAN_1(arr, dim) result(output)
 #endif
     real(RK), intent(in) :: arr(:)
-    integer , intent(in) , optional :: dim
+    integer , intent(in), optional :: dim
 
     real(RK)    :: output
     integer(ik) :: n

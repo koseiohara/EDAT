@@ -7,6 +7,7 @@ program test_math
   call test_all_array_sizes
   call test_cancellation
   call test_size_mismatch
+  call test_multidimensional_variance
   call test_supported_precisions
 
   call finish_tests('test_math')
@@ -60,6 +61,11 @@ contains
     if (array_size == 0) then
       call check_close(mean(x), 0.0_real64, 0.0_real64, 0.0_real64, &
                        'mean of an empty array')
+      call check_close(variance(x), 0.0_real64, 0.0_real64, 0.0_real64, &
+                       'population variance of an empty array')
+      call check_close(variance(x, sample=.true.), 0.0_real64, &
+                       0.0_real64, 0.0_real64, &
+                       'sample variance of an empty array')
       return
     end if
 
@@ -81,6 +87,11 @@ contains
     write(description, '(A,I0)') 'population covariance, size=', array_size
     call check_close(covariance(x, y), expected_population_covariance, &
                      5.0e-14_real64, 5.0e-14_real64, description)
+
+    if (array_size == 1) then
+      call check_nan(variance(x, sample=.true.), &
+                     'sample variance of one value is NaN')
+    end if
 
     if (array_size > 1) then
       write(description, '(A,I0)') 'sample variance, size=', array_size
@@ -120,6 +131,36 @@ contains
   end subroutine test_size_mismatch
 
 
+  subroutine test_multidimensional_variance
+    real(real64) :: values(2,3)
+    real(real64) :: variance_dim1(3)
+    real(real64) :: variance_dim2(2)
+
+    values = reshape([1.0_real64, 2.0_real64, 3.0_real64, &
+                      4.0_real64, 5.0_real64, 6.0_real64], shape(values))
+    variance_dim1 = variance(values, dim=1)
+    variance_dim2 = variance(values, dim=2)
+
+    call check_close(variance(values(:,1), dim=1), 0.25_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'population variance supports rank-1 dim reduction')
+    call check_close(variance(values), 35.0_real64 / 12.0_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'population variance supports full rank-2 reduction')
+    call check_close(variance(values, sample=.true.), 3.5_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'sample variance supports full rank-2 reduction')
+    call check(all(abs(variance_dim1 - 0.25_real64) < 5.0e-14_real64), &
+               'population variance supports dim=1 reduction')
+    call check(all(abs(variance_dim2 - 8.0_real64 / 3.0_real64) &
+                   < 5.0e-14_real64), &
+               'population variance supports dim=2 reduction')
+    call check(all(abs(variance(values, dim=1, sample=.true.) - 0.5_real64) &
+                   < 5.0e-14_real64), &
+               'sample variance supports dimensional reduction')
+  end subroutine test_multidimensional_variance
+
+
   subroutine test_supported_precisions
     integer :: values(5)
 
@@ -134,6 +175,13 @@ contains
       abs(real(sum_hp(real(values, real128)), real64) - 15.0_real64) &
         < 1.0e-14_real64, &
       'sum_hp supports real128')
+
+    call check_close(real(variance(real(values, real32)), real64), &
+                     2.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
+                     'variance supports real32')
+    call check_close(real(variance(real(values, real128)), real64), &
+                     2.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
+                     'variance supports real128')
   end subroutine test_supported_precisions
 
 end program test_math

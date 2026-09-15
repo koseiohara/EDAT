@@ -59,6 +59,8 @@ TEST_CFLAGS=${TEST_CFLAGS:--O0 -g}
 
 FORTRAN_SOURCES="
   pairwise_sum
+  pairwise_mean
+  pairwise_variance
   edat_math
   edat_float
   edat_sort
@@ -123,6 +125,8 @@ fc_compile "$ROOT/tests/test_support.F90" "$OBJDIR/test_support.o"
 OBJECTS="
 $OBJDIR/c_qsort.o
 $OBJDIR/pairwise_sum.o
+$OBJDIR/pairwise_mean.o
+$OBJDIR/pairwise_variance.o
 $OBJDIR/edat_math.o
 $OBJDIR/edat_float.o
 $OBJDIR/edat_sort.o

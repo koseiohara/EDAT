@@ -1,8 +1,9 @@
 module EDAT_Math
 
     use, intrinsic :: iso_fortran_env, only : rk=>real128
-    use :: pairwise_sum , only : sum_hp
-    use :: pairwise_mean, only : mean
+    use :: pairwise_sum     , only : sum_hp
+    use :: pairwise_mean    , only : mean
+    use :: pairwise_variance, only : variance
 
     implicit none
 
@@ -137,13 +138,6 @@ module EDAT_Math
             & covariance_dp, &
             & covariance_qp
     end interface covariance
-
-    interface variance
-        module procedure &
-            & variance_sp, &
-            & variance_dp, &
-            & variance_qp
-    end interface variance
 
     ! interface mean
     !     module procedure &
@@ -423,141 +417,6 @@ module EDAT_Math
         output = sum_hp((array1(1:n)-mean1)*(array2(1:n)-mean2)) / real(sample_num, kind=lrk)
 
     end function covariance_qp
-
-
-    pure function variance_sp(array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real32
-        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
-        real(lrk), intent(in) :: array(:)
-        logical, intent(in), optional :: sample
-
-        real(lrk) :: output
-        real(lrk) :: array_mean
-        integer(lik) :: n
-        integer(lik) :: sample_num
-
-        n = size(array, kind=lik)
-
-        if (present(sample)) then
-            if (sample) then
-                sample_num = n - 1_lik
-                if (sample_num <= 0_lik) then
-                    if (sample_num == 0_lik) then
-                        output = ieee_value(output, ieee_quiet_nan)
-                    else
-                        output = 0._lrk
-                    endif
-                    return
-                endif
-            else
-                sample_num = n
-                if (n <= 0_lik) then
-                    output = 0._lrk
-                    return
-                endif
-            endif
-        else
-            sample_num = n
-            if (n <= 0_lik) then
-                output = 0._lrk
-                return
-            endif
-        endif
-
-        array_mean = mean(array(1:n))
-        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
-
-    end function variance_sp
-
-
-    pure function variance_dp(array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real64
-        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
-        real(lrk), intent(in) :: array(:)
-        logical, intent(in), optional :: sample
-
-        real(lrk) :: output
-        real(lrk) :: array_mean
-        integer(lik) :: n
-        integer(lik) :: sample_num
-
-        n = size(array, kind=lik)
-
-        if (present(sample)) then
-            if (sample) then
-                sample_num = n - 1_lik
-                if (sample_num <= 0_lik) then
-                    if (sample_num == 0_lik) then
-                        output = ieee_value(output, ieee_quiet_nan)
-                    else
-                        output = 0._lrk
-                    endif
-                    return
-                endif
-            else
-                sample_num = n
-                if (n <= 0_lik) then
-                    output = 0._lrk
-                    return
-                endif
-            endif
-        else
-            sample_num = n
-            if (n <= 0_lik) then
-                output = 0._lrk
-                return
-            endif
-        endif
-
-        array_mean = mean(array(1:n))
-        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
-
-    end function variance_dp
-
-
-    pure function variance_qp(array, sample) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real128
-        use, intrinsic :: ieee_arithmetic, only : ieee_value, ieee_quiet_nan
-        real(lrk), intent(in) :: array(:)
-        logical, intent(in), optional :: sample
-
-        real(lrk) :: output
-        real(lrk) :: array_mean
-        integer(lik) :: n
-        integer(lik) :: sample_num
-
-        n = size(array, kind=lik)
-
-        if (present(sample)) then
-            if (sample) then
-                sample_num = n - 1_lik
-                if (sample_num <= 0_lik) then
-                    if (sample_num == 0_lik) then
-                        output = ieee_value(output, ieee_quiet_nan)
-                    else
-                        output = 0._lrk
-                    endif
-                    return
-                endif
-            else
-                sample_num = n
-                if (n <= 0_lik) then
-                    output = 0._lrk
-                    return
-                endif
-            endif
-        else
-            sample_num = n
-            if (n <= 0_lik) then
-                output = 0._lrk
-                return
-            endif
-        endif
-
-        array_mean = mean(array(1:n))
-        output = sum_hp((array(1:n) - array_mean)**2) / real(sample_num, kind=lrk)
-
-    end function variance_qp
 
 
     ! pure function mean_sp(array) result(output)

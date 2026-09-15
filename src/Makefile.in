@@ -137,7 +137,8 @@ libedat_a_RANLIB = $(RANLIB)
 libedat_a_LIBADD =
 am_libedat_a_OBJECTS = c_qsort.$(OBJEXT) edat_sort.$(OBJEXT) \
 	pairwise_sum.$(OBJEXT) pairwise_mean.$(OBJEXT) \
-	edat_math.$(OBJEXT) edat_caseconverter.$(OBJEXT) \
+	pairwise_variance.$(OBJEXT) edat_math.$(OBJEXT) \
+	edat_caseconverter.$(OBJEXT) \
 	edat_string.$(OBJEXT) edat_float.$(OBJEXT) \
 	integral_sp.$(OBJEXT) integral_dp.$(OBJEXT) \
 	integral_qp.$(OBJEXT) derivative_sp.$(OBJEXT) \
@@ -310,11 +311,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LIBRARIES = libedat.a
+EXTRA_DIST = pairwise_variance_spec.F90
+
 libedat_a_SOURCES = \
   c_qsort.c \
   edat_sort.F90 \
   pairwise_sum.F90 \
   pairwise_mean.F90 \
+  pairwise_variance.F90 \
   edat_math.F90 \
   edat_caseconverter.F90 \
   edat_string.F90 \
@@ -679,9 +683,15 @@ uninstall-am: uninstall-libLIBRARIES uninstall-nodist_modincludeDATA
 
 pairwise_mean.$(OBJEXT): pairwise_sum.$(OBJEXT)
 
-edat_math.$(OBJEXT): \
+pairwise_variance.$(OBJEXT): \
+  pairwise_variance_spec.F90 \
   pairwise_sum.$(OBJEXT) \
   pairwise_mean.$(OBJEXT)
+
+edat_math.$(OBJEXT): \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT) \
+  pairwise_variance.$(OBJEXT)
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 

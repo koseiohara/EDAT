@@ -1,13 +1,12 @@
 
 
 #ifdef DEBUG
-function SUM_HP_1(arr, dim, stat) result(output)
+function SUM_HP_1(arr, dim) result(output)
 #else
-pure function SUM_HP_1(arr, dim, stat) result(output)
+pure function SUM_HP_1(arr, dim) result(output)
 #endif
     real(RK), intent(in) :: arr(:)
     integer , intent(in) , optional :: dim
-    integer , intent(out), optional :: stat
 
     real(RK), allocatable :: arr_cpy(:)
     real(RK) :: oarr(1)
@@ -15,19 +14,12 @@ pure function SUM_HP_1(arr, dim, stat) result(output)
     integer(ik) :: n
 
     if (present(dim)) then
-        if (dim > 1 .OR. dim < 0) then
-            if (present(stat)) then
-                stat = -1
-            endif
-            return
+        if (dim > 1 .OR. dim <= 0) then
+            ERROR STOP
         endif
     endif
 
-    if (present(stat)) then
-        stat = 0
-    endif
-
-    n = size(arr)
+    n = size(arr, kind=ik)
 
     if (n <= 3_ik) then
         if (n == 0) then
@@ -56,6 +48,171 @@ pure function SUM_HP_1(arr, dim, stat) result(output)
     output = oarr(1)
 
 end function SUM_HP_1
+
+
+#ifdef DEBUG
+function SUM_HP_DIM_2(arr, dim) result(output)
+#else
+pure function SUM_HP_DIM_2(arr, dim) result(output)
+#endif
+    integer, parameter :: ndim = 2
+
+    real(RK), intent(in) :: arr(:,:)
+    integer , intent(in) :: dim
+
+    real(RK), allocatable :: arr_cpy(:)
+    real(RK), allocatable :: output(:)
+    integer(ik) :: ishape(ndim)
+    integer(ik) :: oshape(ndim-1)
+    integer(ik) :: n
+    integer(ik) :: howmany
+    integer(ik) :: stride
+    integer(ik) :: isize
+    integer(ik) :: osize
+    integer     :: i
+
+    if (dim > ndim .OR. dim <= 0) then
+        ERROR STOP
+    endif
+
+    ishape(1:ndim) = shape(arr, kind=ik)
+
+    oshape(1:dim-1)    = ishape(1:dim-1)
+    oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
+    stride = 1_ik
+    do i = 1, dim-1
+        stride = stride * ishape(i)
+    enddo
+
+    n = ishape(dim)
+
+    howmany = 1
+    do i = dim+1, ndim
+        howmany = howmany * ishape(i)
+    enddo
+
+    isize = stride * n * howmany
+
+    allocate(arr_cpy(isize))
+    allocate(output(oshape(1)))
+
+    if (n == 0_ik) then
+        output(:) = real(0, kind=RK)
+        return
+    endif
+
+    arr_cpy(1:isize) = reshape(arr, shape=[isize])
+
+    call CORE(n               , &  !! IN
+            & howmany         , &  !! IN
+            & stride          , &  !! IN
+            & arr_cpy(1:isize), &  !! IN
+            & output(:)         )  !! OUT
+
+end function SUM_HP_DIM_2
+
+
+#ifdef DEBUG
+function SUM_HP_FULL_2(arr) result(output)
+#else
+pure function SUM_HP_FULL_2(arr) result(output)
+#endif
+    real(RK), intent(in) :: arr(:,:)
+
+    real(RK), allocatable :: arr_cpy(:)
+    real(RK)    :: oarr(1)
+    real(RK)    :: output
+    integer(ik) :: n
+
+    n = size(arr, kind=ik)
+
+    if (n == 0_ik) then
+        output = real(0, kind=RK)
+        return
+    endif
+
+    allocate(arr_cpy(n))
+
+    arr_cpy(1:n) = reshape(arr, shape=[n])
+
+    call CORE(n           , &  !! IN
+            & 1_ik        , &  !! IN
+            & 1_ik        , &  !! IN
+            & arr_cpy(1:n), &  !! IN
+            & oarr(1:1)     )  !! OUT
+
+    output = oarr(1)
+
+end function SUM_HP_FULL_2
+
+
+#ifdef DEBUG
+function SUM_HP_DIM_3(arr, dim) result(output)
+#else
+pure function SUM_HP_DIM_3(arr, dim) result(output)
+#endif
+    integer, parameter :: ndim = 3
+
+    real(RK), intent(in) :: arr(:,:,:)
+    integer , intent(in) :: dim
+
+    real(RK), allocatable :: arr_cpy(:)
+    real(RK), allocatable :: oarr(:)
+    real(RK), allocatable :: output(:,:)
+    integer(ik) :: ishape(ndim)
+    integer(ik) :: oshape(ndim-1)
+    integer(ik) :: n
+    integer(ik) :: howmany
+    integer(ik) :: stride
+    integer(ik) :: isize
+    integer(ik) :: osize
+    integer     :: i
+
+    if (dim > ndim .OR. dim <= 0) then
+        ERROR STOP
+    endif
+
+    ishape(1:ndim) = shape(arr, kind=ik)
+
+    oshape(1:dim-1)    = ishape(1:dim-1)
+    oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
+    stride = 1_ik
+    do i = 1, dim-1
+        stride = stride * ishape(i)
+    enddo
+
+    n = ishape(dim)
+
+    howmany = 1
+    do i = dim+1, ndim
+        howmany = howmany * ishape(i)
+    enddo
+
+    isize = stride * n * howmany
+    osize = stride * howmany
+
+    allocate(arr_cpy(isize))
+    allocate(oarr(osize))
+    allocate(output(oshape(1),oshape(2)))
+
+    if (n == 0_ik) then
+        output(:,:) = real(0, kind=RK)
+        return
+    endif
+
+    arr_cpy(1:isize) = reshape(arr, shape=[isize])
+
+    call CORE(n               , &  !! IN
+            & howmany         , &  !! IN
+            & stride          , &  !! IN
+            & arr_cpy(1:isize), &  !! IN
+            & oarr(:)           )  !! OUT
+
+    output(:,:) = reshape(oarr(:), shape=oshape)
+
+end function SUM_HP_DIM_3
 
 
 #ifdef DEBUG
@@ -99,19 +256,22 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 
     work_n = n_resized
     half_n = shiftr(work_n, 1)
-    nwork  = half_n * howmany * stride
+    nwork  = half_n * stride
 
-    allocate(work_arr(nwork))
 
-    do
-        if (work_n > 2) then
-            work_n = shiftr(work_n, 1)
-            do i = 0, howmany-1
+    if (work_n > 2) then
+        allocate(work_arr(nwork))
+    endif
+
+    do i = 0, howmany-1
+        work_n = n_resized
+        do
+            if (work_n > 2) then
+                work_n = shiftr(work_n, 1)
 #ifdef DEBUG
                 write(ounit,'(A,I0)') 'i = ', i
 #endif
                 skip_iarr = i * n_resized * stride
-                skip_work = i * half_n    * stride
 
                 idx1 = 1
                 idx2 = 1 + stride
@@ -119,7 +279,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #ifdef DEBUG
                     write(ounit,'(A,I0)') 'j = ', j
 #endif
-                    ioff = skip_work + (j - 1) * stride
+                    ioff = (j - 1) * stride
                     do k = 1, stride
 #ifdef DEBUG
                         write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
@@ -134,15 +294,12 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                     idx1 = idx2
                     idx2 = idx1 + stride
                 enddo
-            enddo
 
-            work_n = shiftr(work_n, 1)
-            do i = 0, howmany-1
+                work_n = shiftr(work_n, 1)
 #ifdef DEBUG
                 write(ounit,'(A,I0)') 'i = ', i
 #endif
                 skip_iarr = i * n_resized * stride
-                skip_work = i * half_n    * stride
 
                 idx1 = 1
                 idx2 = 1 + stride
@@ -154,10 +311,10 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                     do k = 1, stride
 #ifdef DEBUG
                         write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
-                                                        & ') = work_arr(', skip_work+idx1,&
-                                                        & ') + work_arr(', skip_work+idx2, ')'
+                                                        & ') = work_arr(', idx1,&
+                                                        & ') + work_arr(', idx2, ')'
 #endif
-                        iarr(ioff+k) = work_arr(skip_work+idx1) + work_arr(skip_work+idx2)
+                        iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
 
                         idx1 = idx1 + 1
                         idx2 = idx1 + stride
@@ -165,12 +322,12 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                     idx1 = idx2
                     idx2 = idx1 + stride
                 enddo
-            enddo
 
-            cycle
-        else
-            exit
-        endif
+                cycle
+            else
+                exit
+            endif
+        enddo
     enddo
 
     if (work_n == 2) then
@@ -199,7 +356,9 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
         enddo
     endif
 
-    deallocate(work_arr)
+    if (allocated(work_arr)) then
+        deallocate(work_arr)
+    endif
 
 end subroutine CORE
 

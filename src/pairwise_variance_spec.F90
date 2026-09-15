@@ -32,8 +32,8 @@ pure function VARIANCE_1(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:))
+    output = sum_hp((arr(:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_1
 
@@ -53,7 +53,7 @@ pure function VARIANCE_DIM_1(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 1'
     endif
 
-    output = VARIANCE_1(arr, sample)
+    output = VARIANCE_1(arr(:), sample)
 
 end function VARIANCE_DIM_1
 
@@ -80,7 +80,7 @@ pure function VARIANCE_DIM_2(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 2'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -109,8 +109,8 @@ pure function VARIANCE_DIM_2(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1)))
-    array_mean(:) = mean(arr, dim)
-    output(:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:) = mean(arr(:,:), dim)
+    output(:) = sum_hp((arr(:,:) - spread(array_mean(:), dim, n))**2, dim)
     output(:) = output(:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_2
@@ -148,8 +148,8 @@ pure function VARIANCE_FULL_2(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:))
+    output = sum_hp((arr(:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_2
 
@@ -176,7 +176,7 @@ pure function VARIANCE_DIM_3(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 3'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -205,8 +205,8 @@ pure function VARIANCE_DIM_3(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2)))
-    array_mean(:,:) = mean(arr, dim)
-    output(:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:) = mean(arr(:,:,:), dim)
+    output(:,:) = sum_hp((arr(:,:,:) - spread(array_mean(:,:), dim, n))**2, dim)
     output(:,:) = output(:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_3
@@ -244,8 +244,8 @@ pure function VARIANCE_FULL_3(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:))
+    output = sum_hp((arr(:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_3
 
@@ -272,7 +272,7 @@ pure function VARIANCE_DIM_4(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 4'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -301,8 +301,8 @@ pure function VARIANCE_DIM_4(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3)))
-    array_mean(:,:,:) = mean(arr, dim)
-    output(:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:) = mean(arr(:,:,:,:), dim)
+    output(:,:,:) = sum_hp((arr(:,:,:,:) - spread(array_mean(:,:,:), dim, n))**2, dim)
     output(:,:,:) = output(:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_4
@@ -340,8 +340,8 @@ pure function VARIANCE_FULL_4(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:))
+    output = sum_hp((arr(:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_4
 
@@ -368,7 +368,7 @@ pure function VARIANCE_DIM_5(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 5'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -397,8 +397,8 @@ pure function VARIANCE_DIM_5(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4)))
-    array_mean(:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:) = mean(arr(:,:,:,:,:), dim)
+    output(:,:,:,:) = sum_hp((arr(:,:,:,:,:) - spread(array_mean(:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:) = output(:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_5
@@ -436,8 +436,8 @@ pure function VARIANCE_FULL_5(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_5
 
@@ -464,7 +464,7 @@ pure function VARIANCE_DIM_6(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 6'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -493,8 +493,8 @@ pure function VARIANCE_DIM_6(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5)))
-    array_mean(:,:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:,:) = mean(arr(:,:,:,:,:,:), dim)
+    output(:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:) = output(:,:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_6
@@ -532,8 +532,8 @@ pure function VARIANCE_FULL_6(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_6
 
@@ -560,7 +560,7 @@ pure function VARIANCE_DIM_7(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 7'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -589,8 +589,8 @@ pure function VARIANCE_DIM_7(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6)))
-    array_mean(:,:,:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:), dim)
+    output(:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:) = output(:,:,:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_7
@@ -628,8 +628,8 @@ pure function VARIANCE_FULL_7(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_7
 
@@ -656,7 +656,7 @@ pure function VARIANCE_DIM_8(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 8'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -685,8 +685,8 @@ pure function VARIANCE_DIM_8(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7)))
-    array_mean(:,:,:,:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:), dim)
+    output(:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_8
@@ -724,8 +724,8 @@ pure function VARIANCE_FULL_8(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_8
 
@@ -752,7 +752,7 @@ pure function VARIANCE_DIM_9(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 9'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -781,8 +781,8 @@ pure function VARIANCE_DIM_9(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
-    array_mean(:,:,:,:,:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:,:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:,:), dim)
+    output(:,:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_9
@@ -820,8 +820,8 @@ pure function VARIANCE_FULL_9(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_9
 
@@ -848,7 +848,7 @@ pure function VARIANCE_DIM_10(arr, dim, sample) result(output)
         ERROR STOP 'variance: dim must be between 1 and 10'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -877,8 +877,8 @@ pure function VARIANCE_DIM_10(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
-    array_mean(:,:,:,:,:,:,:,:,:) = mean(arr, dim)
-    output(:,:,:,:,:,:,:,:,:) = sum_hp((arr - spread(array_mean, dim, n))**2, dim)
+    array_mean(:,:,:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:,:,:), dim)
+    output(:,:,:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:,:) / real(sample_num, kind=RK)
 
 end function VARIANCE_DIM_10
@@ -916,8 +916,8 @@ pure function VARIANCE_FULL_10(arr, sample) result(output)
         return
     endif
 
-    array_mean = mean(arr)
-    output = sum_hp((arr - array_mean)**2) / real(sample_num, kind=RK)
+    array_mean = mean(arr(:,:,:,:,:,:,:,:,:,:))
+    output = sum_hp((arr(:,:,:,:,:,:,:,:,:,:) - array_mean)**2) / real(sample_num, kind=RK)
 
 end function VARIANCE_FULL_10
 

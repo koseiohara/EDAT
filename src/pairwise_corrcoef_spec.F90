@@ -511,7 +511,7 @@ pure function CORRCOEF_DIM_7(arr1, arr2, dim) result(output)
         ERROR STOP 'corrcoef: dim must be between 1 and 7'
     endif
 
-    ishape(1:ndim) = shape(arr1, kind=ik)
+    ishape(1:ndim)     = shape(arr1, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -532,7 +532,8 @@ pure function CORRCOEF_DIM_7(arr1, arr2, dim) result(output)
         return
     endif
 
-    output(:,:,:,:,:,:) = covariance(arr1, arr2, dim) / sqrt(variance(arr1, dim)*variance(arr2, dim))
+    output(:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:), dim) &
+                        & / sqrt(variance(arr1(:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:), dim))
 
 end function CORRCOEF_DIM_7
 
@@ -567,10 +568,10 @@ pure function CORRCOEF_FULL_7(arr1, arr2) result(output)
         return
     endif
 
-    covar     = covariance(arr1, arr2)
-    variance1 = variance(arr1)
-    variance2 = variance(arr2)
-    output = covar / sqrt(variance1*variance2)
+    covar     = covariance(arr1(:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:))
+    variance1 = variance(arr1(:,:,:,:,:,:,:))
+    variance2 = variance(arr2(:,:,:,:,:,:,:))
+    output    = covar / sqrt(variance1*variance2)
 
 end function CORRCOEF_FULL_7
 
@@ -599,7 +600,7 @@ pure function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
         ERROR STOP 'corrcoef: dim must be between 1 and 8'
     endif
 
-    ishape(1:ndim) = shape(arr1, kind=ik)
+    ishape(1:ndim)     = shape(arr1, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -620,7 +621,8 @@ pure function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
         return
     endif
 
-    output(:,:,:,:,:,:,:) = covariance(arr1, arr2, dim) / sqrt(variance(arr1, dim)*variance(arr2, dim))
+    output(:,:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:), dim) &
+                          & / sqrt(variance(arr1(:,:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:,:), dim))
 
 end function CORRCOEF_DIM_8
 
@@ -655,10 +657,10 @@ pure function CORRCOEF_FULL_8(arr1, arr2) result(output)
         return
     endif
 
-    covar     = covariance(arr1, arr2)
-    variance1 = variance(arr1)
-    variance2 = variance(arr2)
-    output = covar / sqrt(variance1*variance2)
+    covar     = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:))
+    variance1 = variance(arr1(:,:,:,:,:,:,:,:))
+    variance2 = variance(arr2(:,:,:,:,:,:,:,:))
+    output    = covar / sqrt(variance1*variance2)
 
 end function CORRCOEF_FULL_8
 
@@ -687,7 +689,7 @@ pure function CORRCOEF_DIM_9(arr1, arr2, dim) result(output)
         ERROR STOP 'corrcoef: dim must be between 1 and 9'
     endif
 
-    ishape(1:ndim) = shape(arr1, kind=ik)
+    ishape(1:ndim)     = shape(arr1, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -708,7 +710,8 @@ pure function CORRCOEF_DIM_9(arr1, arr2, dim) result(output)
         return
     endif
 
-    output(:,:,:,:,:,:,:,:) = covariance(arr1, arr2, dim) / sqrt(variance(arr1, dim)*variance(arr2, dim))
+    output(:,:,:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:,:), dim) &
+                            & / sqrt(variance(arr1(:,:,:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:,:,:), dim))
 
 end function CORRCOEF_DIM_9
 
@@ -743,10 +746,10 @@ pure function CORRCOEF_FULL_9(arr1, arr2) result(output)
         return
     endif
 
-    covar     = covariance(arr1, arr2)
-    variance1 = variance(arr1)
-    variance2 = variance(arr2)
-    output = covar / sqrt(variance1*variance2)
+    covar     = covariance(arr1(:,:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:,:))
+    variance1 = variance(arr1(:,:,:,:,:,:,:,:,:))
+    variance2 = variance(arr2(:,:,:,:,:,:,:,:,:))
+    output    = covar / sqrt(variance1*variance2)
 
 end function CORRCOEF_FULL_9
 
@@ -775,7 +778,7 @@ pure function CORRCOEF_DIM_10(arr1, arr2, dim) result(output)
         ERROR STOP 'corrcoef: dim must be between 1 and 10'
     endif
 
-    ishape(1:ndim) = shape(arr1, kind=ik)
+    ishape(1:ndim)     = shape(arr1, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -796,8 +799,8 @@ pure function CORRCOEF_DIM_10(arr1, arr2, dim) result(output)
         return
     endif
 
-    output(:,:,:,:,:,:,:,:,:) = covariance(arr1, arr2, dim) / &
-                              & sqrt(variance(arr1, dim)*variance(arr2, dim))
+    output(:,:,:,:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:,:,:), dim) &
+                              & / sqrt(variance(arr1(:,:,:,:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:,:,:,:), dim))
 
 end function CORRCOEF_DIM_10
 
@@ -832,10 +835,9 @@ pure function CORRCOEF_FULL_10(arr1, arr2) result(output)
         return
     endif
 
-    covar     = covariance(arr1, arr2)
-    variance1 = variance(arr1)
-    variance2 = variance(arr2)
-    output = covar / sqrt(variance1*variance2)
+    covar     = covariance(arr1(:,:,:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:,:,:))
+    variance1 = variance(arr1(:,:,:,:,:,:,:,:,:,:))
+    variance2 = variance(arr2(:,:,:,:,:,:,:,:,:,:))
+    output    = covar / sqrt(variance1*variance2)
 
 end function CORRCOEF_FULL_10
-

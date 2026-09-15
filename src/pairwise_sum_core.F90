@@ -1,12 +1,69 @@
 
 
 #ifdef DEBUG
+function SUM_HP_1(arr, dim, stat) result(output)
+#else
+pure function SUM_HP_1(arr, dim, stat) result(output)
+#endif
+    real(RK), intent(in) :: arr(:)
+    integer , intent(in) , optional :: dim
+    integer , intent(out), optional :: stat
+
+    real(RK), allocatable :: arr_cpy(:)
+    real(RK) :: oarr(1)
+    real(RK) :: output
+    integer(ik) :: n
+
+    if (present(dim)) then
+        if (dim > 1 .OR. dim < 0) then
+            if (present(stat)) then
+                stat = -1
+            endif
+            return
+        endif
+    endif
+
+    if (present(stat)) then
+        stat = 0
+    endif
+
+    n = size(arr)
+
+    if (n <= 3_ik) then
+        if (n == 0) then
+            output = real(0, kind=RK)
+        else if (n == 1) then
+            output = arr(1)
+        else if (n == 2) then
+            output = arr(1) + arr(2)
+        else if (n == 3) then
+            output = arr(1) + arr(2) + arr(3)
+        endif
+
+        return
+    endif
+
+    allocate(arr_cpy(n))
+
+    arr_cpy(1:n) = arr(1:n)
+
+    call CORE(n           , &  !! IN
+            & 1_ik        , &  !! IN
+            & 1_ik        , &  !! IN
+            & arr_cpy(1:n), &  !! IN
+            & oarr(1:1)     )  !! OUT
+
+    output = oarr(1)
+
+end function SUM_HP_1
+
+
+#ifdef DEBUG
 subroutine CORE(n, howmany, stride, iarr, oarr)
 #else
 pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #endif
 
-    use, intrinsic :: iso_fortran_env, only : ik=>int64
 #ifdef DEBUG
     use, intrinsic :: iso_fortran_env, only : ounit=>output_unit
 #endif
@@ -148,8 +205,6 @@ end subroutine CORE
 
 
 pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
-    use, intrinsic :: iso_fortran_env, only : ik=>int64
-
     integer(ik), intent(in) :: n
     integer(ik), intent(in) :: n_resized
     integer(ik), intent(in) :: stride
@@ -230,7 +285,6 @@ end subroutine RESIZE
 
 
 pure function largest_power_of_2(n) result(output)
-    use, intrinsic :: iso_fortran_env, only : ik=>int64
     integer(ik), intent(in) :: n
     integer(ik) :: output
     integer(ik) :: work

@@ -1,7 +1,7 @@
 
 
 module pairwise_sum
-    use, intrinsic :: iso_fortran_env, only : ik=>int64, real32, real64
+    use, intrinsic :: iso_fortran_env, only : ik=>int64, real32, real64, real128
 
     implicit none
 
@@ -47,6 +47,25 @@ module pairwise_sum
         module procedure sum_hp_dim_8_dp
         module procedure sum_hp_dim_9_dp
         module procedure sum_hp_dim_10_dp
+        module procedure sum_hp_1_qp
+        module procedure sum_hp_full_2_qp
+        module procedure sum_hp_full_3_qp
+        module procedure sum_hp_full_4_qp
+        module procedure sum_hp_full_5_qp
+        module procedure sum_hp_full_6_qp
+        module procedure sum_hp_full_7_qp
+        module procedure sum_hp_full_8_qp
+        module procedure sum_hp_full_9_qp
+        module procedure sum_hp_full_10_qp
+        module procedure sum_hp_dim_2_qp
+        module procedure sum_hp_dim_3_qp
+        module procedure sum_hp_dim_4_qp
+        module procedure sum_hp_dim_5_qp
+        module procedure sum_hp_dim_6_qp
+        module procedure sum_hp_dim_7_qp
+        module procedure sum_hp_dim_8_qp
+        module procedure sum_hp_dim_9_qp
+        module procedure sum_hp_dim_10_qp
     end interface sum_hp
 
     contains
@@ -121,6 +140,53 @@ module pairwise_sum
 #define SUM_HP_DIM_8 sum_hp_dim_8_dp
 #define SUM_HP_DIM_9 sum_hp_dim_9_dp
 #define SUM_HP_DIM_10 sum_hp_dim_10_dp
+#include "pairwise_sum_core.F90"
+#include "pairwise_sum_spec.F90"
+#undef RK
+#undef RESIZE
+#undef CORE
+#undef SUM_HP_1
+#undef SUM_HP_FULL_2
+#undef SUM_HP_FULL_3
+#undef SUM_HP_FULL_4
+#undef SUM_HP_FULL_5
+#undef SUM_HP_FULL_6
+#undef SUM_HP_FULL_7
+#undef SUM_HP_FULL_8
+#undef SUM_HP_FULL_9
+#undef SUM_HP_FULL_10
+#undef SUM_HP_DIM_2
+#undef SUM_HP_DIM_3
+#undef SUM_HP_DIM_4
+#undef SUM_HP_DIM_5
+#undef SUM_HP_DIM_6
+#undef SUM_HP_DIM_7
+#undef SUM_HP_DIM_8
+#undef SUM_HP_DIM_9
+#undef SUM_HP_DIM_10
+
+#define RK real128
+#define RESIZE resize_qp
+#define CORE sum_hp_core_qp
+#define SUM_HP_1 sum_hp_1_qp
+#define SUM_HP_FULL_2 sum_hp_full_2_qp
+#define SUM_HP_FULL_3 sum_hp_full_3_qp
+#define SUM_HP_FULL_4 sum_hp_full_4_qp
+#define SUM_HP_FULL_5 sum_hp_full_5_qp
+#define SUM_HP_FULL_6 sum_hp_full_6_qp
+#define SUM_HP_FULL_7 sum_hp_full_7_qp
+#define SUM_HP_FULL_8 sum_hp_full_8_qp
+#define SUM_HP_FULL_9 sum_hp_full_9_qp
+#define SUM_HP_FULL_10 sum_hp_full_10_qp
+#define SUM_HP_DIM_2 sum_hp_dim_2_qp
+#define SUM_HP_DIM_3 sum_hp_dim_3_qp
+#define SUM_HP_DIM_4 sum_hp_dim_4_qp
+#define SUM_HP_DIM_5 sum_hp_dim_5_qp
+#define SUM_HP_DIM_6 sum_hp_dim_6_qp
+#define SUM_HP_DIM_7 sum_hp_dim_7_qp
+#define SUM_HP_DIM_8 sum_hp_dim_8_qp
+#define SUM_HP_DIM_9 sum_hp_dim_9_qp
+#define SUM_HP_DIM_10 sum_hp_dim_10_qp
 #include "pairwise_sum_core.F90"
 #include "pairwise_sum_spec.F90"
 #undef RK

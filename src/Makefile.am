@@ -5,6 +5,7 @@ libedat_a_SOURCES = \
   c_qsort.c \
   edat_sort.F90 \
   pairwise_sum.F90 \
+  pairwise_mean.F90 \
   edat_math.F90 \
   edat_caseconverter.F90 \
   edat_string.F90 \
@@ -28,7 +29,11 @@ nodist_modinclude_DATA = \
   edat_met.mod \
   edat_binio.mod
 
-edat_math.$(OBJEXT): pairwise_sum.$(OBJEXT)
+pairwise_mean.$(OBJEXT): pairwise_sum.$(OBJEXT)
+
+edat_math.$(OBJEXT): \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT)
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 

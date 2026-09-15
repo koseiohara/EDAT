@@ -15,7 +15,7 @@ pure function SUM_HP_1(arr, dim) result(output)
 
     if (present(dim)) then
         if (dim > 1 .OR. dim <= 0) then
-            ERROR STOP
+            ERROR STOP 'sum_hp: dim must be between 1 and 1'
         endif
     endif
 
@@ -71,7 +71,7 @@ pure function SUM_HP_DIM_2(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 2'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -169,7 +169,7 @@ pure function SUM_HP_DIM_3(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 3'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -271,7 +271,7 @@ pure function SUM_HP_DIM_4(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 4'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -373,7 +373,7 @@ pure function SUM_HP_DIM_5(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 5'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -475,7 +475,7 @@ pure function SUM_HP_DIM_6(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 6'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -577,7 +577,7 @@ pure function SUM_HP_DIM_7(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 7'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -679,7 +679,7 @@ pure function SUM_HP_DIM_8(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 8'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -781,7 +781,7 @@ pure function SUM_HP_DIM_9(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 9'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)
@@ -883,7 +883,7 @@ pure function SUM_HP_DIM_10(arr, dim) result(output)
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP
+        ERROR STOP 'sum_hp: dim must be between 1 and 10'
     endif
 
     ishape(1:ndim) = shape(arr, kind=ik)

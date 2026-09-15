@@ -1,7 +1,8 @@
 module EDAT_Math
 
     use, intrinsic :: iso_fortran_env, only : rk=>real128
-    use :: pairwise_sum, only : sum_hp
+    use :: pairwise_sum , only : sum_hp
+    use :: pairwise_mean, only : mean
 
     implicit none
 
@@ -144,12 +145,12 @@ module EDAT_Math
             & variance_qp
     end interface variance
 
-    interface mean
-        module procedure &
-            & mean_sp, &
-            & mean_dp, &
-            & mean_qp
-    end interface mean
+    ! interface mean
+    !     module procedure &
+    !         & mean_sp, &
+    !         & mean_dp, &
+    !         & mean_qp
+    ! end interface mean
 
     contains
 
@@ -559,58 +560,58 @@ module EDAT_Math
     end function variance_qp
 
 
-    pure function mean_sp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real32
-        real(lrk), intent(in) :: array(:)
+    ! pure function mean_sp(array) result(output)
+    !     use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real32
+    !     real(lrk), intent(in) :: array(:)
 
-        real(lrk)    :: output
-        integer(lik) :: n
+    !     real(lrk)    :: output
+    !     integer(lik) :: n
 
-        n = size(array, kind=lik)
-        if (n == 0_lik) then
-            output = 0._lrk
-            return
-        endif
+    !     n = size(array, kind=lik)
+    !     if (n == 0_lik) then
+    !         output = 0._lrk
+    !         return
+    !     endif
 
-        output = sum_hp(array(1:n)) / real(n, kind=lrk)
+    !     output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
-    end function mean_sp
-
-
-    pure function mean_dp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real64
-        real(lrk), intent(in) :: array(:)
-
-        real(lrk)    :: output
-        integer(lik) :: n
-
-        n = size(array, kind=lik)
-        if (n == 0_lik) then
-            output = 0._lrk
-            return
-        endif
-
-        output = sum_hp(array(1:n)) / real(n, kind=lrk)
-
-    end function mean_dp
+    ! end function mean_sp
 
 
-    pure function mean_qp(array) result(output)
-        use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real128
-        real(lrk), intent(in) :: array(:)
+    ! pure function mean_dp(array) result(output)
+    !     use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real64
+    !     real(lrk), intent(in) :: array(:)
 
-        real(lrk)    :: output
-        integer(lik) :: n
+    !     real(lrk)    :: output
+    !     integer(lik) :: n
 
-        n = size(array, kind=lik)
-        if (n == 0_lik) then
-            output = 0._lrk
-            return
-        endif
+    !     n = size(array, kind=lik)
+    !     if (n == 0_lik) then
+    !         output = 0._lrk
+    !         return
+    !     endif
 
-        output = sum_hp(array(1:n)) / real(n, kind=lrk)
+    !     output = sum_hp(array(1:n)) / real(n, kind=lrk)
 
-    end function mean_qp
+    ! end function mean_dp
+
+
+    ! pure function mean_qp(array) result(output)
+    !     use, intrinsic :: iso_fortran_env, only : lik=>int64, lrk=>real128
+    !     real(lrk), intent(in) :: array(:)
+
+    !     real(lrk)    :: output
+    !     integer(lik) :: n
+
+    !     n = size(array, kind=lik)
+    !     if (n == 0_lik) then
+    !         output = 0._lrk
+    !         return
+    !     endif
+
+    !     output = sum_hp(array(1:n)) / real(n, kind=lrk)
+
+    ! end function mean_qp
 
 end module EDAT_Math
 

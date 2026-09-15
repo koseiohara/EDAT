@@ -228,6 +228,8 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
 end subroutine RESIZE
 
 
+#ifndef DEF_CORE_TOOLS
+#define DEF_CORE_TOOLS
 pure function largest_power_of_2(n) result(output)
     integer(ik), intent(in) :: n
     integer(ik) :: output
@@ -244,5 +246,6 @@ pure function largest_power_of_2(n) result(output)
     enddo
 
 end function largest_power_of_2
+#endif
 
 

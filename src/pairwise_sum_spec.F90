@@ -68,7 +68,6 @@ pure function SUM_HP_DIM_2(arr, dim) result(output)
     integer(ik) :: howmany
     integer(ik) :: stride
     integer(ik) :: isize
-    integer(ik) :: osize
     integer     :: i
 
     if (dim > ndim .OR. dim <= 0) then

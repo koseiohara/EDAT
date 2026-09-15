@@ -20,7 +20,7 @@ subroutine PROC(n, howmany, stride, iarr, oarr)
     integer(ik) :: k
     integer(ik) :: skip_iarr
     integer(ik) :: skip_work
-    integer(ik) :: idxl
+    integer(ik) :: ioff
     integer(ik) :: idx1
     integer(ik) :: idx2
 
@@ -43,14 +43,17 @@ subroutine PROC(n, howmany, stride, iarr, oarr)
                 idx1 = 1
                 idx2 = 1 + stride
                 do j = 1, work_n
-                    idxl = (j - 1) * stride
+#ifdef DEBUG
+                    write(ounit,'(A,I0)') 'j = ', j
+#endif
+                    ioff = skip_work + (j - 1) * stride
                     do k = 1, stride
 #ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', skip_work+k+idxl, &
+                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
                                                         & ') = iarr(', skip_iarr+idx1, &
                                                         & ') + iarr(', skip_iarr+idx2, ')'
 #endif
-                        work_arr(skip_work+k+idxl) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
+                        work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
 
                         idx1 = idx1 + 1
                         idx2 = idx1 + stride
@@ -71,14 +74,17 @@ subroutine PROC(n, howmany, stride, iarr, oarr)
                 idx1 = 1
                 idx2 = 1 + stride
                 do j = 1, work_n
-                    idxl = (j - 1) * stride
+#ifdef DEBUG
+                    write(ounit,'(A,I0)') 'j = ', j
+#endif
+                    ioff = skip_iarr + (j - 1) * stride
                     do k = 1, stride
 #ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', skip_iarr+k+idxl, &
+                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
                                                         & ') = work_arr(', skip_work+idx1,&
                                                         & ') + work_arr(', skip_work+idx2, ')'
 #endif
-                        iarr(skip_iarr+k+idxl) = work_arr(skip_work+idx1) + work_arr(skip_work+idx2)
+                        iarr(ioff+k) = work_arr(skip_work+idx1) + work_arr(skip_work+idx2)
 
                         idx1 = idx1 + 1
                         idx2 = idx1 + stride
@@ -100,7 +106,9 @@ subroutine PROC(n, howmany, stride, iarr, oarr)
             skip_work = i * stride
             do j = 1, stride
 #ifdef DEBUG
-            write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, ') = iarr(', skip_iarr+j, ') + iarr(', skip_iarr+j+stride, ')'
+            write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, &
+                                            & ') = iarr(', skip_iarr+j, &
+                                            & ') + iarr(', skip_iarr+j+stride, ')'
 #endif
                 oarr(skip_work+j) = iarr(skip_iarr+j) + iarr(skip_iarr+j+stride)
             enddo
@@ -117,4 +125,7 @@ subroutine PROC(n, howmany, stride, iarr, oarr)
             enddo
         enddo
     endif
+
+    deallocate(work_arr)
+
 end subroutine PROC

@@ -64,50 +64,119 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #ifdef DEBUG
                 write(ounit,'(A,I0)') 'i = ', i
 #endif
-                skip_iarr = i * n_resized * stride
-
-                do concurrent(j=1:work_n)
-#ifdef DEBUG
-                    write(ounit,'(A,I0)') 'j = ', j
+                if (stride == 1) then
+                    skip_iarr = i * n_resized
+#ifndef DEBUG
+!$omp simd private(ioff, idx1, idx2)
 #endif
-                    ioff     = (j - 1) * stride
-                    idx1_off = ioff + ioff
-                    do concurrent(k=1:stride)
-                        idx1 = idx1_off + k
-                        idx2 = idx1 + stride
+                    do j = 1, work_n
+                        ioff = j - 1
+                        idx1 = ioff + ioff + 1
+                        idx2 = idx1 + 1
 #ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
+                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', j, &
                                                         & ') = iarr(', skip_iarr+idx1, &
                                                         & ') + iarr(', skip_iarr+idx2, ')'
 #endif
-                        work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
+                        work_arr(j) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
                     enddo
-                enddo
-
-                work_n = shiftr(work_n, 1)
-#ifdef DEBUG
-                write(ounit,'(A,I0)') 'i = ', i
+#ifndef DEBUG
+!$omp end simd
 #endif
-                skip_iarr = i * n_resized * stride
 
-                do concurrent(j=1:work_n)
+                    work_n = shiftr(work_n, 1)
 #ifdef DEBUG
-                    write(ounit,'(A,I0)') 'j = ', j
+                    write(ounit,'(A,I0)') 'i = ', i
 #endif
-                    ioff     = (j - 1) * stride
-                    idx1_off = ioff + ioff
-                    ioff     = ioff + skip_iarr
-                    do concurrent(k=1:stride)
-                        idx1 = idx1_off + k
+                    skip_iarr = i * n_resized * stride
+
+#ifndef DEBUG
+!$omp simd private(idx1, idx2)
+#endif
+                    do j = 1, work_n
+
+#ifdef DEBUG
+                        write(ounit,'(A,I0)') 'j = ', j
+#endif
+                        idx1 = j + j - 1
                         idx2 = idx1 + stride
 #ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
+                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', skip_iarr+j, &
                                                         & ') = work_arr(', idx1,&
                                                         & ') + work_arr(', idx2, ')'
 #endif
-                        iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
+                        iarr(skip_iarr+j) = work_arr(idx1) + work_arr(idx2)
                     enddo
-                enddo
+#ifndef DEBUG
+!$omp end simd
+#endif
+                else
+                    skip_iarr = i * n_resized * stride
+
+#ifndef DEBUG
+                    do concurrent(j=1:work_n)
+#else
+                    do j = 1, work_n
+#endif
+
+#ifdef DEBUG
+                        write(ounit,'(A,I0)') 'j = ', j
+#endif
+                        ioff     = (j - 1) * stride
+                        idx1_off = ioff + ioff
+#ifndef DEBUG
+!$omp simd private(idx1, idx2)
+#endif
+                        do k = 1, stride
+                            idx1 = idx1_off + k
+                            idx2 = idx1 + stride
+#ifdef DEBUG
+                            write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
+                                                            & ') = iarr(', skip_iarr+idx1, &
+                                                            & ') + iarr(', skip_iarr+idx2, ')'
+#endif
+                            work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
+                        enddo
+#ifndef DEBUG
+!$omp end simd
+#endif
+                    enddo
+
+                    work_n = shiftr(work_n, 1)
+#ifdef DEBUG
+                    write(ounit,'(A,I0)') 'i = ', i
+#endif
+                    skip_iarr = i * n_resized * stride
+
+#ifndef DEBUG
+                    do concurrent(j=1:work_n)
+#else
+                    do j = 1, work_n
+#endif
+#ifdef DEBUG
+                        write(ounit,'(A,I0)') 'j = ', j
+#endif
+                        ioff     = (j - 1) * stride
+                        idx1_off = ioff + ioff
+                        ioff     = ioff + skip_iarr
+#ifndef DEBUG
+!$omp simd private(idx1, idx2)
+#endif
+                        do k = 1, stride
+                            idx1 = idx1_off + k
+                            idx2 = idx1 + stride
+#ifdef DEBUG
+                            write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
+                                                            & ') = work_arr(', idx1,&
+                                                            & ') + work_arr(', idx2, ')'
+#endif
+                            iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
+                        enddo
+#ifndef DEBUG
+!$omp end simd
+#endif
+                    enddo
+                endif
 
                 cycle
             else
@@ -123,9 +192,9 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
             skip_work = i * stride
             do j = 1, stride
 #ifdef DEBUG
-            write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, &
-                                            & ') = iarr(', skip_iarr+j, &
-                                            & ') + iarr(', skip_iarr+j+stride, ')'
+                write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, &
+                                                & ') = iarr(', skip_iarr+j, &
+                                                & ') + iarr(', skip_iarr+j+stride, ')'
 #endif
                 oarr(skip_work+j) = iarr(skip_iarr+j) + iarr(skip_iarr+j+stride)
             enddo
@@ -136,7 +205,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
             skip_work = i * stride
             do j = 1, stride
 #ifdef DEBUG
-            write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, ') = iarr(', skip_iarr+j, ')'
+                write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, ') = iarr(', skip_iarr+j, ')'
 #endif
                 oarr(skip_work+j) = iarr(skip_iarr+j)
             enddo

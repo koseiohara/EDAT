@@ -83,6 +83,7 @@ pure function VARIANCE_DIM_2(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -109,6 +110,7 @@ pure function VARIANCE_DIM_2(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1)))
+
     array_mean(:) = mean(arr(:,:), dim)
     output(:) = sum_hp((arr(:,:) - spread(array_mean(:), dim, n))**2, dim)
     output(:) = output(:) / real(sample_num, kind=RK)
@@ -179,6 +181,7 @@ pure function VARIANCE_DIM_3(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -205,6 +208,7 @@ pure function VARIANCE_DIM_3(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2)))
+
     array_mean(:,:) = mean(arr(:,:,:), dim)
     output(:,:) = sum_hp((arr(:,:,:) - spread(array_mean(:,:), dim, n))**2, dim)
     output(:,:) = output(:,:) / real(sample_num, kind=RK)
@@ -275,6 +279,7 @@ pure function VARIANCE_DIM_4(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -301,6 +306,7 @@ pure function VARIANCE_DIM_4(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3)))
+
     array_mean(:,:,:) = mean(arr(:,:,:,:), dim)
     output(:,:,:) = sum_hp((arr(:,:,:,:) - spread(array_mean(:,:,:), dim, n))**2, dim)
     output(:,:,:) = output(:,:,:) / real(sample_num, kind=RK)
@@ -371,6 +377,7 @@ pure function VARIANCE_DIM_5(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -397,6 +404,7 @@ pure function VARIANCE_DIM_5(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4)))
+
     array_mean(:,:,:,:) = mean(arr(:,:,:,:,:), dim)
     output(:,:,:,:) = sum_hp((arr(:,:,:,:,:) - spread(array_mean(:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:) = output(:,:,:,:) / real(sample_num, kind=RK)
@@ -467,6 +475,7 @@ pure function VARIANCE_DIM_6(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -493,6 +502,7 @@ pure function VARIANCE_DIM_6(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5)))
+
     array_mean(:,:,:,:,:) = mean(arr(:,:,:,:,:,:), dim)
     output(:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:) = output(:,:,:,:,:) / real(sample_num, kind=RK)
@@ -563,6 +573,7 @@ pure function VARIANCE_DIM_7(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -589,6 +600,7 @@ pure function VARIANCE_DIM_7(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6)))
+
     array_mean(:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:), dim)
     output(:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:) = output(:,:,:,:,:,:) / real(sample_num, kind=RK)
@@ -659,6 +671,7 @@ pure function VARIANCE_DIM_8(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -685,6 +698,7 @@ pure function VARIANCE_DIM_8(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7)))
+
     array_mean(:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:), dim)
     output(:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:) / real(sample_num, kind=RK)
@@ -755,6 +769,7 @@ pure function VARIANCE_DIM_9(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -781,6 +796,7 @@ pure function VARIANCE_DIM_9(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
+
     array_mean(:,:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:,:), dim)
     output(:,:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:) / real(sample_num, kind=RK)
@@ -851,6 +867,7 @@ pure function VARIANCE_DIM_10(arr, dim, sample) result(output)
     ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+
     n = ishape(dim)
     sample_num = n
 
@@ -877,6 +894,7 @@ pure function VARIANCE_DIM_10(arr, dim, sample) result(output)
     endif
 
     allocate(array_mean(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
+
     array_mean(:,:,:,:,:,:,:,:,:) = mean(arr(:,:,:,:,:,:,:,:,:,:), dim)
     output(:,:,:,:,:,:,:,:,:) = sum_hp((arr(:,:,:,:,:,:,:,:,:,:) - spread(array_mean(:,:,:,:,:,:,:,:,:), dim, n))**2, dim)
     output(:,:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:,:) / real(sample_num, kind=RK)

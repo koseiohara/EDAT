@@ -6,7 +6,7 @@ function SUM_HP_1(arr, dim) result(output)
 pure function SUM_HP_1(arr, dim) result(output)
 #endif
     real(RK), intent(in) :: arr(:)
-    integer , intent(in) , optional :: dim
+    integer , intent(in), optional :: dim
 
     real(RK), allocatable :: arr_cpy(:)
     real(RK) :: oarr(1)

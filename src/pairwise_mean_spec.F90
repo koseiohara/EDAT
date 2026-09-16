@@ -48,7 +48,7 @@ pure function MEAN_DIM_2(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 2'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -111,7 +111,7 @@ pure function MEAN_DIM_3(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 3'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -174,7 +174,7 @@ pure function MEAN_DIM_4(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 4'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -237,7 +237,7 @@ pure function MEAN_DIM_5(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 5'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -300,7 +300,7 @@ pure function MEAN_DIM_6(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 6'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -363,7 +363,7 @@ pure function MEAN_DIM_7(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 7'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -426,7 +426,7 @@ pure function MEAN_DIM_8(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 8'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -489,7 +489,7 @@ pure function MEAN_DIM_9(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 9'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)
@@ -552,7 +552,7 @@ pure function MEAN_DIM_10(arr, dim) result(output)
         ERROR STOP 'mean: dim must be between 1 and 10'
     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+    ishape(1:ndim)     = shape(arr, kind=ik)
     oshape(1:dim-1)    = ishape(1:dim-1)
     oshape(dim:ndim-1) = ishape(dim+1:ndim)
     n = ishape(dim)

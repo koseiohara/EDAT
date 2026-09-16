@@ -59,13 +59,13 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #endif
                 skip_iarr = i * n_resized * stride
 
-                do j = 1, work_n
+                do concurrent(j=1:work_n)
 #ifdef DEBUG
                     write(ounit,'(A,I0)') 'j = ', j
 #endif
                     ioff     = (j - 1) * stride
                     idx1_off = ioff + ioff
-                    do k = 1, stride
+                    do concurrent(k=1:stride)
                         idx1 = idx1_off + k
                         idx2 = idx1 + stride
 #ifdef DEBUG
@@ -83,14 +83,14 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #endif
                 skip_iarr = i * n_resized * stride
 
-                do j = 1, work_n
+                do concurrent(j=1:work_n)
 #ifdef DEBUG
                     write(ounit,'(A,I0)') 'j = ', j
 #endif
                     ioff     = (j - 1) * stride
                     idx1_off = ioff + ioff
                     ioff     = ioff + skip_iarr
-                    do k = 1, stride
+                    do concurrent(k=1:stride)
                         idx1 = idx1_off + k
                         idx2 = idx1 + stride
 #ifdef DEBUG

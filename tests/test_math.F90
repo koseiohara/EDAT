@@ -1,9 +1,11 @@
 program test_math
   use, intrinsic :: iso_fortran_env, only: real32, real64, real128
-  use EDAT_Math, only: covariance, corrcoef, mean, sum_hp, variance
+  use EDAT_Math, only: covariance, corrcoef, mean, sum_hp, variance, &
+                       M_PI, M_PI_2, M_PI_4, M_1_PI, M_SQRT2, M_SQRT1_2, qnorm
   use test_support, only: check, check_close, check_nan, finish_tests
   implicit none
 
+  call test_public_constants_and_qnorm
   call test_all_array_sizes
   call test_cancellation
   call test_multidimensional_statistics
@@ -12,6 +14,24 @@ program test_math
   call finish_tests('test_math')
 
 contains
+
+  subroutine test_public_constants_and_qnorm
+    real(real64), parameter :: tolerance = 2.0e-15_real64
+
+    call check(size(qnorm) == 99, 'qnorm contains 99 entries')
+    call check(all(real(qnorm(2:99), real64) > real(qnorm(1:98), real64)), &
+               'qnorm is strictly increasing')
+    call check_close(2.0_real64 * real(M_PI_2, real64), real(M_PI, real64), &
+                     tolerance, tolerance, 'M_PI_2 is pi / 2')
+    call check_close(4.0_real64 * real(M_PI_4, real64), real(M_PI, real64), &
+                     tolerance, tolerance, 'M_PI_4 is pi / 4')
+    call check_close(real(M_PI, real64) * real(M_1_PI, real64), 1.0_real64, &
+                     tolerance, tolerance, 'M_1_PI is the reciprocal of pi')
+    call check_close(real(M_SQRT2, real64) * real(M_SQRT1_2, real64), &
+                     1.0_real64, tolerance, tolerance, &
+                     'M_SQRT1_2 is the reciprocal of M_SQRT2')
+  end subroutine test_public_constants_and_qnorm
+
 
   subroutine test_all_array_sizes
     integer, parameter :: maximum_size = 150
@@ -140,6 +160,9 @@ contains
     variance_dim1 = variance(values, dim=1)
     variance_dim2 = variance(values, dim=2)
 
+    call check_close(mean(values(:,1), dim=1), 1.5_real64, &
+                     5.0e-14_real64, 5.0e-14_real64, &
+                     'mean supports rank-1 dim reduction')
     call check_close(variance(values(:,1), dim=1), 0.25_real64, &
                      5.0e-14_real64, 5.0e-14_real64, &
                      'population variance supports rank-1 dim reduction')

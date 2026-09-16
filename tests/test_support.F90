@@ -73,7 +73,7 @@ contains
       tolerance = max(absolute_tolerance, &
                       relative_tolerance * max(abs(actual(index)), abs(expected(index))))
 
-      if (difference > tolerance) then
+      if (.NOT. (difference <= tolerance)) then
         call check(.false., description)
         write(error_unit, '(A,I0)') '  first mismatching element: ', index
         write(error_unit, '(A,1X,ES24.16)') '  actual:    ', actual(index)

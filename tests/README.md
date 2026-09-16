@@ -50,6 +50,32 @@ Checks every array size from 0 through 150. The suite covers:
 - `real32`, `real64`, and `real128` entry points;
 - cancellation-sensitive input.
 
+### `test_pairwise_sum.F90`
+
+Checks `sum_hp` independently across its supported array interfaces:
+
+- ranks 1 through 10, with full reductions and every valid `dim` reduction;
+- rank-1 sizes from 0 through 150;
+- representative internal `n`, `stride`, and `howmany` patterns;
+- `real32`, `real64`, and `real128` kinds;
+- cancellation-sensitive dimensional reductions;
+- empty reduced axes and their zero identity;
+- lower and upper invalid `dim` boundaries through the negative test runner.
+
+### `test_math_ranks.F90`
+
+Checks `mean`, `variance`, `covariance`, and `corrcoef` for:
+
+- ranks 2 through 10, with full reductions and every valid `dim` reduction;
+- population statistics at every rank and sample statistics for representative
+  full and dimensional reductions;
+- result shapes and values for each reduced axis;
+- empty axes, singleton axes, and their documented zero or NaN edge behavior;
+- lower and upper invalid `dim` boundaries through the negative test runner.
+
+Together with the rank-1 cases in `test_math.F90`, this covers ranks 1 through
+10 for the statistical APIs.
+
 ### `test_float_string_sort.f90`
 
 Checks:
@@ -108,14 +134,22 @@ reader can identify the intent of each test before reading its mechanics.
 - `isclose` boundaries, zero, NaN, infinity, and kind dispatch;
 - empty, fixed-width, and punctuation-preserving string conversion;
 - sorting order plus exact multiset preservation, extrema, signed zero, reverse order, and noncontiguous sections;
-- derivative point-count and duplicate-coordinate errors, descending coordinates, surface-adjacent derivatives, underground masking, and custom `undef`;
-- nearest meridional bounds, reported valid bounds, reversed bounds, descending coordinates, duplicate coordinates, and vertical surface-position cases;
-- binary I/O for scalar and ranks 1-5, `real32`/`real64`/`real128` payload conversion, mixed-case actions, record stepping, and reset precedence;
+- derivative point-count and duplicate-coordinate errors, descending coordinates,
+  surface-adjacent derivatives, underground masking, and custom `undef`;
+- nearest meridional bounds, reported valid bounds, reversed bounds, descending
+  coordinates, duplicate coordinates, and vertical surface-position cases;
+- binary I/O for scalar and ranks 1-5, `real32`/`real64`/`real128` payload
+  conversion, mixed-case actions, record stepping, and reset precedence;
 - direct byte-order reversal rather than only testing that conversion is self-inverse.
 
-`test_negative_binio.f90` is run as a subprocess. Nonzero termination is required for invalid record numbers, invalid record lengths, and missing input files.
+`test_negative_binio.f90` is run as a subprocess. Nonzero termination is
+required for invalid record numbers, invalid record lengths, and missing input
+files.
 
-`test_negative_math.F90` is also run as a subprocess. It verifies that covariance and correlation reject mismatched array shapes with the documented `ERROR STOP` messages.
+`test_negative_math.F90` is also run as a subprocess. It verifies the exact
+documented `ERROR STOP` messages for covariance and correlation shape
+mismatches and for lower and upper invalid `dim` boundaries in `sum_hp`,
+`mean`, `variance`, `covariance`, and `corrcoef`.
 
 The main runner also compiles and runs an external consumer program against the generated module files and objects.
 

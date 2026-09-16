@@ -139,12 +139,12 @@ am_libedat_a_OBJECTS = c_qsort.$(OBJEXT) edat_sort.$(OBJEXT) \
 	pairwise_sum.$(OBJEXT) pairwise_mean.$(OBJEXT) \
 	pairwise_variance.$(OBJEXT) pairwise_covariance.$(OBJEXT) \
 	pairwise_corrcoef.$(OBJEXT) edat_math.$(OBJEXT) \
-	edat_caseconverter.$(OBJEXT) \
-	edat_string.$(OBJEXT) edat_float.$(OBJEXT) \
-	integral_sp.$(OBJEXT) integral_dp.$(OBJEXT) \
-	integral_qp.$(OBJEXT) derivative_sp.$(OBJEXT) \
-	derivative_dp.$(OBJEXT) derivative_qp.$(OBJEXT) \
-	edat_met.$(OBJEXT) edat_binio.$(OBJEXT)
+	edat_caseconverter.$(OBJEXT) edat_string.$(OBJEXT) \
+	edat_float.$(OBJEXT) integral_sp.$(OBJEXT) \
+	integral_dp.$(OBJEXT) integral_qp.$(OBJEXT) \
+	derivative_sp.$(OBJEXT) derivative_dp.$(OBJEXT) \
+	derivative_qp.$(OBJEXT) edat_met.$(OBJEXT) \
+	edat_binio.$(OBJEXT)
 libedat_a_OBJECTS = $(am_libedat_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)

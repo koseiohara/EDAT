@@ -29,6 +29,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
     integer(ik) :: ioff
     integer(ik) :: idx1
     integer(ik) :: idx2
+    integer(ik) :: idx1_off
 
     n_resized = largest_power_of_2(n)
 
@@ -58,26 +59,22 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #endif
                 skip_iarr = i * n_resized * stride
 
-                idx1 = 1
-                idx2 = 1 + stride
                 do j = 1, work_n
 #ifdef DEBUG
                     write(ounit,'(A,I0)') 'j = ', j
 #endif
-                    ioff = (j - 1) * stride
+                    ioff     = (j - 1) * stride
+                    idx1_off = ioff + ioff
                     do k = 1, stride
+                        idx1 = idx1_off + k
+                        idx2 = idx1 + stride
 #ifdef DEBUG
                         write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
                                                         & ') = iarr(', skip_iarr+idx1, &
                                                         & ') + iarr(', skip_iarr+idx2, ')'
 #endif
                         work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
-
-                        idx1 = idx1 + 1
-                        idx2 = idx1 + stride
                     enddo
-                    idx1 = idx2
-                    idx2 = idx1 + stride
                 enddo
 
                 work_n = shiftr(work_n, 1)
@@ -86,26 +83,23 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 #endif
                 skip_iarr = i * n_resized * stride
 
-                idx1 = 1
-                idx2 = 1 + stride
                 do j = 1, work_n
 #ifdef DEBUG
                     write(ounit,'(A,I0)') 'j = ', j
 #endif
-                    ioff = skip_iarr + (j - 1) * stride
+                    ioff     = (j - 1) * stride
+                    idx1_off = ioff + ioff
+                    ioff     = ioff + skip_iarr
                     do k = 1, stride
+                        idx1 = idx1_off + k
+                        idx2 = idx1 + stride
 #ifdef DEBUG
                         write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
                                                         & ') = work_arr(', idx1,&
                                                         & ') + work_arr(', idx2, ')'
 #endif
                         iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
-
-                        idx1 = idx1 + 1
-                        idx2 = idx1 + stride
                     enddo
-                    idx1 = idx2
-                    idx2 = idx1 + stride
                 enddo
 
                 cycle

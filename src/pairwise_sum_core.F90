@@ -238,7 +238,8 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
     integer(ik) :: new_offset
     integer(ik) :: source_offset
     integer(ik) :: target_offset
-    integer(ik) :: dist
+    integer(ik) :: initial_position
+    integer(ik) :: initial_position_remainder
     integer(ik) :: position
     integer(ik) :: position_remainder
     integer(ik) :: position_step
@@ -251,9 +252,13 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
         return
     endif
 
-    remainder_n     = n - n_resized
-    half_n          = shiftr(n_resized, 1)
-    resized_group_n = n_resized * stride
+    remainder_n                = n - n_resized
+    half_n                     = shiftr(n_resized, 1)
+    resized_group_n            = n_resized * stride
+    initial_position           = half_n / remainder_n
+    initial_position_remainder = modulo(half_n, remainder_n)
+    position_step              = n_resized / remainder_n
+    position_step_remainder    = modulo(n_resized, remainder_n)
 
     do group = 0_ik, howmany-1_ik
         old_offset = group * n * stride
@@ -266,39 +271,36 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
             enddo
         endif
 
-        !! Spread tail values across the retained prefix to keep their pairwise-tree depths nearly equal.
-        if (remainder_n+remainder_n-1_ik <= huge(0_ik) / half_n) then
-            do tail = 1_ik, remainder_n
-                dist = 1_ik + (tail+tail-1_ik) * half_n / remainder_n
-                source_offset = old_offset + (n_resized+tail-1_ik) * stride
-                target_offset = new_offset + (dist-1_ik) * stride
+        !! Advance the balanced target positions without division inside the tail loop.
+        position           = initial_position
+        position_remainder = initial_position_remainder
+        source_offset      = old_offset + resized_group_n
 
-                arr(target_offset+1_ik:target_offset+stride) = arr(target_offset+1_ik:target_offset+stride) + &
-                                                             & arr(source_offset+1_ik:source_offset+stride)
+        if (stride == 1_ik) then
+            do tail = 1_ik, remainder_n
+                target_offset = new_offset + position
+                arr(target_offset+1_ik) = arr(target_offset+1_ik) + arr(source_offset+1_ik)
+
+                source_offset      = source_offset + 1_ik
+                position           = position + position_step
+                position_remainder = position_remainder + position_step_remainder
+                if (position_remainder >= remainder_n) then
+                    position_remainder = position_remainder - remainder_n
+                    position = position + 1_ik
+                endif
             enddo
         else
-            !! Use quotient-remainder stepping when the direct target-position product could overflow.
-            position                = half_n / remainder_n
-            position_remainder      = modulo(half_n, remainder_n)
-            position_step           = n_resized / remainder_n
-            position_step_remainder = modulo(n_resized, remainder_n)
-
             do tail = 1_ik, remainder_n
-                dist = 1_ik + position
-                source_offset = old_offset + (n_resized+tail-1_ik) * stride
-                target_offset = new_offset + (dist-1_ik) * stride
-
+                target_offset = new_offset + position * stride
                 arr(target_offset+1_ik:target_offset+stride) = arr(target_offset+1_ik:target_offset+stride) + &
                                                              & arr(source_offset+1_ik:source_offset+stride)
 
-                if (tail < remainder_n) then
-                    position           = position + position_step
-                    position_remainder = position_remainder + position_step_remainder
-
-                    if (position_remainder >= remainder_n) then
-                        position_remainder = position_remainder - remainder_n
-                        position = position + 1_ik
-                    endif
+                source_offset      = source_offset + stride
+                position           = position + position_step
+                position_remainder = position_remainder + position_step_remainder
+                if (position_remainder >= remainder_n) then
+                    position_remainder = position_remainder - remainder_n
+                    position = position + 1_ik
                 endif
             enddo
         endif

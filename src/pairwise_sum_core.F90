@@ -1,5 +1,10 @@
 
 
+!! n: Number of reduction positions in each group.
+!! howmany: Number of independent groups to reduce.
+!! stride: Number of contiguous lanes reduced independently per group.
+!! iarr: Flattened input groups, modified in place as reduction workspace.
+!! oarr: Reduced lanes, stored as one contiguous block per group.
 #ifdef DEBUG
 subroutine CORE(n, howmany, stride, iarr, oarr)
 #else
@@ -33,6 +38,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 
     n_resized = largest_power_of_2(n)
 
+    !! Fold excess positions into the power-of-two prefix so every later reduction level is balanced.
     call RESIZE(n        , &  !! IN
               & n_resized, &  !! IN
               & stride   , &  !! IN
@@ -49,6 +55,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
         allocate(work_arr(nwork))
     endif
 
+    !! Alternate two reduction levels between iarr and work_arr, avoiding a copy after each level.
     do i = 0, howmany-1
         work_n = n_resized
         do
@@ -109,6 +116,7 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
         enddo
     enddo
 
+    !! Finish the reduction according to whether the alternating stages left two positions or one.
     if (work_n == 2) then
         do i = 0, howmany-1
             skip_iarr = i * n_resized * stride
@@ -142,6 +150,11 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 end subroutine CORE
 
 
+!! n: Original number of reduction positions in each group.
+!! n_resized: Power-of-two number of positions retained for pairwise reduction.
+!! stride: Number of contiguous lanes at each reduction position.
+!! howmany: Number of independent groups stored in arr.
+!! arr: Flattened groups compacted and modified in place for reduction.
 pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
     integer(ik), intent(in) :: n
     integer(ik), intent(in) :: n_resized
@@ -177,12 +190,14 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
         old_offset = group * n * stride
         new_offset = group * resized_group_n
 
+        !! Compact each retained prefix before its original storage can be reused by the next group.
         if (new_offset /= old_offset) then
             do i = 1_ik, resized_group_n
                 arr(new_offset+i) = arr(old_offset+i)
             enddo
         endif
 
+        !! Spread tail values across the retained prefix to keep their pairwise-tree depths nearly equal.
         if (remainder_n+remainder_n-1_ik <= huge(0_ik) / half_n) then
             do tail = 1_ik, remainder_n
                 dist = 1_ik + (tail+tail-1_ik) * half_n / remainder_n
@@ -193,6 +208,7 @@ pure subroutine RESIZE(n, n_resized, stride, howmany, arr)
                                                              & arr(source_offset+1_ik:source_offset+stride)
             enddo
         else
+            !! Use quotient-remainder stepping when the direct target-position product could overflow.
             position                = half_n / remainder_n
             position_remainder      = modulo(half_n, remainder_n)
             position_step           = n_resized / remainder_n
@@ -224,6 +240,7 @@ end subroutine RESIZE
 
 #ifndef DEF_CORE_TOOLS
 #define DEF_CORE_TOOLS
+!! n: Positive upper bound for the returned power of two.
 pure function largest_power_of_2(n) result(output)
     integer(ik), intent(in) :: n
     integer(ik) :: output

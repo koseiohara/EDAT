@@ -20,8 +20,8 @@ module pairwise_corrcoef
         module procedure corrcoef_full_6_sp
         module procedure corrcoef_full_7_sp
         module procedure corrcoef_full_8_sp
-        module procedure corrcoef_full_9_sp
-        module procedure corrcoef_full_10_sp
+        ! module procedure corrcoef_full_9_sp
+        ! module procedure corrcoef_full_10_sp
         module procedure corrcoef_dim_2_sp
         module procedure corrcoef_dim_3_sp
         module procedure corrcoef_dim_4_sp
@@ -29,8 +29,8 @@ module pairwise_corrcoef
         module procedure corrcoef_dim_6_sp
         module procedure corrcoef_dim_7_sp
         module procedure corrcoef_dim_8_sp
-        module procedure corrcoef_dim_9_sp
-        module procedure corrcoef_dim_10_sp
+        ! module procedure corrcoef_dim_9_sp
+        ! module procedure corrcoef_dim_10_sp
         module procedure corrcoef_1_dp
         module procedure corrcoef_full_2_dp
         module procedure corrcoef_full_3_dp
@@ -39,8 +39,8 @@ module pairwise_corrcoef
         module procedure corrcoef_full_6_dp
         module procedure corrcoef_full_7_dp
         module procedure corrcoef_full_8_dp
-        module procedure corrcoef_full_9_dp
-        module procedure corrcoef_full_10_dp
+        ! module procedure corrcoef_full_9_dp
+        ! module procedure corrcoef_full_10_dp
         module procedure corrcoef_dim_2_dp
         module procedure corrcoef_dim_3_dp
         module procedure corrcoef_dim_4_dp
@@ -48,8 +48,8 @@ module pairwise_corrcoef
         module procedure corrcoef_dim_6_dp
         module procedure corrcoef_dim_7_dp
         module procedure corrcoef_dim_8_dp
-        module procedure corrcoef_dim_9_dp
-        module procedure corrcoef_dim_10_dp
+        ! module procedure corrcoef_dim_9_dp
+        ! module procedure corrcoef_dim_10_dp
         module procedure corrcoef_1_qp
         module procedure corrcoef_full_2_qp
         module procedure corrcoef_full_3_qp
@@ -58,8 +58,8 @@ module pairwise_corrcoef
         module procedure corrcoef_full_6_qp
         module procedure corrcoef_full_7_qp
         module procedure corrcoef_full_8_qp
-        module procedure corrcoef_full_9_qp
-        module procedure corrcoef_full_10_qp
+        ! module procedure corrcoef_full_9_qp
+        ! module procedure corrcoef_full_10_qp
         module procedure corrcoef_dim_2_qp
         module procedure corrcoef_dim_3_qp
         module procedure corrcoef_dim_4_qp
@@ -67,8 +67,8 @@ module pairwise_corrcoef
         module procedure corrcoef_dim_6_qp
         module procedure corrcoef_dim_7_qp
         module procedure corrcoef_dim_8_qp
-        module procedure corrcoef_dim_9_qp
-        module procedure corrcoef_dim_10_qp
+        ! module procedure corrcoef_dim_9_qp
+        ! module procedure corrcoef_dim_10_qp
     end interface corrcoef
 
     contains

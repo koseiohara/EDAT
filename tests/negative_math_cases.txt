@@ -1,23 +1,23 @@
-sum_dim_negative|ERROR STOP sum_hp: dim must be between 1 and 2
-sum_dim_zero|ERROR STOP sum_hp: dim must be between 1 and 2
-sum_dim_high|ERROR STOP sum_hp: dim must be between 1 and 2
-mean_dim_negative|ERROR STOP mean: dim must be between 1 and 2
-mean_dim_zero|ERROR STOP mean: dim must be between 1 and 2
-mean_dim_high|ERROR STOP mean: dim must be between 1 and 2
-variance_dim_negative|ERROR STOP variance: dim must be between 1 and 2
-variance_dim_zero|ERROR STOP variance: dim must be between 1 and 2
-variance_dim_high|ERROR STOP variance: dim must be between 1 and 2
-covariance_dim_negative|ERROR STOP covariance: dim must be between 1 and 2
-covariance_dim_zero|ERROR STOP covariance: dim must be between 1 and 2
-covariance_dim_high|ERROR STOP covariance: dim must be between 1 and 2
-corrcoef_dim_negative|ERROR STOP corrcoef: dim must be between 1 and 2
-corrcoef_dim_zero|ERROR STOP corrcoef: dim must be between 1 and 2
-corrcoef_dim_high|ERROR STOP corrcoef: dim must be between 1 and 2
-covariance_rank1_size|ERROR STOP covariance: array shapes must match
-covariance_rank2_dim1|ERROR STOP covariance: array shapes must match
-covariance_rank2_dim2|ERROR STOP covariance: array shapes must match
-covariance_rank2_same_size|ERROR STOP covariance: array shapes must match
-corrcoef_rank1_size|ERROR STOP corrcoef: array shapes must match
-corrcoef_rank2_dim1|ERROR STOP corrcoef: array shapes must match
-corrcoef_rank2_dim2|ERROR STOP corrcoef: array shapes must match
-corrcoef_rank2_same_size|ERROR STOP corrcoef: array shapes must match
+sum_dim_negative|sum_hp: dim must be between 1 and 2
+sum_dim_zero|sum_hp: dim must be between 1 and 2
+sum_dim_high|sum_hp: dim must be between 1 and 2
+mean_dim_negative|mean: dim must be between 1 and 2
+mean_dim_zero|mean: dim must be between 1 and 2
+mean_dim_high|mean: dim must be between 1 and 2
+variance_dim_negative|variance: dim must be between 1 and 2
+variance_dim_zero|variance: dim must be between 1 and 2
+variance_dim_high|variance: dim must be between 1 and 2
+covariance_dim_negative|covariance: dim must be between 1 and 2
+covariance_dim_zero|covariance: dim must be between 1 and 2
+covariance_dim_high|covariance: dim must be between 1 and 2
+corrcoef_dim_negative|corrcoef: dim must be between 1 and 2
+corrcoef_dim_zero|corrcoef: dim must be between 1 and 2
+corrcoef_dim_high|corrcoef: dim must be between 1 and 2
+covariance_rank1_size|covariance: array shapes must match
+covariance_rank2_dim1|covariance: array shapes must match
+covariance_rank2_dim2|covariance: array shapes must match
+covariance_rank2_same_size|covariance: array shapes must match
+corrcoef_rank1_size|corrcoef: array shapes must match
+corrcoef_rank2_dim1|corrcoef: array shapes must match
+corrcoef_rank2_dim2|corrcoef: array shapes must match
+corrcoef_rank2_same_size|corrcoef: array shapes must match

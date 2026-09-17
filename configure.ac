@@ -1,7 +1,7 @@
 
 AC_PREREQ([2.69])
 
-AC_INIT([EDAT], [0.1.2], [https://github.com/koseiohara/EDAT/issues])
+AC_INIT([EDAT], [0.2.0], [https://github.com/koseiohara/EDAT/issues])
 
 AC_CONFIG_SRCDIR([src/edat_math.F90])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -19,12 +19,14 @@ AC_PROG_FC
 AC_PROG_RANLIB
 
 AC_LANG_PUSH([Fortran])
+AC_FC_PP_SRCEXT([F90])
 AC_FC_FREEFORM
 AC_LANG_POP([Fortran])
 
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
+  tests/Makefile
 ])
 
 AC_OUTPUT

@@ -597,6 +597,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+FCFLAGS_F90
 RANLIB
 ac_ct_FC
 FCFLAGS
@@ -5044,6 +5045,84 @@ ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for Fortran flag to compile preprocessed .F90 files" >&5
+printf %s "checking for Fortran flag to compile preprocessed .F90 files... " >&6; }
+if test ${ac_cv_fc_pp_srcext_F90+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_ext=F90
+ac_fcflags_pp_srcext_save=$ac_fcflags_srcext
+ac_fcflags_srcext=
+ac_cv_fc_pp_srcext_F90=unknown
+case $ac_ext in #(
+  [fF]77) ac_try=f77-cpp-input;; #(
+  *) ac_try=f95-cpp-input;;
+esac
+for ac_flag in none -ftpp -fpp -Tf "-fpp -Tf" -xpp=fpp -Mpreprocess "-e Z" \
+               -cpp -xpp=cpp -qsuffix=cpp=F90 "-x $ac_try" +cpp -Cpp; do
+  test "x$ac_flag" != xnone && ac_fcflags_srcext="$ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 0
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"
+then :
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 1
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"
+then :
+
+else case e in #(
+  e) ac_cv_fc_pp_srcext_F90=$ac_flag; break ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+done
+rm -f conftest.$ac_objext conftest.F90
+ac_fcflags_srcext=$ac_fcflags_pp_srcext_save
+ ;;
+esac
+fi
+{ printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_pp_srcext_F90" >&5
+printf '%s\n' "$ac_cv_fc_pp_srcext_F90" >&6; }
+if test "x$ac_cv_fc_pp_srcext_F90" = xunknown; then
+  as_fn_error $? "Fortran could not compile preprocessed .F90 files" "$LINENO" 5
+else
+  ac_fc_srcext=F90
+  if test "x$ac_cv_fc_pp_srcext_F90" = xnone; then
+    ac_fcflags_srcext=""
+    FCFLAGS_F90=""
+  else
+    ac_fcflags_srcext=$ac_cv_fc_pp_srcext_F90
+    FCFLAGS_F90=$ac_cv_fc_pp_srcext_F90
+  fi
+
+
+fi
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
 { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for Fortran flag needed to accept free-form source" >&5
 printf %s "checking for Fortran flag needed to accept free-form source... " >&6; }
 if test ${ac_cv_fc_freeform+y}
@@ -5097,7 +5176,7 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -5808,6 +5887,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: '$ac_config_target'" "$LINENO" 5;;
   esac

@@ -63,14 +63,7 @@ jobs:
       - name: Configure
         run: ./configure FC="$FC" CC="$CC"
 
-      # Keep the library build serial because Fortran module dependencies are
-      # not fully represented in the current Automake dependency graph.
-      - name: Build library
-        run: make --jobs=1 V=1
-
-      # run_tests.sh reads FC and CC from the configured root Makefile, so each
-      # test is compiled by the same compiler that built the library.
-      - name: Run full test suite
-        run: ./tests/run_tests.sh
+      - name: Build and run test suite
+        run: make --jobs=1 check V=1
 
 

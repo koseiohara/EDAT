@@ -597,6 +597,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+OPENMP_FCFLAGS
 FCFLAGS_F90
 RANLIB
 ac_ct_FC
@@ -699,6 +700,7 @@ enable_option_checking
 enable_silent_rules
 enable_maintainer_mode
 enable_dependency_tracking
+enable_openmp
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1342,6 +1344,7 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --disable-openmp        do not use OpenMP
 
 Some influential environment variables:
   CC          C compiler command
@@ -1514,6 +1517,54 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_fc_try_compile
+
+# ac_fn_fc_try_link LINENO
+# ------------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded.
+ac_fn_fc_try_link ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  rm -f conftest.$ac_objext conftest.beam conftest$ac_exeext
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+printf '%s\n' "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  printf '%s\n' "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_fc_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 test -x conftest$ac_exeext
+       }
+then :
+  ac_retval=0
+else case e in #(
+  e) printf '%s\n' "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_retval=1 ;;
+esac
+fi
+  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
+  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
+  # interfere with the next link command; also delete a directory that is
+  # left behind by Apple's compiler.  We do this before executing the actions.
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_fc_try_link
 ac_configure_args_raw=
 for ac_arg
 do
@@ -5168,6 +5219,85 @@ ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+
+if test -e penmp || test -e mp; then
+  as_fn_error $? "AC_OPENMP clobbers files named 'mp' and 'penmp'. Aborting configure because one of these files already exists." "$LINENO" 5
+fi
+# Check whether --enable-openmp was given.
+if test ${enable_openmp+y}
+then :
+  enableval=$enable_openmp;
+fi
+
+  OPENMP_FCFLAGS=
+  if test "$enable_openmp" != no; then
+    { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for $FC option to support OpenMP" >&5
+printf %s "checking for $FC option to support OpenMP... " >&6; }
+if test ${ac_cv_prog_fc_openmp+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_cv_prog_fc_openmp='not found'
+                                                                        for ac_option in '' -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp -homp \
+                       -Popenmp --openmp; do
+
+        ac_save_FCFLAGS=$FCFLAGS
+        FCFLAGS="$FCFLAGS $ac_option"
+        cat > conftest.$ac_ext <<_ACEOF
+
+      program main
+      implicit none
+!\$    integer tid
+      tid = 42
+      call omp_set_num_threads(2)
+      end
+
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"
+then :
+  cat > conftest.$ac_ext <<_ACEOF
+
+      program main
+      implicit none
+!\$    integer tid
+      tid = 42
+      call omp_set_num_threads(2)
+      end
+
+_ACEOF
+if ac_fn_fc_try_link "$LINENO"
+then :
+  ac_cv_prog_fc_openmp=$ac_option
+else case e in #(
+  e) ac_cv_prog_fc_openmp='unsupported' ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+        FCFLAGS=$ac_save_FCFLAGS
+
+        if test "$ac_cv_prog_fc_openmp" != 'not found'; then
+          break
+        fi
+      done
+      if test "$ac_cv_prog_fc_openmp" = 'not found'; then
+        ac_cv_prog_fc_openmp='unsupported'
+      elif test "$ac_cv_prog_fc_openmp" = ''; then
+        ac_cv_prog_fc_openmp='none needed'
+      fi
+                        rm -f penmp mp ;;
+esac
+fi
+{ printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_fc_openmp" >&5
+printf '%s\n' "$ac_cv_prog_fc_openmp" >&6; }
+    if test "$ac_cv_prog_fc_openmp" != 'unsupported' && \
+       test "$ac_cv_prog_fc_openmp" != 'none needed'; then
+      OPENMP_FCFLAGS="$ac_cv_prog_fc_openmp"
+    fi
+  fi
+
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'

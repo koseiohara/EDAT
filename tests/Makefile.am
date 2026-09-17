@@ -1,4 +1,4 @@
-AM_FCFLAGS = -I$(top_builddir)/src
+AM_FCFLAGS = -I$(top_builddir)/src $(OPENMP_FCFLAGS)
 
 noinst_LIBRARIES = libtestsupport.a
 libtestsupport_a_SOURCES = test_support.F90

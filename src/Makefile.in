@@ -253,6 +253,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
+OPENMP_FCFLAGS = @OPENMP_FCFLAGS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -313,7 +314,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LIBRARIES = libedat.a
-AM_FCFLAGS = -I$(srcdir)
+AM_FCFLAGS = -I$(srcdir) $(OPENMP_FCFLAGS)
 EXTRA_DIST = \
   pairwise_sum_core.F90 \
   pairwise_sum_spec.F90 \

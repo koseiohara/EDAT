@@ -1,7 +1,7 @@
 
 lib_LIBRARIES = libedat.a
 
-AM_FCFLAGS = -I$(srcdir)
+AM_FCFLAGS = -I$(srcdir) $(OPENMP_FCFLAGS)
 
 EXTRA_DIST = \
   pairwise_sum_core.F90 \

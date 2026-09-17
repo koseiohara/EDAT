@@ -10,15 +10,11 @@ cd EDAT
 ```
 
 ### Build
-Bootstrap the build system from a source checkout, then configure with the desired compilers:
-
 ```sh
-autoreconf --install --force
-
 # ifort
-./configure --prefix=$HOME/FortranLib FC="ifort" CC="icc" FCFLAGS="-O3 -traceback -warn all -convert little_endian -assume byterecl" CFLAGS="-O3 -Wall"
+./configure FC="ifort" CC="icc" FCFLAGS="-O3 -traceback -warn all -convert little_endian -assume byterecl" CFLAGS="-O3 -Wall"
 # gfortran
-./configure --prefix=$HOME/FortranLib FC="gfortran" CC="gcc" FCFLAGS="-O3 -Wall -fconvert=little-endian" CFLAGS="-O3 -Wall"
+./configure FC="gfortran" CC="gcc" FCFLAGS="-O3 -Wall -fconvert=little-endian" CFLAGS="-O3 -Wall"
 
 make
 make check

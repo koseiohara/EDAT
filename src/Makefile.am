@@ -1,10 +1,24 @@
 
 lib_LIBRARIES = libedat.a
 
+AM_FCFLAGS = -I$(srcdir)
+
+EXTRA_DIST = \
+  pairwise_sum_core.F90 \
+  pairwise_sum_spec.F90 \
+  pairwise_mean_spec.F90 \
+  pairwise_variance_spec.F90 \
+  pairwise_covariance_spec.F90 \
+  pairwise_corrcoef_spec.F90
+
 libedat_a_SOURCES = \
   c_qsort.c \
   edat_sort.F90 \
   pairwise_sum.F90 \
+  pairwise_mean.F90 \
+  pairwise_variance.F90 \
+  pairwise_covariance.F90 \
+  pairwise_corrcoef.F90 \
   edat_math.F90 \
   edat_caseconverter.F90 \
   edat_string.F90 \
@@ -28,7 +42,35 @@ nodist_modinclude_DATA = \
   edat_met.mod \
   edat_binio.mod
 
-edat_math.$(OBJEXT): pairwise_sum.$(OBJEXT)
+pairwise_sum.$(OBJEXT): \
+  pairwise_sum_core.F90 \
+  pairwise_sum_spec.F90
+
+pairwise_mean.$(OBJEXT): \
+  pairwise_mean_spec.F90 \
+  pairwise_sum.$(OBJEXT)
+
+pairwise_variance.$(OBJEXT): \
+  pairwise_variance_spec.F90 \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT)
+
+pairwise_covariance.$(OBJEXT): \
+  pairwise_covariance_spec.F90 \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT)
+
+pairwise_corrcoef.$(OBJEXT): \
+  pairwise_corrcoef_spec.F90 \
+  pairwise_variance.$(OBJEXT) \
+  pairwise_covariance.$(OBJEXT)
+
+edat_math.$(OBJEXT): \
+  pairwise_sum.$(OBJEXT) \
+  pairwise_mean.$(OBJEXT) \
+  pairwise_variance.$(OBJEXT) \
+  pairwise_covariance.$(OBJEXT) \
+  pairwise_corrcoef.$(OBJEXT)
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 

@@ -1,8 +1,7 @@
 
 
 module pairwise_sum
-
-    use, intrinsic :: iso_fortran_env, only : ik=>int64
+    use, intrinsic :: iso_fortran_env, only : ik=>int64, real32, real64, real128
 
     implicit none
 
@@ -10,354 +9,208 @@ module pairwise_sum
     public :: sum_hp
 
     interface sum_hp
-        module procedure sum_hp_sp
-        module procedure sum_hp_dp
-        module procedure sum_hp_qp
+        module procedure sum_hp_1_sp
+        module procedure sum_hp_full_2_sp
+        module procedure sum_hp_full_3_sp
+        module procedure sum_hp_full_4_sp
+        module procedure sum_hp_full_5_sp
+        module procedure sum_hp_full_6_sp
+        module procedure sum_hp_full_7_sp
+        module procedure sum_hp_full_8_sp
+        module procedure sum_hp_full_9_sp
+        module procedure sum_hp_full_10_sp
+        module procedure sum_hp_dim_2_sp
+        module procedure sum_hp_dim_3_sp
+        module procedure sum_hp_dim_4_sp
+        module procedure sum_hp_dim_5_sp
+        module procedure sum_hp_dim_6_sp
+        module procedure sum_hp_dim_7_sp
+        module procedure sum_hp_dim_8_sp
+        module procedure sum_hp_dim_9_sp
+        module procedure sum_hp_dim_10_sp
+        module procedure sum_hp_1_dp
+        module procedure sum_hp_full_2_dp
+        module procedure sum_hp_full_3_dp
+        module procedure sum_hp_full_4_dp
+        module procedure sum_hp_full_5_dp
+        module procedure sum_hp_full_6_dp
+        module procedure sum_hp_full_7_dp
+        module procedure sum_hp_full_8_dp
+        module procedure sum_hp_full_9_dp
+        module procedure sum_hp_full_10_dp
+        module procedure sum_hp_dim_2_dp
+        module procedure sum_hp_dim_3_dp
+        module procedure sum_hp_dim_4_dp
+        module procedure sum_hp_dim_5_dp
+        module procedure sum_hp_dim_6_dp
+        module procedure sum_hp_dim_7_dp
+        module procedure sum_hp_dim_8_dp
+        module procedure sum_hp_dim_9_dp
+        module procedure sum_hp_dim_10_dp
+        module procedure sum_hp_1_qp
+        module procedure sum_hp_full_2_qp
+        module procedure sum_hp_full_3_qp
+        module procedure sum_hp_full_4_qp
+        module procedure sum_hp_full_5_qp
+        module procedure sum_hp_full_6_qp
+        module procedure sum_hp_full_7_qp
+        module procedure sum_hp_full_8_qp
+        module procedure sum_hp_full_9_qp
+        module procedure sum_hp_full_10_qp
+        module procedure sum_hp_dim_2_qp
+        module procedure sum_hp_dim_3_qp
+        module procedure sum_hp_dim_4_qp
+        module procedure sum_hp_dim_5_qp
+        module procedure sum_hp_dim_6_qp
+        module procedure sum_hp_dim_7_qp
+        module procedure sum_hp_dim_8_qp
+        module procedure sum_hp_dim_9_qp
+        module procedure sum_hp_dim_10_qp
     end interface sum_hp
-
-    interface sum_hp_core
-        module procedure sum_hp_core_sp
-        module procedure sum_hp_core_dp
-        module procedure sum_hp_core_qp
-    end interface sum_hp_core
 
     contains
 
 
-    pure function largest_power_of_2(n) result(output)
-        integer(ik), intent(in) :: n
-        integer(ik) :: output
-        integer(ik) :: work
-
-        work   = n
-        output = 1_ik
-        do
-            if (work <= 1_ik) then
-                exit
-            endif
-            work = shiftr(work, 1)
-            output = output + output
-        enddo
-
-    end function largest_power_of_2
-
-
-    pure function sum_hp_sp(arr) result(output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
-        real(rk), intent(in) :: arr(:)
-        real(rk) :: output
-
-        real(rk), allocatable :: workspace(:)
-        integer(ik) :: n
-
-        n = size(arr, kind=ik)
-        if (n <= 3_ik) then
-            if (n == 0_ik) then
-                output = 0._rk
-            else if (n == 1_ik) then
-                output = arr(1)
-            else if (n == 2_ik) then
-                output = arr(1) + arr(2)
-            else
-                output = arr(1) + arr(2) + arr(3)
-            endif
-
-            return
-        endif
-
-        allocate(workspace(n))
-        workspace(1:n) = arr(1:n)
-
-        call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! INOUT
-                       & output          )  !! OUT
-
-        deallocate(workspace)
-
-    end function sum_hp_sp
-
-
-    pure function sum_hp_dp(arr) result(output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real64
-        real(rk), intent(in) :: arr(:)
-        real(rk) :: output
-
-        real(rk), allocatable :: workspace(:)
-        integer(ik) :: n
-
-        n = size(arr, kind=ik)
-        if (n <= 3_ik) then
-            if (n == 0_ik) then
-                output = 0._rk
-            else if (n == 1_ik) then
-                output = arr(1)
-            else if (n == 2_ik) then
-                output = arr(1) + arr(2)
-            else
-                output = arr(1) + arr(2) + arr(3)
-            endif
-
-            return
-        endif
-
-        allocate(workspace(n))
-        workspace(1:n) = arr(1:n)
-
-        call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! INOUT
-                       & output          )  !! OUT
-
-        deallocate(workspace)
-
-    end function sum_hp_dp
-
-
-    pure function sum_hp_qp(arr) result(output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real128
-        real(rk), intent(in) :: arr(:)
-        real(rk) :: output
-
-        real(rk), allocatable :: workspace(:)
-        integer(ik) :: n
-
-        n = size(arr, kind=ik)
-        if (n <= 3_ik) then
-            if (n == 0_ik) then
-                output = 0._rk
-            else if (n == 1_ik) then
-                output = arr(1)
-            else if (n == 2_ik) then
-                output = arr(1) + arr(2)
-            else
-                output = arr(1) + arr(2) + arr(3)
-            endif
-
-            return
-        endif
-
-        allocate(workspace(n))
-        workspace(1:n) = arr(1:n)
-
-        call sum_hp_core(n             , &  !! IN
-                       & workspace(1:n), &  !! INOUT
-                       & output          )  !! OUT
-
-        deallocate(workspace)
-
-    end function sum_hp_qp
-
-
-    pure subroutine sum_hp_core_sp(n, arr, output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real32
-        integer(ik), intent(in) :: n
-        real(rk)   , intent(inout), contiguous :: arr(:)
-        real(rk)   , intent(out)               :: output
-
-        real(rk), allocatable :: work_arr(:)
-        integer(ik) :: len
-        integer(ik) :: newlen
-        integer(ik) :: half
-        integer(ik) :: i
-        integer(ik) :: k
-        integer(ik) :: dist
-
-        integer(ik) :: pos
-        integer(ik) :: rem
-        integer(ik) :: step
-        integer(ik) :: step_rem
-
-        len = largest_power_of_2(n)
-        k   = n - len
-
-        half = shiftr(len, 1)
-        allocate(work_arr(half))
-
-        if (k+k-1_ik <= huge(0_ik) / half) then
-            do i = 1_ik, k
-                dist = 1_ik + (i+i-1_ik) * half / k
-                arr(dist) = arr(dist) + arr(len+i)
-            enddo
-        else
-            pos      = half / k
-            rem      = modulo(half, k)
-            step     = len / k
-            step_rem = modulo(len, k)
-
-            do i = 1_ik, k
-                dist = 1_ik + pos
-                arr(dist) = arr(dist) + arr(len+i)
-                if (i < k) then
-                    pos = pos + step
-                    rem = rem + step_rem
-                    if (rem >= k) then
-                        rem = rem - k
-                        pos = pos + 1_ik
-                    endif
-                endif
-            enddo
-        endif
-
-        do
-            if (len <= 2_ik) then
-                if (len == 1_ik) then
-                    output = arr(1)
-                else
-                    output = arr(1) + arr(2)
-                endif
-                deallocate(work_arr)
-                return
-            endif
-
-            newlen = shiftr(len, 1)
-            work_arr(1_ik:newlen) = arr(1_ik:len-1_ik:2_ik) + arr(2_ik:len:2_ik)
-
-            len = shiftr(newlen, 1)
-            arr(1_ik:len) = work_arr(1_ik:newlen-1_ik:2_ik) + work_arr(2_ik:newlen:2_ik)
-        enddo
-
-    end subroutine sum_hp_core_sp
-
-
-    pure subroutine sum_hp_core_dp(n, arr, output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real64
-        integer(ik), intent(in) :: n
-        real(rk)   , intent(inout), contiguous :: arr(:)
-        real(rk)   , intent(out)               :: output
-
-        real(rk), allocatable :: work_arr(:)
-        integer(ik) :: len
-        integer(ik) :: newlen
-        integer(ik) :: half
-        integer(ik) :: i
-        integer(ik) :: k
-        integer(ik) :: dist
-
-        integer(ik) :: pos
-        integer(ik) :: rem
-        integer(ik) :: step
-        integer(ik) :: step_rem
-
-        len = largest_power_of_2(n)
-        k   = n - len
-
-        half = shiftr(len, 1)
-        allocate(work_arr(half))
-
-        if (k+k-1_ik <= huge(0_ik) / half) then
-            do i = 1_ik, k
-                dist = 1_ik + (i+i-1_ik) * half / k
-                arr(dist) = arr(dist) + arr(len+i)
-            enddo
-        else
-            pos      = half / k
-            rem      = modulo(half, k)
-            step     = len / k
-            step_rem = modulo(len, k)
-
-            do i = 1_ik, k
-                dist = 1_ik + pos
-                arr(dist) = arr(dist) + arr(len+i)
-                if (i < k) then
-                    pos = pos + step
-                    rem = rem + step_rem
-                    if (rem >= k) then
-                        rem = rem - k
-                        pos = pos + 1_ik
-                    endif
-                endif
-            enddo
-        endif
-
-        do
-            if (len <= 2_ik) then
-                if (len == 1_ik) then
-                    output = arr(1)
-                else
-                    output = arr(1) + arr(2)
-                endif
-                deallocate(work_arr)
-                return
-            endif
-
-            newlen = shiftr(len, 1)
-            work_arr(1_ik:newlen) = arr(1_ik:len-1_ik:2_ik) + arr(2_ik:len:2_ik)
-
-            len = shiftr(newlen, 1)
-            arr(1_ik:len) = work_arr(1_ik:newlen-1_ik:2_ik) + work_arr(2_ik:newlen:2_ik)
-        enddo
-
-    end subroutine sum_hp_core_dp
-
-
-    pure subroutine sum_hp_core_qp(n, arr, output)
-        use, intrinsic :: iso_fortran_env, only : rk=>real128
-        integer(ik), intent(in) :: n
-        real(rk)   , intent(inout), contiguous :: arr(:)
-        real(rk)   , intent(out)               :: output
-
-        real(rk), allocatable :: work_arr(:)
-        integer(ik) :: len
-        integer(ik) :: newlen
-        integer(ik) :: half
-        integer(ik) :: i
-        integer(ik) :: k
-        integer(ik) :: dist
-
-        integer(ik) :: pos
-        integer(ik) :: rem
-        integer(ik) :: step
-        integer(ik) :: step_rem
-
-        len = largest_power_of_2(n)
-        k   = n - len
-
-        half = shiftr(len, 1)
-        allocate(work_arr(half))
-
-        if (k+k-1_ik <= huge(0_ik) / half) then
-            do i = 1_ik, k
-                dist = 1_ik + (i+i-1_ik) * half / k
-                arr(dist) = arr(dist) + arr(len+i)
-            enddo
-        else
-            pos      = half / k
-            rem      = modulo(half, k)
-            step     = len / k
-            step_rem = modulo(len, k)
-
-            do i = 1_ik, k
-                dist = 1_ik + pos
-                arr(dist) = arr(dist) + arr(len+i)
-                if (i < k) then
-                    pos = pos + step
-                    rem = rem + step_rem
-                    if (rem >= k) then
-                        rem = rem - k
-                        pos = pos + 1_ik
-                    endif
-                endif
-            enddo
-        endif
-
-        do
-            if (len <= 2_ik) then
-                if (len == 1_ik) then
-                    output = arr(1)
-                else
-                    output = arr(1) + arr(2)
-                endif
-                deallocate(work_arr)
-                return
-            endif
-
-            newlen = shiftr(len, 1)
-            work_arr(1_ik:newlen) = arr(1_ik:len-1_ik:2_ik) + arr(2_ik:len:2_ik)
-
-            len = shiftr(newlen, 1)
-            arr(1_ik:len) = work_arr(1_ik:newlen-1_ik:2_ik) + work_arr(2_ik:newlen:2_ik)
-        enddo
-
-    end subroutine sum_hp_core_qp
+#define RK real32
+#define RESIZE resize_sp
+#define CORE sum_hp_core_sp
+#define SUM_HP_1 sum_hp_1_sp
+#define SUM_HP_FULL_2 sum_hp_full_2_sp
+#define SUM_HP_FULL_3 sum_hp_full_3_sp
+#define SUM_HP_FULL_4 sum_hp_full_4_sp
+#define SUM_HP_FULL_5 sum_hp_full_5_sp
+#define SUM_HP_FULL_6 sum_hp_full_6_sp
+#define SUM_HP_FULL_7 sum_hp_full_7_sp
+#define SUM_HP_FULL_8 sum_hp_full_8_sp
+#define SUM_HP_FULL_9 sum_hp_full_9_sp
+#define SUM_HP_FULL_10 sum_hp_full_10_sp
+#define SUM_HP_DIM_2 sum_hp_dim_2_sp
+#define SUM_HP_DIM_3 sum_hp_dim_3_sp
+#define SUM_HP_DIM_4 sum_hp_dim_4_sp
+#define SUM_HP_DIM_5 sum_hp_dim_5_sp
+#define SUM_HP_DIM_6 sum_hp_dim_6_sp
+#define SUM_HP_DIM_7 sum_hp_dim_7_sp
+#define SUM_HP_DIM_8 sum_hp_dim_8_sp
+#define SUM_HP_DIM_9 sum_hp_dim_9_sp
+#define SUM_HP_DIM_10 sum_hp_dim_10_sp
+#include "pairwise_sum_core.F90"
+#include "pairwise_sum_spec.F90"
+#undef RK
+#undef RESIZE
+#undef CORE
+#undef SUM_HP_1
+#undef SUM_HP_FULL_2
+#undef SUM_HP_FULL_3
+#undef SUM_HP_FULL_4
+#undef SUM_HP_FULL_5
+#undef SUM_HP_FULL_6
+#undef SUM_HP_FULL_7
+#undef SUM_HP_FULL_8
+#undef SUM_HP_FULL_9
+#undef SUM_HP_FULL_10
+#undef SUM_HP_DIM_2
+#undef SUM_HP_DIM_3
+#undef SUM_HP_DIM_4
+#undef SUM_HP_DIM_5
+#undef SUM_HP_DIM_6
+#undef SUM_HP_DIM_7
+#undef SUM_HP_DIM_8
+#undef SUM_HP_DIM_9
+#undef SUM_HP_DIM_10
+
+#define RK real64
+#define RESIZE resize_dp
+#define CORE sum_hp_core_dp
+#define SUM_HP_1 sum_hp_1_dp
+#define SUM_HP_FULL_2 sum_hp_full_2_dp
+#define SUM_HP_FULL_3 sum_hp_full_3_dp
+#define SUM_HP_FULL_4 sum_hp_full_4_dp
+#define SUM_HP_FULL_5 sum_hp_full_5_dp
+#define SUM_HP_FULL_6 sum_hp_full_6_dp
+#define SUM_HP_FULL_7 sum_hp_full_7_dp
+#define SUM_HP_FULL_8 sum_hp_full_8_dp
+#define SUM_HP_FULL_9 sum_hp_full_9_dp
+#define SUM_HP_FULL_10 sum_hp_full_10_dp
+#define SUM_HP_DIM_2 sum_hp_dim_2_dp
+#define SUM_HP_DIM_3 sum_hp_dim_3_dp
+#define SUM_HP_DIM_4 sum_hp_dim_4_dp
+#define SUM_HP_DIM_5 sum_hp_dim_5_dp
+#define SUM_HP_DIM_6 sum_hp_dim_6_dp
+#define SUM_HP_DIM_7 sum_hp_dim_7_dp
+#define SUM_HP_DIM_8 sum_hp_dim_8_dp
+#define SUM_HP_DIM_9 sum_hp_dim_9_dp
+#define SUM_HP_DIM_10 sum_hp_dim_10_dp
+#include "pairwise_sum_core.F90"
+#include "pairwise_sum_spec.F90"
+#undef RK
+#undef RESIZE
+#undef CORE
+#undef SUM_HP_1
+#undef SUM_HP_FULL_2
+#undef SUM_HP_FULL_3
+#undef SUM_HP_FULL_4
+#undef SUM_HP_FULL_5
+#undef SUM_HP_FULL_6
+#undef SUM_HP_FULL_7
+#undef SUM_HP_FULL_8
+#undef SUM_HP_FULL_9
+#undef SUM_HP_FULL_10
+#undef SUM_HP_DIM_2
+#undef SUM_HP_DIM_3
+#undef SUM_HP_DIM_4
+#undef SUM_HP_DIM_5
+#undef SUM_HP_DIM_6
+#undef SUM_HP_DIM_7
+#undef SUM_HP_DIM_8
+#undef SUM_HP_DIM_9
+#undef SUM_HP_DIM_10
+
+#define RK real128
+#define RESIZE resize_qp
+#define CORE sum_hp_core_qp
+#define SUM_HP_1 sum_hp_1_qp
+#define SUM_HP_FULL_2 sum_hp_full_2_qp
+#define SUM_HP_FULL_3 sum_hp_full_3_qp
+#define SUM_HP_FULL_4 sum_hp_full_4_qp
+#define SUM_HP_FULL_5 sum_hp_full_5_qp
+#define SUM_HP_FULL_6 sum_hp_full_6_qp
+#define SUM_HP_FULL_7 sum_hp_full_7_qp
+#define SUM_HP_FULL_8 sum_hp_full_8_qp
+#define SUM_HP_FULL_9 sum_hp_full_9_qp
+#define SUM_HP_FULL_10 sum_hp_full_10_qp
+#define SUM_HP_DIM_2 sum_hp_dim_2_qp
+#define SUM_HP_DIM_3 sum_hp_dim_3_qp
+#define SUM_HP_DIM_4 sum_hp_dim_4_qp
+#define SUM_HP_DIM_5 sum_hp_dim_5_qp
+#define SUM_HP_DIM_6 sum_hp_dim_6_qp
+#define SUM_HP_DIM_7 sum_hp_dim_7_qp
+#define SUM_HP_DIM_8 sum_hp_dim_8_qp
+#define SUM_HP_DIM_9 sum_hp_dim_9_qp
+#define SUM_HP_DIM_10 sum_hp_dim_10_qp
+#include "pairwise_sum_core.F90"
+#include "pairwise_sum_spec.F90"
+#undef RK
+#undef RESIZE
+#undef CORE
+#undef SUM_HP_1
+#undef SUM_HP_FULL_2
+#undef SUM_HP_FULL_3
+#undef SUM_HP_FULL_4
+#undef SUM_HP_FULL_5
+#undef SUM_HP_FULL_6
+#undef SUM_HP_FULL_7
+#undef SUM_HP_FULL_8
+#undef SUM_HP_FULL_9
+#undef SUM_HP_FULL_10
+#undef SUM_HP_DIM_2
+#undef SUM_HP_DIM_3
+#undef SUM_HP_DIM_4
+#undef SUM_HP_DIM_5
+#undef SUM_HP_DIM_6
+#undef SUM_HP_DIM_7
+#undef SUM_HP_DIM_8
+#undef SUM_HP_DIM_9
+#undef SUM_HP_DIM_10
 
 end module pairwise_sum
 

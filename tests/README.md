@@ -1,43 +1,32 @@
 # EDAT test suite
 
-This directory contains a standalone test suite for the public EDAT routines.
-It does not depend on the project's Autotools configuration.
+This directory contains the test suite for the public EDAT routines.
+The suite is integrated with the project's Autotools build.
 
 ## Running the tests
 
-The suite uses exactly one Fortran compiler per run. By default, it reads
-`FC` and `CC` from the configured project-root `Makefile`, so the tests use
-the same compiler family as the project build. All test-generated files are
-written below `tests/.build`.
-
-From the project root:
+The test suite is integrated with Automake. Configure the project, then run
+`make check` from the project root. The configured Fortran and C compilers are
+used for both the library and the tests.
 
 ```sh
-./tests/run_tests.sh
+./configure
+make check
 ```
 
-An explicit compiler can be supplied when required:
+To test with a different compiler, configure the complete project with that
+compiler and rebuild from a clean tree. Fortran module files are
+compiler-specific, so library and test objects must not be mixed across
+compiler families. Cross-compiler testing belongs in CI, with an independent
+configure and build for each compiler.
 
-```sh
-TEST_FC=ifort TEST_CC=icc ./tests/run_tests.sh
-```
-
-Do not compile the tests with a different compiler from the project build.
-Fortran module files are compiler-specific. Cross-compiler testing belongs in
-CI, where the project and tests must both be rebuilt independently for every
-compiler.
-
-Optional overrides are:
-
-- `TEST_FC`: explicit Fortran compiler override; normally omit it.
-- `TEST_CC`: explicit C compiler override; normally omit it.
-- `TEST_FFLAGS`: test-only Fortran flags. Ambient `FFLAGS` is ignored.
-- `TEST_CFLAGS`: test-only C flags. Ambient `CFLAGS` is ignored.
-- `TEST_BUILD`: test build directory; default is `tests/.build`.
+`make check` builds the test programs, runs the normal test programs through
+Automake's test harness, checks the negative BinIO and Math cases in separate
+processes, and verifies the expected BinIO and Math error messages.
 
 ## Test organization
 
-### `test_math.f90`
+### `test_math.F90`
 
 Checks every array size from 0 through 150. The suite covers:
 
@@ -46,11 +35,10 @@ Checks every array size from 0 through 150. The suite covers:
 - population and sample variance;
 - covariance;
 - correlation;
-- mismatched input sizes;
 - `real32`, `real64`, and `real128` entry points;
 - cancellation-sensitive input.
 
-### `test_float_string_sort.f90`
+### `test_float_string_sort.F90`
 
 Checks:
 
@@ -58,7 +46,7 @@ Checks:
 - upper- and lower-case conversion;
 - integer, `real32`, and `real64` sorting for sizes 0 through 65.
 
-### `test_met_derivative.f90`
+### `test_met_derivative.F90`
 
 Checks derivatives of concrete fields on several grid sizes:
 
@@ -72,7 +60,7 @@ Expected values account for the coordinate used by the implementation. In
 particular, the horizontal derivative routines return derivatives with respect
 to longitude or latitude in radians; they do not apply an Earth-radius factor.
 
-### `test_met_integral.f90`
+### `test_met_integral.F90`
 
 Checks independently accumulated quadrature results:
 
@@ -82,7 +70,7 @@ Checks independently accumulated quadrature results:
 - vertical integration includes full-layer trapezoids;
 - the partial surface layer follows the current implementation rule.
 
-### `test_binio.f90`
+### `test_binio.F90`
 
 Checks:
 
@@ -101,7 +89,7 @@ reader can identify the intent of each test before reading its mechanics.
 
 ## Extended coverage
 
-`test_extended.f90` adds regression checks for:
+`test_extended.F90` adds regression checks for:
 
 - empty and one-element statistics, sample covariance, negative and degenerate correlations;
 - all supported floating-point kinds for generic mathematical and meteorological APIs;
@@ -113,9 +101,9 @@ reader can identify the intent of each test before reading its mechanics.
 - binary I/O for scalar and ranks 1-5, `real32`/`real64`/`real128` payload conversion, mixed-case actions, record stepping, and reset precedence;
 - direct byte-order reversal rather than only testing that conversion is self-inverse.
 
-`test_negative_binio.f90` is run as a subprocess. Nonzero termination is required for invalid record numbers, invalid record lengths, and missing input files.
+`test_negative_binio.F90` is run as a subprocess. The suite requires nonzero termination and verifies the expected error message for invalid record numbers, invalid record lengths, and missing input files.
 
-The main runner also compiles and runs an external consumer program against the generated module files and objects.
+`make check` also compiles and runs an external consumer program against the built EDAT library and generated module files.
 
 ## Axis-reversal invariance tests
 
@@ -126,3 +114,15 @@ The extended suite also checks coordinate-axis reversal explicitly:
 - vertical integrals on ascending and descending pressure axes must agree numerically.
 
 In each case the coordinate array and the corresponding data dimension are reversed together.
+
+## Math multidimensional and negative coverage
+
+`test_math_multidim.F90` checks `sum_hp` against the intrinsic `sum` using the
+same array and the same `dim` value. It covers every valid `dim` for ranks 2
+through 10 and includes zero-extent arrays for both reduction and output
+extents.
+
+`test_negative_math.F90` is executed by `make check` in separate subprocesses.
+It verifies invalid `dim` rejection and array-shape mismatch rejection for
+`covariance` and `corrcoef`, including mismatches whose total element counts are
+equal.

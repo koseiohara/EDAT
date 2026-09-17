@@ -65,6 +65,14 @@ jobs:
       - name: Build and run test suite
         run: make --jobs=1 check V=1
 
+      - name: Show test logs on failure
+        if: failure()
+        run: |
+          echo "===== tests/test-suite.log ====="
+          cat tests/test-suite.log || true
+          echo "===== tests/test_math_multidim.log ====="
+          cat tests/test_math_multidim.log || true
+
 
   gnu-debug:
     name: GNU Fortran runtime checks
@@ -104,6 +112,14 @@ jobs:
       - name: Build and run test suite
         run: make --jobs=1 check V=1
 
+      - name: Show test logs on failure
+        if: failure()
+        run: |
+          echo "===== tests/test-suite.log ====="
+          cat tests/test-suite.log || true
+          echo "===== tests/test_math_multidim.log ====="
+          cat tests/test_math_multidim.log || true
+
 
   autotools-regeneration:
     name: Autotools regeneration
@@ -138,6 +154,14 @@ jobs:
 
       - name: Build and run test suite
         run: make --jobs=1 check V=1
+
+      - name: Show test logs on failure
+        if: failure()
+        run: |
+          echo "===== tests/test-suite.log ====="
+          cat tests/test-suite.log || true
+          echo "===== tests/test_math_multidim.log ====="
+          cat tests/test_math_multidim.log || true
 
 
   distcheck:

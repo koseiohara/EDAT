@@ -33,7 +33,7 @@ make install
     - [Parameters](#math-parameters)
     - [corrcoef](#math-corrcoef)
     - [covariance](#math-covariance)
-    - [variance](#math-covariance)
+    - [variance](#math-variance)
     - [mean](#math-mean)
     - [sum_hp](#math-sum-hp)
 - [edat_sort](#sort)
@@ -53,7 +53,7 @@ make install
     - [verticalDerivative](#met-verticalDerivative)
 - [edat_binio](#binio)
     - [finfo](#binio-finfo)
-    - [fopen](#binio-fopen)
+    - [finfo constructor](#binio-finfo-constructor)
     - [fclose](#binio-fclose)
     - [fread](#binio-fread)
     - [fwrite](#binio-fwrite)
@@ -81,10 +81,10 @@ real(rk), parameter :: M_2_SQRTPI = 1.128379167095512573896158903121545172_rk   
 real(rk), parameter :: M_SQRT2    = 1.414213562373095048801688724209698079_rk       ! sqrt(2)
 real(rk), parameter :: M_SQRT1_2  = 0.707106781186547524400844362104849039_rk       ! 1/sqrt(2)
 ```
-`rk` is the local kind parameter, specifies quadruple precision.
+`rk` is the local kind parameter and specifies quadruple precision.
 The variable names and their values are identical to those defined in the math.h header of the C language.  
 In addition to these parameters, `qnorm` is defined.
-qnorm is a 99-element array.
+`qnorm` is a 99-element array.
 `qnorm(i)` is the value $x$ such that for a standard normal variable $X$, $P(−x < X < x) = i/100$.
 This array is used for interval estimation of normally distributed data.
 ```fortran
@@ -103,67 +103,108 @@ real(rk), parameter :: qnorm(99)=[0.01253346951_rk, &  !! 01
 
 ### corrcoef<a id="math-corrcoef"></a>
 ```fortran
-pure function corrcoef(array1, array2) result(output)
-    real, intent(in) :: array1(:)
-    real, intent(in) :: array2(:)
+corrcoef(array1, array2 [, dim])
 ```
 Returns the correlation coefficient between `array1` and `array2`.
-Both arrays must be the same type, `real32`, `real64`, or `real128`.
-`NaN` is returned if the sizes of two arrays are different.
+
+`array1` and `array2` must have the same shape and must be the same type: `real32`, `real64`, or `real128`.
+Arrays of rank 1 through 7 are supported.
+
+If `dim` is omitted, the correlation coefficient is computed over all elements of the arrays and the result is a scalar.
+If `dim` is specified, the correlation coefficient is computed along dimension `dim`.
+For arrays of rank greater than 1, the result has rank one less than the input arrays.
+
+`dim` must be between 1 and the rank of the input arrays.
+An invalid `dim` or a mismatch between the shapes of `array1` and `array2` causes error termination.
 
 ### covariance<a id="math-covariance"></a>
 ```fortran
-pure function covariance(array1, array2, sample) result(output)
-    real   , intent(in) :: array1(:)
-    real   , intent(in) :: array2(:)
-    logical, intent(in), optional :: sample
+covariance(array1, array2 [, sample])
+covariance(array1, array2, dim [, sample])
 ```
 Returns the covariance between `array1` and `array2`.
-Both arrays must be the same type, `real32`, `real64`, or `real128`.  
-If `sample` is provided and `sample=.TRUE.`, the return value is the sample covariance. Otherwise, the return value is the population covariance.
-`NaN` is returned if the sizes of two arrays are different.
 
-### variance<a id="math-variance"></a> 
+`array1` and `array2` must have the same shape and must be the same type: `real32`, `real64`, or `real128`.
+Arrays of rank 1 through 7 are supported.
+
+If `dim` is omitted, the covariance is computed over all elements of the arrays and the result is a scalar.
+If `dim` is specified, the covariance is computed along dimension `dim`.
+For arrays of rank greater than 1, the result has rank one less than the input arrays.
+
+`dim` must be between 1 and the rank of the input arrays.
+An invalid `dim` or a mismatch between the shapes of `array1` and `array2` causes error termination.
+
+If `sample` is provided and `sample=.TRUE.`, the return value is the sample covariance.
+Otherwise, the return value is the population covariance.
+
+### variance<a id="math-variance"></a>
 ```fortran
-pure function variance(array, sample) result(output)
-    real   , intent(in) :: array(:)
-    logical, intent(in), optional :: sample
+variance(array [, sample])
+variance(array, dim [, sample])
 ```
 Returns the variance of `array`.
-`array` must be `real32`, `real64`, or `real128`.  
+
+`array` must be `real32`, `real64`, or `real128`.
+Arrays of rank 1 through 7 are supported.
+
+If `dim` is omitted, the variance is computed over all elements of `array` and the result is a scalar.
+If `dim` is specified, the variance is computed along dimension `dim`.
+For arrays of rank greater than 1, the result has rank one less than `array`.
+
+`dim` must be between 1 and the rank of `array`.
+An invalid `dim` causes error termination.
+
 This routine can compute the variance of data very precisely because [sum_hp](#math-sum-hp) is used.
-If `sample` is provided and `sample=.TRUE.`, the return value is the sample variance. Otherwise, the return value is the population variance.
+If `sample` is provided and `sample=.TRUE.`, the return value is the sample variance.
+Otherwise, the return value is the population variance.
 
 ### mean<a id="math-mean"></a>
 ```fortran
-pure function mean(array) result(output)
-    real   , intent(in) :: array(:)
+mean(array [, dim])
 ```
 Returns the mean of `array`.
-`array` must be `real32`, `real64`, or `real128`.  
+
+`array` must be `real32`, `real64`, or `real128`.
+Arrays of rank 1 through 10 are supported.
+
+If `dim` is omitted, the mean is computed over all elements of `array` and the result is a scalar.
+If `dim` is specified, the mean is computed along dimension `dim`.
+For arrays of rank greater than 1, the result has rank one less than `array`.
+
+`dim` must be between 1 and the rank of `array`.
+An invalid `dim` causes error termination.
+
 This routine can compute the average of data very precisely because [sum_hp](#math-sum-hp) is used.
 
 ### sum_hp<a id="math-sum-hp"></a>
 ```fortran
-pure function sum_hp(array) result(output)
-    real   , intent(in) :: array(:)
+sum_hp(array [, dim])
 ```
 Returns the sum of `array`.
-`array` must be `real32`, `real64`, or `real128`.  
+
+`array` must be `real32`, `real64`, or `real128`.
+Arrays of rank 1 through 10 are supported.
+
+If `dim` is omitted, all elements of `array` are summed and the result is a scalar.
+If `dim` is specified, the elements are summed along dimension `dim`.
+For arrays of rank greater than 1, the result has rank one less than `array`.
+
+`dim` must be between 1 and the rank of `array`.
+An invalid `dim` causes error termination.
+
 This function can compute the sum of data more precisely than the built-in function `sum()` because the pairwise-sum algorithm is used.
 
 
 ## edat_sort<a id="sort"></a>
-`edat_sort` provides sorting subroutine.
+edat_sort provides a sorting subroutine.
 
 ### quick_sort<a id="sort-quick-sort"></a>
 ```fortran
-subroutine quick_sort(array)
-    real, intent(inout) :: array(:)  !! integer array is also acceptable
+call quick_sort(array)
 ```
-Returns sorted array of `array`.
-`array` must be `real32`, `real64`, or `int32`.
-This subroutine is a wrapper of qsort defined in the `stdlib.h` header of the C language.
+Sorts `array` in ascending order.
+`array` must be a rank-1 array of `int32`, `real32`, or `real64`.
+This subroutine is a wrapper of `qsort` defined in the `stdlib.h` header of the C language.
 
 
 ## edat_string<a id="string"></a>
@@ -187,21 +228,18 @@ Converts uppercase letters to lowercase, leaving all other characters unchanged.
 
 
 ## edat_float<a id="float"></a>
-edat_float provides some routines for manipulation floating-point data.
+edat_float provides some routines for manipulating floating-point data.
 
 ### isclose<a id="float-isclose"></a>
 ```fortran
-pure elemental function isclose(a, b, rel_tol, abs_tol) result(output)
-    real, intent(in) :: a
-    real, intent(in) :: b
-    real, intent(in), optional :: rel_tol
-    real, intent(in), optional :: abs_tol
-    logical :: output
+isclose(a, b [, rel_tol, abs_tol])
 ```
-Returns `.True.` if `a` and `b` are close.  
-All arguments must be the same type, `real32`, `real64`, or `real128`.  
+Returns `.TRUE.` if `a` and `b` are close.  
+`a`, `b`, `rel_tol`, and `abs_tol` must have the same type: `real32`, `real64`, or `real128`.  
+`isclose` is elemental and accepts scalar or conformable array arguments.
 The default value of `abs_tol` is `0.`.
 The default value of `rel_tol` depends on the type of the arguments.
+
 | Kind | Default `rel_tol` |
 |------|-------------------|
 | `real32`  | `1.E-4`  |
@@ -220,35 +258,37 @@ real(rk), parameter :: EarthRadius = 6.3710E+6_rk       ! Radius of the Earth [m
 real(rk), parameter :: GasConstant = 287.04_rk          ! Gas Constant for Dry Air [J/K/kg] #used for p=rhoRT
 real(rk), parameter :: Cp          = 1004._rk           ! Specific Heat for Dry Air at Constant Pressure [J/K/kg]
 real(rk), parameter :: Cv          = Cp-GasConstant     ! Specific Heat for Dry Air at Constant Volume [J/K/kg]
-real(rk), parameter :: Lq          = 2.507E+6_rk        ! Latent Heat of vaporication [J/kg]
+real(rk), parameter :: Lq          = 2.507E+6_rk        ! Latent Heat of vaporization [J/kg]
 ```
-`rk` is the local kind parameter, specifies quadruple precision.
+`rk` is the local kind parameter and specifies quadruple precision.
 
 ### potential_temperature<a id="met-potential-temperature"></a>
 ```fortran
-pure elemental function potential_temperature(T, P) result(output)
-    real, intent(in) :: T
-    real, intent(in) :: P
+potential_temperature(T, P)
 ```
 Returns potential temperature.  
-`T` and `P` are temperature[K] and pressure[Pa], respectively.
-Both of them must be the same type, `real32`, `real64`, or `real128`.  
+`T` and `P` are temperature [K] and pressure [Pa], respectively.
+They must have the same type: `real32`, `real64`, or `real128`.
+`potential_temperature` is elemental and accepts scalar or conformable array arguments.
 
 ### meridionalIntegral<a id="met-meridionalIntegral"></a>
 ```fortran
-pure subroutine meridionalIntegral(lat, field, south, north, output, status, valid_south, valid_north)
-    real   , intent(in)  :: lat(:)                  ! Latitude [rad]. shape must be [ny]
-    real   , intent(in)  :: field(:,:,:)            ! Target. shape must be [nx,ny,nz]
-    real   , intent(in)  :: south                   ! Southern limit of the integral [rad]
-    real   , intent(in)  :: north                   ! Northern limit of the integral [rad]
-    real   , intent(out) :: output(:,:)             ! Result of meridional integral. shape must be [nx,nz]
-    integer, intent(out) :: status                  ! Positive if successfully computed
-    real   , intent(out), optional :: valid_south   ! Actual southern limit of the integral [rad]
-    real   , intent(out), optional :: valid_north   ! Actual northern limit of the integral [rad]
+call meridionalIntegral(lat, field, south, north, output, status [, valid_south, valid_north])
 ```
-Returns mridionally integrated field.  
-If `south` and `north` are exist in `lat`, `valid_south` and `valid_north` are equal to `south` and `north`.
-Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_north` and the interval of integration.
+Returns a meridionally integrated field.
+
+`lat`, `field`, `south`, `north`, `output`, `valid_south`, and `valid_north` must be the same type: `real32`, `real64`, or `real128`.
+
+`lat` contains latitude [rad] and must have shape `[ny]`.
+`field` is the target field and must have shape `[nx,ny,nz]`.
+`south` and `north` are the southern and northern limits of the integral [rad].
+`output` must have shape `[nx,nz]`.
+`status` is positive if the computation succeeds.
+`valid_south` and `valid_north` are optional outputs containing the actual southern and northern limits of the integral.
+
+If `south` and `north` exist in `lat`, `valid_south` and `valid_north` are equal to `south` and `north`.
+Otherwise, the closest latitudes are chosen as `valid_south` and `valid_north` and as the limits of integration.
+
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
@@ -257,14 +297,18 @@ Otherwise, the most close latitudes will be choosen as `valid_south` and `valid_
 
 ### verticalIntegral<a id="met-verticalIntegral"></a>
 ```fortran
-subroutine verticalIntegral(lev, field, psfc, output, status)
-    real   , intent(in), contiguous :: lev(:)          ! Vertical Levels [Pa] or [hPa]. shape must be [nz]
-    real   , intent(in), contiguous :: field(:,:,:)    ! Target. shape must be [nx,ny,nz]
-    real   , intent(in), contiguous :: psfc(:,:)       ! Surface Pressure [Pa] or [hPa]. shape must be [nx,ny]
-    real   , intent(out) :: output(:,:)                ! Result of vertical integral. shape must be [nx,ny]
-    integer, intent(out) :: status                     ! Positive if successfully computed
+call verticalIntegral(lev, field, psfc, output, status)
 ```
-Returns vertically integrated field.  
+Returns a vertically integrated field.
+
+`lev`, `field`, `psfc`, and `output` must be the same type: `real32`, `real64`, or `real128`.
+
+`lev` contains vertical levels [Pa] or [hPa] and must have shape `[nz]`.
+`field` is the target field and must have shape `[nx,ny,nz]`.
+`psfc` contains surface pressure [Pa] or [hPa] and must have shape `[nx,ny]`.
+`output` must have shape `[nx,ny]`.
+`status` is positive if the computation succeeds.
+
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
@@ -273,17 +317,22 @@ Returns vertically integrated field.
 
 ### zonalDerivative<a id="met-zonalDerivative"></a>
 ```fortran
-pure subroutine zonalDerivative(lon, input, output, periodic, status)
-    real   , intent(in)  :: lon(:)                  ! Longitude [rad]. shape must be [nx]
-    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
-    real   , intent(out) :: output(:,:,:)           ! Result of zonal derivative. shape must be [nx,ny,nz]
-    logical, intent(in) , optional :: periodic      ! Whether the boundary condition of the input is periodic
-    integer, intent(out), optional :: status        ! Positive if successfully computed
+call zonalDerivative(lon, input, output [, periodic, status])
 ```
-Returns zonal derivative.
+Returns the zonal derivative.
+
+`lon`, `input`, and `output` must be the same type: `real32`, `real64`, or `real128`.
+
+`lon` contains longitude [rad] and must have shape `[nx]`.
+`input` is the target field and must have shape `[nx,ny,nz]`.
+`output` must have shape `[nx,ny,nz]`.
+`periodic` is an optional logical argument specifying whether the longitude boundary is periodic.
+`status` is an optional integer output and is positive if the computation succeeds.
+
 Both west-to-east and east-to-west longitude are acceptable.  
-Derivative is computed with central difference method at most grid points.
-If `periodic=.FALSE.`, eastern and western boundaries are computed with one-sided difference method.
+The derivative is computed with a central difference method at interior grid points.
+If `periodic=.FALSE.`, the eastern and western boundaries are computed with a one-sided difference method.
+
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
@@ -292,16 +341,21 @@ If `periodic=.FALSE.`, eastern and western boundaries are computed with one-side
 
 ### meridionalDerivative<a id="met-meridionalDerivative"></a>
 ```fortran
-pure subroutine meridionalDerivative(lat, input, output, status)
-    real   , intent(in)  :: lat(:)                  ! Latitude [rad]. shape must be [ny]
-    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
-    real   , intent(out) :: output(:,:,:)           ! Result of meridional derivative. shape must be [nx,ny,nz]
-    integer, intent(out), optional :: status        ! Positive if successfully computed
+call meridionalDerivative(lat, input, output [, status])
 ```
-Returns meridional derivative.
+Returns the meridional derivative.
+
+`lat`, `input`, and `output` must be the same type: `real32`, `real64`, or `real128`.
+
+`lat` contains latitude [rad] and must have shape `[ny]`.
+`input` is the target field and must have shape `[nx,ny,nz]`.
+`output` must have shape `[nx,ny,nz]`.
+`status` is an optional integer output and is positive if the computation succeeds.
+
 Both north-to-south and south-to-north latitude are acceptable.  
-Derivative is computed with central difference method at most grid points, except the northern and southern boundaries.
-Northern and southern boundaries are computed with one-sided difference method.
+The derivative is computed with a central difference method at interior grid points.
+The northern and southern boundaries are computed with a one-sided difference method.
+
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
@@ -310,26 +364,32 @@ Northern and southern boundaries are computed with one-sided difference method.
 
 ### verticalDerivative<a id="met-verticalDerivative"></a>
 ```fortran
-pure subroutine verticalDerivative(lev, input, psfc, output, undef, status)
-    real   , intent(in)  :: lev(:)                  ! Vertical Levels [hPa] or [Pa]. shape must be [nz]
-    real   , intent(in)  :: input(:,:,:)            ! Target. shape must be [nx,ny,nz]
-    real   , intent(in)  :: psfc(:,:)               ! Surface Pressure [Pa] or [hPa]. shape must be [nx,ny]
-    real   , intent(out) :: output(:,:,:)           ! Result of vertical derivative. shape must be [nx,ny,nz]
-    real   , intent(in) , optional :: undef         ! Any value filling under ground with. Default: -999.E+30_rk
-    integer, intent(out), optional :: status        ! Positive if successfully computed
+call verticalDerivative(lev, input, psfc, output [, undef, status])
 ```
-Returns Vertical derivative.
+Returns the vertical derivative.
+
+`lev`, `input`, `psfc`, `output`, and `undef` must be the same type: `real32`, `real64`, or `real128`.
+
+`lev` contains vertical levels [Pa] or [hPa] and must have shape `[nz]`.
+`input` is the target field and must have shape `[nx,ny,nz]`.
+`psfc` contains surface pressure [Pa] or [hPa] and must have shape `[nx,ny]`.
+`output` must have shape `[nx,ny,nz]`.
+`undef` is an optional value used to fill points below the surface. Its default value is `-999.E+30` in the corresponding floating-point kind.
+`status` is an optional integer output and is positive if the computation succeeds.
+
 Both upper-to-lower and lower-to-upper levels are acceptable.  
-Derivative is computed with central difference method at most grid points, except the lower and upper boundaries.
-Lower and upper boundaries are computed with one-sided difference method.
+The derivative is computed with a central difference method at interior grid points.
+The lower and upper boundaries are computed with a one-sided difference method.
+
 | Status | Cause |
 |--------|-------|
 | -1 | Inconsistency of input array shapes |
 | -2 | Derivative axis is not a monotone sequence |
 | -3 | Array size is too small to compute derivative |
 
+
 ## edat_binio<a id="binio"></a>
-edat_binio is a module for performing input and output of no-header binary files.
+edat_binio is a module for performing input and output of headerless binary files.
 
 ### finfo<a id="binio-finfo"></a>
 ```fortran
@@ -338,112 +398,115 @@ type finfo
     integer        :: unit
     character(128) :: file
     character(16)  :: action
-    integer        :: record
-    integer        :: recl
-    integer        :: recstep
-    contains
-    procedure, pass, public :: fclose
-    procedure, pass, public :: get_record
-    procedure, pass, public :: reset_record
+    integer(int64) :: record
+    integer(int64) :: recl
+    integer(int64) :: recstep
+contains
+    generic, public :: get_record => get_record32, get_record64
     generic, public :: fread => fread_ss, fread_sd, fread_sq, &
-                               ... 
-                               & fread_5s, fread_5d, fread_5q
+                               ...
+                               fread_5s, fread_5d, fread_5q
     generic, public :: fwrite => fwrite_ss, fwrite_sd, fwrite_sq, &
-                               ... 
-                               & fwrite_5s, fwrite_5d, fwrite_5q
+                                ...
+                                fwrite_5s, fwrite_5d, fwrite_5q
+    procedure, pass, public :: fclose
+    procedure, pass, public :: reset_record
     ...
 end type finfo
 ```
+
 #### unit
 Unit number for a file.
+
 #### file
 File name for reading or writing.
+
 #### action
 `READ`, `WRITE`, or `READWRITE`.
+
 #### record
-The initial record for reading or writing.
+The next record for reading or writing.
+
 #### recl
-Record length (byte).
+Record length in bytes.
+
 #### recstep
-Increment to `record` at every reading or writing.
-`record` will be automatically updated with this value.
+Increment applied to `record` after every read or write.
+`record` is automatically updated by this value.
 
-### fopen<a id="binio-fopen"></a>
+### finfo constructor<a id="binio-finfo-constructor"></a>
 ```fortran
-function fopen(unit, file, action, record, recl, recstep) result(self)
-    type(finfo) :: self
-
-    integer     , intent(in), optional :: unit
-
-    character(*), intent(in) :: file
-    character(*), intent(in) :: action
-    integer     , intent(in) :: record
-    integer     , intent(in) :: recl
-    integer     , intent(in) :: recstep
+self = finfo(file=file, action=action, record=record, recl=recl, recstep=recstep [, unit=unit])
 ```
-Constructor.  
-You can call this routine as name `finfo`.
-This subroutine initializes this class with the provided arguments.  
+Constructs a `finfo` object and opens the specified direct-access unformatted file.
+
+`file` and `action` are character arguments.
+`record`, `recl`, and `recstep` must be `integer(int32)` or `integer(int64)`.
+`unit` is optional.
+
+`record` specifies the initial record and must be greater than zero.
+`recl` specifies the record length and must be greater than zero.
+`recstep` specifies the increment applied to the record number after every read or write.
+
 It is strongly recommended not to provide `unit`.
-If you provide `unit` as an argument, its value will be used for the unit number.
-Otherwise, the unit number will be automatically decided.
+If `unit` is provided, its value is used as the unit number.
+Otherwise, the unit number is automatically assigned.
 
 ### fclose<a id="binio-fclose"></a>
 ```fortran
-subroutine fclose(self)
-    class(finfo), intent(inout) :: self
+call self%fclose()
 ```
-Close a file.
+Closes the file associated with `self`.
 
 ### fread<a id="binio-fread"></a>
 ```fortran
-subroutine fread(self, input_data)
-    class(finfo), intent(inout) :: self
-    real(4)     , intent(out)   :: input_data
+call self%fread(input_data)
 ```
-Read data from a record in a file.
-Scalar and 1-5 dimension arrays are acceptable for `input_data`.
-`input_data` must be `real32`, `real64`, or `real128`.
+Reads data from the current record and then increments the record number by `recstep`.
+
+`input_data` may be a scalar or a rank-1 through rank-5 array.
+It must be `real32`, `real64`, or `real128`.
+The binary payload is read as `real32` and converted to the kind of `input_data`.
 
 ### fwrite<a id="binio-fwrite"></a>
 ```fortran
-subroutine fwrite(self, output_data)
-    class(finfo), intent(inout) :: self
-    real        , intent(in)    :: output_data
+call self%fwrite(output_data)
 ```
-Write data to a record in a file.
-Scalar and 1-5 dimension arrays are acceptable for `output_data`.
-`output_data` must be `real32`, `real64`, or `real128`.
-Regardless of the precision of `output_data`, the output is in single precision.
+Writes data to the current record and then increments the record number by `recstep`.
+
+`output_data` may be a scalar or a rank-1 through rank-5 array.
+It must be `real32`, `real64`, or `real128`.
+Regardless of the kind of `output_data`, the binary payload is written as `real32`.
 
 ### get_record<a id="binio-get-record"></a>
 ```fortran
-subroutine get_record(self, record)
-    class(finfo), intent(in)  :: self
-    integer     , intent(out) :: record
+call self%get_record(record)
 ```
-Return the next record you read or write.
+Returns the next record number to be read or written.
+
+`record` must be `integer(int32)` or `integer(int64)`.
 
 ### reset_record<a id="binio-reset-record"></a>
 ```fortran
-subroutine reset_record(self, increment, newrecord)
-    class(finfo), intent(inout) :: self
-    integer     , intent(in)   , optional :: increment
-    integer     , intent(in)   , optional :: newrecord
+call self%reset_record(increment=increment)
+call self%reset_record(newrecord=newrecord)
 ```
-Reset the next record you read or write.  
-If `increment` is provided, its value will be added to the present record.
-If `newrecord` is provided, the record will be changed to the value.
-If both are provided, only `increment` will be used.
+Resets the next record to be read or written.
+
+`increment` and `newrecord` must be `integer(int32)` or `integer(int64)`.
+If `increment` is provided, its value is added to the current record.
+If `newrecord` is provided, the record is changed to that value.
+If both are provided, only `increment` is used.
+At least one of `increment` and `newrecord` must be provided.
 
 ### endian_converter<a id="binio-endian-converter"></a>
 ```fortran
-pure elemental subroutine endian_converter(rawOre)
-    real(4), intent(inout) :: rawOre
+call endian_converter(a)
 ```
-Convert the endian of `rawOre`.  
-This subroutine accepts a floating-point value and returns the same value with its byte order reversed. 
-This conversion enables correct interpretation of the value when it is stored in an endianness different from that of the running system independent of environment.
+Reverses the byte order of `a`.
+
+`a` must be `real32`.
+`endian_converter` is elemental and accepts a scalar or an array.
 
 
 

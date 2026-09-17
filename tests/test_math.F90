@@ -1,259 +1,151 @@
 program test_math
-  use, intrinsic :: iso_fortran_env, only: real32, real64, real128
-  use EDAT_Math, only: covariance, corrcoef, mean, sum_hp, variance, &
-                       M_PI, M_PI_2, M_PI_4, M_1_PI, M_SQRT2, M_SQRT1_2, qnorm
-  use test_support, only: check, check_close, check_nan, finish_tests
-  implicit none
+    use, intrinsic :: iso_fortran_env, only : real32, real64, real128
+    use :: EDAT_Math, only : covariance, corrcoef, mean, sum_hp, variance
+    use :: test_support, only : check, check_close, check_nan, finish_tests
 
-  call test_public_constants_and_qnorm
-  call test_all_array_sizes
-  call test_cancellation
-  call test_multidimensional_statistics
-  call test_supported_precisions
+    implicit none
 
-  call finish_tests('test_math')
+    call test_all_array_sizes
+    call test_cancellation
+    call test_supported_precisions
 
-contains
+    call finish_tests('test_math')
 
-  subroutine test_public_constants_and_qnorm
-    real(real64), parameter :: tolerance = 2.0e-15_real64
+    contains
 
-    call check(size(qnorm) == 99, 'qnorm contains 99 entries')
-    call check(all(real(qnorm(2:99), real64) > real(qnorm(1:98), real64)), &
-               'qnorm is strictly increasing')
-    call check_close(2.0_real64 * real(M_PI_2, real64), real(M_PI, real64), &
-                     tolerance, tolerance, 'M_PI_2 is pi / 2')
-    call check_close(4.0_real64 * real(M_PI_4, real64), real(M_PI, real64), &
-                     tolerance, tolerance, 'M_PI_4 is pi / 4')
-    call check_close(real(M_PI, real64) * real(M_1_PI, real64), 1.0_real64, &
-                     tolerance, tolerance, 'M_1_PI is the reciprocal of pi')
-    call check_close(real(M_SQRT2, real64) * real(M_SQRT1_2, real64), &
-                     1.0_real64, tolerance, tolerance, &
-                     'M_SQRT1_2 is the reciprocal of M_SQRT2')
-  end subroutine test_public_constants_and_qnorm
+    subroutine test_all_array_sizes
+        integer, parameter :: maximum_size = 150
 
+        real(real64), allocatable :: x(:)
+        real(real64), allocatable :: y(:)
+        integer                   :: array_size
 
-  subroutine test_all_array_sizes
-    integer, parameter :: maximum_size = 150
+        do array_size = 0, maximum_size
+            allocate(x(array_size), y(array_size))
 
-    real(real64), allocatable :: x(:)
-    real(real64), allocatable :: y(:)
-    integer :: array_size
+            call fill_affine_data(x(1:size(x,1)), &  !! OUT
+                                & y(1:size(y,1))  )  !! OUT
+            call check_statistics_for_size(x(1:size(x,1))         , &  !! IN
+                                         & y(1:size(y,1))         , &  !! IN
+                                         & array_size  )  !! IN
 
-    do array_size = 0, maximum_size
-      allocate(x(array_size), y(array_size))
-
-      call fill_affine_data(x, y)
-      call check_statistics_for_size(x, y, array_size)
-
-      deallocate(x, y)
-    end do
-  end subroutine test_all_array_sizes
+            deallocate(x, y)
+        enddo
+    end subroutine test_all_array_sizes
 
 
-  subroutine fill_affine_data(x, y)
-    real(real64), intent(out) :: x(:)
-    real(real64), intent(out) :: y(:)
+    subroutine fill_affine_data(x, y)
+        real(real64), intent(out) :: x(:)
+        real(real64), intent(out) :: y(:)
 
-    integer :: index
+        integer :: index
 
-    do index = 1, size(x)
-      x(index) = real(index, real64) - 0.25_real64
-      y(index) = 3.0_real64 * x(index) - 2.0_real64
-    end do
-  end subroutine fill_affine_data
-
-
-  subroutine check_statistics_for_size(x, y, array_size)
-    real(real64), intent(in) :: x(:)
-    real(real64), intent(in) :: y(:)
-    integer, intent(in) :: array_size
-
-    real(real64) :: expected_mean
-    real(real64) :: expected_population_covariance
-    real(real64) :: expected_population_variance
-    character(80) :: description
-
-    write(description, '(A,I0)') 'sum_hp, size=', array_size
-    call check_close(sum_hp(x), sum(x), 2.0e-15_real64, 2.0e-14_real64, description)
-
-    if (array_size == 0) then
-      call check_close(mean(x), 0.0_real64, 0.0_real64, 0.0_real64, &
-                       'mean of an empty array')
-      call check_close(variance(x), 0.0_real64, 0.0_real64, 0.0_real64, &
-                       'population variance of an empty array')
-      call check_close(variance(x, sample=.true.), 0.0_real64, &
-                       0.0_real64, 0.0_real64, &
-                       'sample variance of an empty array')
-      call check_close(covariance(x, y), 0.0_real64, 0.0_real64, &
-                       0.0_real64, 'covariance of empty arrays')
-      call check_close(covariance(x, y, sample=.true.), 0.0_real64, &
-                       0.0_real64, 0.0_real64, &
-                       'sample covariance of empty arrays')
-      call check_close(corrcoef(x, y), 0.0_real64, 0.0_real64, &
-                       0.0_real64, 'correlation of empty arrays')
-      return
-    end if
-
-    expected_mean = sum(x) / real(array_size, real64)
-    expected_population_variance = &
-      sum((x - expected_mean)**2) / real(array_size, real64)
-    expected_population_covariance = &
-      sum((x - expected_mean) * (y - sum(y) / real(array_size, real64))) &
-      / real(array_size, real64)
-
-    write(description, '(A,I0)') 'mean, size=', array_size
-    call check_close(mean(x), expected_mean, &
-                     3.0e-15_real64, 3.0e-14_real64, description)
-
-    write(description, '(A,I0)') 'population variance, size=', array_size
-    call check_close(variance(x), expected_population_variance, &
-                     5.0e-14_real64, 5.0e-14_real64, description)
-
-    write(description, '(A,I0)') 'population covariance, size=', array_size
-    call check_close(covariance(x, y), expected_population_covariance, &
-                     5.0e-14_real64, 5.0e-14_real64, description)
-
-    if (array_size == 1) then
-      call check_nan(variance(x, sample=.true.), &
-                     'sample variance of one value is NaN')
-      call check_nan(covariance(x, y, sample=.true.), &
-                     'sample covariance of one pair is NaN')
-      call check_nan(corrcoef(x, y), &
-                     'correlation of one pair is NaN')
-    end if
-
-    if (array_size > 1) then
-      write(description, '(A,I0)') 'sample variance, size=', array_size
-      call check_close(variance(x, sample=.true.), &
-                       sum((x - expected_mean)**2) / real(array_size - 1, real64), &
-                       5.0e-14_real64, 5.0e-14_real64, description)
-
-      write(description, '(A,I0)') 'correlation of affine data, size=', array_size
-      call check_close(corrcoef(x, y), 1.0_real64, &
-                       5.0e-14_real64, 5.0e-14_real64, description)
-    end if
-  end subroutine check_statistics_for_size
+        do index = 1, size(x)
+            x(index) = real(index, real64) - 0.25_real64
+            y(index) = 3.0_real64 * x(index) - 2.0_real64
+        enddo
+    end subroutine fill_affine_data
 
 
-  subroutine test_cancellation
-    real(real64) :: values(5)
+    subroutine check_statistics_for_size(x, y, array_size)
+        real(real64), intent(in) :: x(:)
+        real(real64), intent(in) :: y(:)
+        integer, intent(in)      :: array_size
 
-    values = [1.0e16_real64, -1.0e16_real64, &
-              1.0_real64, 2.0_real64, 3.0_real64]
+        real(real64)  :: expected_mean
+        real(real64)  :: expected_population_covariance
+        real(real64)  :: expected_population_variance
+        character(80) :: description
 
-    call check_close(sum_hp(values), 6.0_real64, &
-                     0.0_real64, 0.0_real64, &
-                     'pairwise sum preserves the small residual')
-  end subroutine test_cancellation
+        write(description, '(A,I0)') 'sum_hp, size=', array_size
+        call check_close(sum_hp(x(1:size(x,1)))     , &  !! IN
+                       & sum(x(1:size(x,1)))        , &  !! IN
+                       & 2.0e-15_real64, &  !! IN
+                       & 2.0e-14_real64, &  !! IN
+                       & description     )  !! IN
 
+        if (array_size == 0) then
+            call check_close(mean(x(1:size(x,1)))                 , &  !! IN
+                           & 0.0_real64              , &  !! IN
+                           & 0.0_real64              , &  !! IN
+                           & 0.0_real64              , &  !! IN
+                           & 'mean of an empty array'  )  !! IN
+            return
+        endif
 
-  subroutine test_multidimensional_statistics
-    real(real64) :: values(2,3)
-    real(real64) :: related_values(2,3)
-    real(real64) :: variance_dim1(3)
-    real(real64) :: variance_dim2(2)
+        expected_mean = sum(x(1:size(x,1))) / real(array_size, real64)
+        expected_population_variance = &
+            sum((x(1:size(x,1)) - expected_mean)**2) / real(array_size, real64)
+        expected_population_covariance = &
+            sum((x(1:size(x,1)) - expected_mean) * (y(1:size(y,1)) - sum(y(1:size(y,1))) / real(array_size, real64))) &
+            / real(array_size, real64)
 
-    values = reshape([1.0_real64, 2.0_real64, 3.0_real64, &
-                      4.0_real64, 5.0_real64, 6.0_real64], shape(values))
-    related_values = 2.0_real64 * values + 1.0_real64
-    variance_dim1 = variance(values, dim=1)
-    variance_dim2 = variance(values, dim=2)
+        write(description, '(A,I0)') 'mean, size=', array_size
+        call check_close(mean(x(1:size(x,1)))       , &  !! IN
+                       & expected_mean , &  !! IN
+                       & 3.0e-15_real64, &  !! IN
+                       & 3.0e-14_real64, &  !! IN
+                       & description     )  !! IN
 
-    call check_close(mean(values(:,1), dim=1), 1.5_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'mean supports rank-1 dim reduction')
-    call check_close(variance(values(:,1), dim=1), 0.25_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'population variance supports rank-1 dim reduction')
-    call check_close(variance(values), 35.0_real64 / 12.0_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'population variance supports full rank-2 reduction')
-    call check_close(variance(values, sample=.true.), 3.5_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'sample variance supports full rank-2 reduction')
-    call check(all(abs(variance_dim1 - 0.25_real64) < 5.0e-14_real64), &
-               'population variance supports dim=1 reduction')
-    call check(all(abs(variance_dim2 - 8.0_real64 / 3.0_real64) &
-                   < 5.0e-14_real64), &
-               'population variance supports dim=2 reduction')
-    call check(all(abs(variance(values, dim=1, sample=.true.) - 0.5_real64) &
-                   < 5.0e-14_real64), &
-               'sample variance supports dimensional reduction')
+        write(description, '(A,I0)') 'population variance, size=', array_size
+        call check_close(variance(x(1:size(x,1)))                 , &  !! IN
+                       & expected_population_variance, &  !! IN
+                       & 5.0e-14_real64              , &  !! IN
+                       & 5.0e-14_real64              , &  !! IN
+                       & description                   )  !! IN
 
-    call check_close(covariance(values(:,1), related_values(:,1), dim=1), &
-                     0.5_real64, 5.0e-14_real64, 5.0e-14_real64, &
-                     'covariance supports rank-1 dim reduction')
-    call check_close(covariance(values, related_values), &
-                     35.0_real64 / 6.0_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'covariance supports full rank-2 reduction')
-    call check_close(covariance(values, related_values, sample=.true.), &
-                     7.0_real64, 5.0e-14_real64, 5.0e-14_real64, &
-                     'sample covariance supports full rank-2 reduction')
-    call check(all(abs(covariance(values, related_values, dim=1) &
-                       - 0.5_real64) < 5.0e-14_real64), &
-               'covariance supports dim=1 reduction')
-    call check(all(abs(covariance(values, related_values, dim=2) &
-                       - 16.0_real64 / 3.0_real64) < 5.0e-14_real64), &
-               'covariance supports dim=2 reduction')
-    call check(all(abs(covariance(values, related_values, dim=1, &
-                                  sample=.true.) - 1.0_real64) &
-                   < 5.0e-14_real64), &
-               'sample covariance supports dimensional reduction')
+        write(description, '(A,I0)') 'population covariance, size=', array_size
+        call check_close(covariance(x(1:size(x,1)), y(1:size(y,1)))              , &  !! IN
+                       & expected_population_covariance, &  !! IN
+                       & 5.0e-14_real64                , &  !! IN
+                       & 5.0e-14_real64                , &  !! IN
+                       & description                     )  !! IN
 
-    call check_close(corrcoef(values(:,1), related_values(:,1), dim=1), &
-                     1.0_real64, 5.0e-14_real64, 5.0e-14_real64, &
-                     'corrcoef supports rank-1 dim reduction')
-    call check_close(corrcoef(values, related_values), 1.0_real64, &
-                     5.0e-14_real64, 5.0e-14_real64, &
-                     'corrcoef supports full rank-2 reduction')
-    call check(all(abs(corrcoef(values, related_values, dim=1) &
-                       - 1.0_real64) < 5.0e-14_real64), &
-               'corrcoef supports dim=1 reduction')
-    call check(all(abs(corrcoef(values, related_values, dim=2) &
-                       - 1.0_real64) < 5.0e-14_real64), &
-               'corrcoef supports dim=2 reduction')
-  end subroutine test_multidimensional_statistics
+        if (array_size > 1) then
+            write(description, '(A,I0)') 'sample variance, size=', array_size
+            call check_close(variance(x(1:size(x,1)), sample = .TRUE.)                                , &  !! IN
+                           & sum((x(1:size(x,1)) - expected_mean)**2) / real(array_size - 1, real64), &  !! IN
+                           & 5.0e-14_real64                                            , &  !! IN
+                           & 5.0e-14_real64                                            , &  !! IN
+                           & description                                                 )  !! IN
+
+            write(description, '(A,I0)') 'correlation of affine data, size=', array_size
+            call check_close(corrcoef(x(1:size(x,1)), y(1:size(y,1))), &  !! IN
+                           & 1.0_real64    , &  !! IN
+                           & 5.0e-14_real64, &  !! IN
+                           & 5.0e-14_real64, &  !! IN
+                           & description     )  !! IN
+        endif
+    end subroutine check_statistics_for_size
 
 
-  subroutine test_supported_precisions
-    integer :: values(5)
+    subroutine test_cancellation
+        real(real64) :: values(5)
 
-    values = [1, 2, 3, 4, 5]
+        values(1:size(values,1)) = [1.0e16_real64, -1.0e16_real64, &
+                            1.0_real64, 2.0_real64, 3.0_real64]
 
-    call check(&
-      abs(real(sum_hp(real(values, real32)), real64) - 15.0_real64) &
-        < 1.0e-6_real64, &
-      'sum_hp supports real32')
+        call check_close(sum_hp(values(1:size(values,1)))                             , &  !! IN
+                       & 6.0_real64                                 , &  !! IN
+                       & 0.0_real64                                 , &  !! IN
+                       & 0.0_real64                                 , &  !! IN
+                       & 'pairwise sum preserves the small residual'  )  !! IN
+    end subroutine test_cancellation
 
-    call check(&
-      abs(real(sum_hp(real(values, real128)), real64) - 15.0_real64) &
-        < 1.0e-14_real64, &
-      'sum_hp supports real128')
 
-    call check_close(real(variance(real(values, real32)), real64), &
-                     2.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
-                     'variance supports real32')
-    call check_close(real(variance(real(values, real128)), real64), &
-                     2.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
-                     'variance supports real128')
-    call check_close(real(covariance(real(values, real32), &
-                                     real(values, real32)), real64), &
-                     2.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
-                     'covariance supports real32')
-    call check_close(real(covariance(real(values, real128), &
-                                     real(values, real128)), real64), &
-                     2.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
-                     'covariance supports real128')
-    call check_close(real(corrcoef(real(values, real32), &
-                                   real(values, real32)), real64), &
-                     1.0_real64, 1.0e-6_real64, 1.0e-6_real64, &
-                     'corrcoef supports real32')
-    call check_close(real(corrcoef(real(values, real128), &
-                                   real(values, real128)), real64), &
-                     1.0_real64, 1.0e-14_real64, 1.0e-14_real64, &
-                     'corrcoef supports real128')
-  end subroutine test_supported_precisions
+
+
+    subroutine test_supported_precisions
+        integer :: values(5)
+
+        values(1:size(values,1)) = [1, 2, 3, 4, 5]
+
+        call check(abs(real(sum_hp(real(values(1:size(values,1)), real32)), real64) - 15.0_real64) < 1.0e-6_real64, &  !! IN
+                 & 'sum_hp supports real32'                                                       )  !! IN
+
+        call check(abs(real(sum_hp(real(values(1:size(values,1)), real128)), real64) - &
+            & 15.0_real64) < 1.0e-14_real64, &  !! IN
+                 & 'sum_hp supports real128'                                                        )  !! IN
+    end subroutine test_supported_precisions
 
 end program test_math

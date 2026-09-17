@@ -577,93 +577,93 @@ pure function CORRCOEF_FULL_7(arr1, arr2) result(output)
 end function CORRCOEF_FULL_7
 
 
-#ifdef DEBUG
-function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
-#else
-pure function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
-#endif
-    integer, parameter :: ndim = 8
+! #ifdef DEBUG
+! function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
+! #else
+! pure function CORRCOEF_DIM_8(arr1, arr2, dim) result(output)
+! #endif
+!     integer, parameter :: ndim = 8
 
-    real(RK), intent(in) :: arr1(:,:,:,:,:,:,:,:)
-    real(RK), intent(in) :: arr2(:,:,:,:,:,:,:,:)
-    integer , intent(in) :: dim
+!     real(RK), intent(in) :: arr1(:,:,:,:,:,:,:,:)
+!     real(RK), intent(in) :: arr2(:,:,:,:,:,:,:,:)
+!     integer , intent(in) :: dim
 
-    real(RK), allocatable :: output(:,:,:,:,:,:,:)
-    integer(ik) :: ishape(ndim)
-    integer(ik) :: oshape(ndim-1)
-    integer(ik) :: n
+!     real(RK), allocatable :: output(:,:,:,:,:,:,:)
+!     integer(ik) :: ishape(ndim)
+!     integer(ik) :: oshape(ndim-1)
+!     integer(ik) :: n
 
-    if (any(shape(arr2, kind=ik) /= shape(arr1, kind=ik))) then
-        ERROR STOP 'corrcoef: array shapes must match'
-    endif
+!     if (any(shape(arr2, kind=ik) /= shape(arr1, kind=ik))) then
+!         ERROR STOP 'corrcoef: array shapes must match'
+!     endif
 
-    if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP 'corrcoef: dim must be between 1 and 8'
-    endif
+!     if (dim > ndim .OR. dim <= 0) then
+!         ERROR STOP 'corrcoef: dim must be between 1 and 8'
+!     endif
 
-    ishape(1:ndim)     = shape(arr1, kind=ik)
-    oshape(1:dim-1)    = ishape(1:dim-1)
-    oshape(dim:ndim-1) = ishape(dim+1:ndim)
-    n = ishape(dim)
+!     ishape(1:ndim)     = shape(arr1, kind=ik)
+!     oshape(1:dim-1)    = ishape(1:dim-1)
+!     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+!     n = ishape(dim)
 
-    allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7)))
+!     allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7)))
 
-    if (n == 0_ik) then
-        output(:,:,:,:,:,:,:) = real(0, kind=RK)
-        return
-    endif
+!     if (n == 0_ik) then
+!         output(:,:,:,:,:,:,:) = real(0, kind=RK)
+!         return
+!     endif
 
-    if (size(output, kind=ik) == 0_ik) then
-        return
-    endif
+!     if (size(output, kind=ik) == 0_ik) then
+!         return
+!     endif
 
-    if (n == 1_ik) then
-        output(:,:,:,:,:,:,:) = ieee_value(real(0, kind=RK), ieee_quiet_nan)
-        return
-    endif
+!     if (n == 1_ik) then
+!         output(:,:,:,:,:,:,:) = ieee_value(real(0, kind=RK), ieee_quiet_nan)
+!         return
+!     endif
 
-    output(:,:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:), dim) &
-                          & / sqrt(variance(arr1(:,:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:,:), dim))
+!     output(:,:,:,:,:,:,:) = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:), dim) &
+!                           & / sqrt(variance(arr1(:,:,:,:,:,:,:,:), dim) * variance(arr2(:,:,:,:,:,:,:,:), dim))
 
-end function CORRCOEF_DIM_8
+! end function CORRCOEF_DIM_8
 
 
-#ifdef DEBUG
-function CORRCOEF_FULL_8(arr1, arr2) result(output)
-#else
-pure function CORRCOEF_FULL_8(arr1, arr2) result(output)
-#endif
-    real(RK), intent(in) :: arr1(:,:,:,:,:,:,:,:)
-    real(RK), intent(in) :: arr2(:,:,:,:,:,:,:,:)
+! #ifdef DEBUG
+! function CORRCOEF_FULL_8(arr1, arr2) result(output)
+! #else
+! pure function CORRCOEF_FULL_8(arr1, arr2) result(output)
+! #endif
+!     real(RK), intent(in) :: arr1(:,:,:,:,:,:,:,:)
+!     real(RK), intent(in) :: arr2(:,:,:,:,:,:,:,:)
 
-    real(RK)    :: output
-    real(RK)    :: covar
-    real(RK)    :: variance1
-    real(RK)    :: variance2
-    integer(ik) :: n
+!     real(RK)    :: output
+!     real(RK)    :: covar
+!     real(RK)    :: variance1
+!     real(RK)    :: variance2
+!     integer(ik) :: n
 
-    if (any(shape(arr2, kind=ik) /= shape(arr1, kind=ik))) then
-        ERROR STOP 'corrcoef: array shapes must match'
-    endif
+!     if (any(shape(arr2, kind=ik) /= shape(arr1, kind=ik))) then
+!         ERROR STOP 'corrcoef: array shapes must match'
+!     endif
 
-    n = size(arr1, kind=ik)
+!     n = size(arr1, kind=ik)
 
-    if (n == 0_ik) then
-        output = real(0, kind=RK)
-        return
-    endif
+!     if (n == 0_ik) then
+!         output = real(0, kind=RK)
+!         return
+!     endif
 
-    if (n == 1_ik) then
-        output = ieee_value(real(0, kind=RK), ieee_quiet_nan)
-        return
-    endif
+!     if (n == 1_ik) then
+!         output = ieee_value(real(0, kind=RK), ieee_quiet_nan)
+!         return
+!     endif
 
-    covar     = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:))
-    variance1 = variance(arr1(:,:,:,:,:,:,:,:))
-    variance2 = variance(arr2(:,:,:,:,:,:,:,:))
-    output    = covar / sqrt(variance1*variance2)
+!     covar     = covariance(arr1(:,:,:,:,:,:,:,:), arr2(:,:,:,:,:,:,:,:))
+!     variance1 = variance(arr1(:,:,:,:,:,:,:,:))
+!     variance2 = variance(arr2(:,:,:,:,:,:,:,:))
+!     output    = covar / sqrt(variance1*variance2)
 
-end function CORRCOEF_FULL_8
+! end function CORRCOEF_FULL_8
 
 
 ! #ifdef DEBUG

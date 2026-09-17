@@ -20,7 +20,7 @@ module pairwise_covariance
         module procedure covariance_full_5_sp
         module procedure covariance_full_6_sp
         module procedure covariance_full_7_sp
-        module procedure covariance_full_8_sp
+        ! module procedure covariance_full_8_sp
         ! module procedure covariance_full_9_sp
         ! module procedure covariance_full_10_sp
         module procedure covariance_dim_2_sp
@@ -29,7 +29,7 @@ module pairwise_covariance
         module procedure covariance_dim_5_sp
         module procedure covariance_dim_6_sp
         module procedure covariance_dim_7_sp
-        module procedure covariance_dim_8_sp
+        ! module procedure covariance_dim_8_sp
         ! module procedure covariance_dim_9_sp
         ! module procedure covariance_dim_10_sp
         module procedure covariance_1_dp
@@ -40,7 +40,7 @@ module pairwise_covariance
         module procedure covariance_full_5_dp
         module procedure covariance_full_6_dp
         module procedure covariance_full_7_dp
-        module procedure covariance_full_8_dp
+        ! module procedure covariance_full_8_dp
         ! module procedure covariance_full_9_dp
         ! module procedure covariance_full_10_dp
         module procedure covariance_dim_2_dp
@@ -49,7 +49,7 @@ module pairwise_covariance
         module procedure covariance_dim_5_dp
         module procedure covariance_dim_6_dp
         module procedure covariance_dim_7_dp
-        module procedure covariance_dim_8_dp
+        ! module procedure covariance_dim_8_dp
         ! module procedure covariance_dim_9_dp
         ! module procedure covariance_dim_10_dp
         module procedure covariance_1_qp
@@ -60,7 +60,7 @@ module pairwise_covariance
         module procedure covariance_full_5_qp
         module procedure covariance_full_6_qp
         module procedure covariance_full_7_qp
-        module procedure covariance_full_8_qp
+        ! module procedure covariance_full_8_qp
         ! module procedure covariance_full_9_qp
         ! module procedure covariance_full_10_qp
         module procedure covariance_dim_2_qp
@@ -69,7 +69,7 @@ module pairwise_covariance
         module procedure covariance_dim_5_qp
         module procedure covariance_dim_6_qp
         module procedure covariance_dim_7_qp
-        module procedure covariance_dim_8_qp
+        ! module procedure covariance_dim_8_qp
         ! module procedure covariance_dim_9_qp
         ! module procedure covariance_dim_10_qp
     end interface covariance

@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  compiler-test:
     name: ${{ matrix.name }}
     runs-on: ubuntu-22.04
     timeout-minutes: 30
@@ -29,17 +29,22 @@ jobs:
             compiler: gcc
             version: latest
 
-          - name: Intel Fortran (ifx)
+          - name: Intel Fortran (ifx latest)
             compiler: intel
             version: latest
 
-          - name: Intel Fortran Classic (ifort)
+          - name: Intel Fortran Classic (ifort 2021.10)
             compiler: intel-classic
             version: '2021.10'
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+
+      - name: Verify test assets
+        run: |
+          test -f tests/negative_binio_cases.txt
+          test -f tests/negative_math_cases.txt
 
       - name: Set up Fortran toolchain
         uses: fortran-lang/setup-fortran@v1
@@ -59,3 +64,111 @@ jobs:
 
       - name: Build and run test suite
         run: make --jobs=1 check V=1
+
+
+  gnu-debug:
+    name: GNU Fortran runtime checks
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Verify test assets
+        run: |
+          test -f tests/negative_binio_cases.txt
+          test -f tests/negative_math_cases.txt
+
+      - name: Set up GNU Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: latest
+
+      - name: Report toolchain
+        run: |
+          echo "FC=$FC"
+          echo "CC=$CC"
+          "$FC" --version
+          "$CC" --version
+
+      - name: Configure with runtime checks
+        run: |
+          ./configure \
+            FC="$FC" \
+            CC="$CC" \
+            FCFLAGS="-O0 -g -Wall -Wextra -Wimplicit-interface -fcheck=all -fbacktrace" \
+            CFLAGS="-O0 -g -Wall -Wextra"
+
+      - name: Build and run test suite
+        run: make --jobs=1 check V=1
+
+
+  autotools-regeneration:
+    name: Autotools regeneration
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Verify test assets
+        run: |
+          test -f tests/negative_binio_cases.txt
+          test -f tests/negative_math_cases.txt
+
+      - name: Install Autotools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes autoconf automake
+
+      - name: Set up GNU Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: latest
+
+      - name: Regenerate build system
+        run: autoreconf --install --force
+
+      - name: Configure regenerated build system
+        run: ./configure FC="$FC" CC="$CC"
+
+      - name: Build and run test suite
+        run: make --jobs=1 check V=1
+
+
+  distcheck:
+    name: Distribution check
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Verify test assets
+        run: |
+          test -f tests/negative_binio_cases.txt
+          test -f tests/negative_math_cases.txt
+
+      - name: Set up GNU Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: latest
+
+      - name: Report toolchain
+        run: |
+          echo "FC=$FC"
+          echo "CC=$CC"
+          "$FC" --version
+          "$CC" --version
+
+      - name: Configure
+        run: ./configure FC="$FC" CC="$CC"
+
+      - name: Check distribution
+        run: make --jobs=1 distcheck V=1

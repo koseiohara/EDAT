@@ -22,5 +22,7 @@ tests/*
 !tests/*.sh
 !tests/Makefile.am
 !tests/Makefile.in
+!negative_binio_cases.txt
+!negative_math_cases.txt
 confdefs.h
 conftest*

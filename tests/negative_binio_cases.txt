@@ -1,0 +1,3 @@
+record|Invalid initial record : 0
+recl|Invalid record length : 0
+missing|definitely_missing_edat_file.tmp

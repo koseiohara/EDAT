@@ -470,129 +470,129 @@ pure function MEAN_FULL_8(arr) result(output)
 end function MEAN_FULL_8
 
 
-#ifdef DEBUG
-function MEAN_DIM_9(arr, dim) result(output)
-#else
-pure function MEAN_DIM_9(arr, dim) result(output)
-#endif
-    integer, parameter :: ndim = 9
+! #ifdef DEBUG
+! function MEAN_DIM_9(arr, dim) result(output)
+! #else
+! pure function MEAN_DIM_9(arr, dim) result(output)
+! #endif
+!     integer, parameter :: ndim = 9
 
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
-    integer , intent(in) :: dim
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
+!     integer , intent(in) :: dim
 
-    real(RK), allocatable :: output(:,:,:,:,:,:,:,:)
-    integer(ik) :: ishape(ndim)
-    integer(ik) :: oshape(ndim-1)
-    integer(ik) :: n
+!     real(RK), allocatable :: output(:,:,:,:,:,:,:,:)
+!     integer(ik) :: ishape(ndim)
+!     integer(ik) :: oshape(ndim-1)
+!     integer(ik) :: n
 
-    if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP 'mean: dim must be between 1 and 9'
-    endif
+!     if (dim > ndim .OR. dim <= 0) then
+!         ERROR STOP 'mean: dim must be between 1 and 9'
+!     endif
 
-    ishape(1:ndim)     = shape(arr, kind=ik)
-    oshape(1:dim-1)    = ishape(1:dim-1)
-    oshape(dim:ndim-1) = ishape(dim+1:ndim)
-    n = ishape(dim)
+!     ishape(1:ndim)     = shape(arr, kind=ik)
+!     oshape(1:dim-1)    = ishape(1:dim-1)
+!     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+!     n = ishape(dim)
 
-    allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
+!     allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
 
-    if (n == 0_ik) then
-        output(:,:,:,:,:,:,:,:) = real(0, kind=RK)
-        return
-    endif
+!     if (n == 0_ik) then
+!         output(:,:,:,:,:,:,:,:) = real(0, kind=RK)
+!         return
+!     endif
 
-    if (size(output, kind=ik) == 0_ik) then
-        return
-    endif
+!     if (size(output, kind=ik) == 0_ik) then
+!         return
+!     endif
 
-    output(:,:,:,:,:,:,:,:) = sum_hp(arr, dim)
-    output(:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:) / real(n, kind=RK)
+!     output(:,:,:,:,:,:,:,:) = sum_hp(arr, dim)
+!     output(:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:) / real(n, kind=RK)
 
-end function MEAN_DIM_9
-
-
-#ifdef DEBUG
-function MEAN_FULL_9(arr) result(output)
-#else
-pure function MEAN_FULL_9(arr) result(output)
-#endif
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
-
-    real(RK)    :: output
-    integer(ik) :: n
-
-    n = size(arr, kind=ik)
-
-    if (n == 0_ik) then
-        output = real(0, kind=RK)
-        return
-    endif
-
-    output = sum_hp(arr) / real(n, kind=RK)
-
-end function MEAN_FULL_9
+! end function MEAN_DIM_9
 
 
-#ifdef DEBUG
-function MEAN_DIM_10(arr, dim) result(output)
-#else
-pure function MEAN_DIM_10(arr, dim) result(output)
-#endif
-    integer, parameter :: ndim = 10
+! #ifdef DEBUG
+! function MEAN_FULL_9(arr) result(output)
+! #else
+! pure function MEAN_FULL_9(arr) result(output)
+! #endif
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
 
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
-    integer , intent(in) :: dim
+!     real(RK)    :: output
+!     integer(ik) :: n
 
-    real(RK), allocatable :: output(:,:,:,:,:,:,:,:,:)
-    integer(ik) :: ishape(ndim)
-    integer(ik) :: oshape(ndim-1)
-    integer(ik) :: n
+!     n = size(arr, kind=ik)
 
-    if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP 'mean: dim must be between 1 and 10'
-    endif
+!     if (n == 0_ik) then
+!         output = real(0, kind=RK)
+!         return
+!     endif
 
-    ishape(1:ndim)     = shape(arr, kind=ik)
-    oshape(1:dim-1)    = ishape(1:dim-1)
-    oshape(dim:ndim-1) = ishape(dim+1:ndim)
-    n = ishape(dim)
+!     output = sum_hp(arr) / real(n, kind=RK)
 
-    allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
-
-    if (n == 0_ik) then
-        output(:,:,:,:,:,:,:,:,:) = real(0, kind=RK)
-        return
-    endif
-
-    if (size(output, kind=ik) == 0_ik) then
-        return
-    endif
-
-    output(:,:,:,:,:,:,:,:,:) = sum_hp(arr, dim)
-    output(:,:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:,:) / real(n, kind=RK)
-
-end function MEAN_DIM_10
+! end function MEAN_FULL_9
 
 
-#ifdef DEBUG
-function MEAN_FULL_10(arr) result(output)
-#else
-pure function MEAN_FULL_10(arr) result(output)
-#endif
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+! #ifdef DEBUG
+! function MEAN_DIM_10(arr, dim) result(output)
+! #else
+! pure function MEAN_DIM_10(arr, dim) result(output)
+! #endif
+!     integer, parameter :: ndim = 10
 
-    real(RK)    :: output
-    integer(ik) :: n
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+!     integer , intent(in) :: dim
 
-    n = size(arr, kind=ik)
+!     real(RK), allocatable :: output(:,:,:,:,:,:,:,:,:)
+!     integer(ik) :: ishape(ndim)
+!     integer(ik) :: oshape(ndim-1)
+!     integer(ik) :: n
 
-    if (n == 0_ik) then
-        output = real(0, kind=RK)
-        return
-    endif
+!     if (dim > ndim .OR. dim <= 0) then
+!         ERROR STOP 'mean: dim must be between 1 and 10'
+!     endif
 
-    output = sum_hp(arr) / real(n, kind=RK)
+!     ishape(1:ndim)     = shape(arr, kind=ik)
+!     oshape(1:dim-1)    = ishape(1:dim-1)
+!     oshape(dim:ndim-1) = ishape(dim+1:ndim)
+!     n = ishape(dim)
 
-end function MEAN_FULL_10
+!     allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
+
+!     if (n == 0_ik) then
+!         output(:,:,:,:,:,:,:,:,:) = real(0, kind=RK)
+!         return
+!     endif
+
+!     if (size(output, kind=ik) == 0_ik) then
+!         return
+!     endif
+
+!     output(:,:,:,:,:,:,:,:,:) = sum_hp(arr, dim)
+!     output(:,:,:,:,:,:,:,:,:) = output(:,:,:,:,:,:,:,:,:) / real(n, kind=RK)
+
+! end function MEAN_DIM_10
+
+
+! #ifdef DEBUG
+! function MEAN_FULL_10(arr) result(output)
+! #else
+! pure function MEAN_FULL_10(arr) result(output)
+! #endif
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+
+!     real(RK)    :: output
+!     integer(ik) :: n
+
+!     n = size(arr, kind=ik)
+
+!     if (n == 0_ik) then
+!         output = real(0, kind=RK)
+!         return
+!     endif
+
+!     output = sum_hp(arr) / real(n, kind=RK)
+
+! end function MEAN_FULL_10
 
 

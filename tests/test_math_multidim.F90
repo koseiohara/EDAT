@@ -12,8 +12,8 @@ program test_math_multidim
     call test_rank_6
     call test_rank_7
     call test_rank_8
-    call test_rank_9
-    call test_rank_10
+    ! call test_rank_9
+    ! call test_rank_10
     call test_zero_extents
 
     call finish_tests('test_math_multidim')

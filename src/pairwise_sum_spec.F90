@@ -758,208 +758,208 @@ pure function SUM_HP_FULL_8(arr) result(output)
 end function SUM_HP_FULL_8
 
 
-#ifdef DEBUG
-function SUM_HP_DIM_9(arr, dim) result(output)
-#else
-pure function SUM_HP_DIM_9(arr, dim) result(output)
-#endif
-    integer, parameter :: ndim = 9
+! #ifdef DEBUG
+! function SUM_HP_DIM_9(arr, dim) result(output)
+! #else
+! pure function SUM_HP_DIM_9(arr, dim) result(output)
+! #endif
+!     integer, parameter :: ndim = 9
 
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
-    integer , intent(in) :: dim
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
+!     integer , intent(in) :: dim
 
-    real(RK), allocatable :: arr_cpy(:)
-    real(RK), allocatable :: oarr(:)
-    real(RK), allocatable :: output(:,:,:,:,:,:,:,:)
-    integer(ik) :: ishape(ndim)
-    integer(ik) :: oshape(ndim-1)
-    integer(ik) :: n
-    integer(ik) :: howmany
-    integer(ik) :: stride
-    integer(ik) :: isize
-    integer(ik) :: osize
-    integer     :: i
+!     real(RK), allocatable :: arr_cpy(:)
+!     real(RK), allocatable :: oarr(:)
+!     real(RK), allocatable :: output(:,:,:,:,:,:,:,:)
+!     integer(ik) :: ishape(ndim)
+!     integer(ik) :: oshape(ndim-1)
+!     integer(ik) :: n
+!     integer(ik) :: howmany
+!     integer(ik) :: stride
+!     integer(ik) :: isize
+!     integer(ik) :: osize
+!     integer     :: i
 
-    if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP 'sum_hp: dim must be between 1 and 9'
-    endif
+!     if (dim > ndim .OR. dim <= 0) then
+!         ERROR STOP 'sum_hp: dim must be between 1 and 9'
+!     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+!     ishape(1:ndim) = shape(arr, kind=ik)
 
-    oshape(1:dim-1)    = ishape(1:dim-1)
-    oshape(dim:ndim-1) = ishape(dim+1:ndim)
+!     oshape(1:dim-1)    = ishape(1:dim-1)
+!     oshape(dim:ndim-1) = ishape(dim+1:ndim)
 
-    stride = 1_ik
-    do i = 1, dim-1
-        stride = stride * ishape(i)
-    enddo
+!     stride = 1_ik
+!     do i = 1, dim-1
+!         stride = stride * ishape(i)
+!     enddo
 
-    n = ishape(dim)
+!     n = ishape(dim)
 
-    howmany = 1
-    do i = dim+1, ndim
-        howmany = howmany * ishape(i)
-    enddo
+!     howmany = 1
+!     do i = dim+1, ndim
+!         howmany = howmany * ishape(i)
+!     enddo
 
-    isize = stride * n * howmany
-    osize = stride * howmany
+!     isize = stride * n * howmany
+!     osize = stride * howmany
 
-    allocate(arr_cpy(isize))
-    allocate(oarr(osize))
-    allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
+!     allocate(arr_cpy(isize))
+!     allocate(oarr(osize))
+!     allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8)))
 
-    if (n == 0_ik) then
-        output(:,:,:,:,:,:,:,:) = real(0, kind=RK)
-        return
-    endif
+!     if (n == 0_ik) then
+!         output(:,:,:,:,:,:,:,:) = real(0, kind=RK)
+!         return
+!     endif
 
-    arr_cpy(1:isize) = reshape(arr, shape=[isize])
+!     arr_cpy(1:isize) = reshape(arr, shape=[isize])
 
-    call CORE(n               , &  !! IN
-            & howmany         , &  !! IN
-            & stride          , &  !! IN
-            & arr_cpy(1:isize), &  !! IN
-            & oarr(:)           )  !! OUT
+!     call CORE(n               , &  !! IN
+!             & howmany         , &  !! IN
+!             & stride          , &  !! IN
+!             & arr_cpy(1:isize), &  !! IN
+!             & oarr(:)           )  !! OUT
 
-    output(:,:,:,:,:,:,:,:) = reshape(oarr(:), shape=oshape)
+!     output(:,:,:,:,:,:,:,:) = reshape(oarr(:), shape=oshape)
 
-end function SUM_HP_DIM_9
-
-
-#ifdef DEBUG
-function SUM_HP_FULL_9(arr) result(output)
-#else
-pure function SUM_HP_FULL_9(arr) result(output)
-#endif
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
-
-    real(RK), allocatable :: arr_cpy(:)
-    real(RK)    :: oarr(1)
-    real(RK)    :: output
-    integer(ik) :: n
-
-    n = size(arr, kind=ik)
-
-    if (n == 0_ik) then
-        output = real(0, kind=RK)
-        return
-    endif
-
-    allocate(arr_cpy(n))
-
-    arr_cpy(1:n) = reshape(arr, shape=[n])
-
-    call CORE(n           , &  !! IN
-            & 1_ik        , &  !! IN
-            & 1_ik        , &  !! IN
-            & arr_cpy(1:n), &  !! IN
-            & oarr(1:1)     )  !! OUT
-
-    output = oarr(1)
-
-end function SUM_HP_FULL_9
+! end function SUM_HP_DIM_9
 
 
-#ifdef DEBUG
-function SUM_HP_DIM_10(arr, dim) result(output)
-#else
-pure function SUM_HP_DIM_10(arr, dim) result(output)
-#endif
-    integer, parameter :: ndim = 10
+! #ifdef DEBUG
+! function SUM_HP_FULL_9(arr) result(output)
+! #else
+! pure function SUM_HP_FULL_9(arr) result(output)
+! #endif
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:)
 
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
-    integer , intent(in) :: dim
+!     real(RK), allocatable :: arr_cpy(:)
+!     real(RK)    :: oarr(1)
+!     real(RK)    :: output
+!     integer(ik) :: n
 
-    real(RK), allocatable :: arr_cpy(:)
-    real(RK), allocatable :: oarr(:)
-    real(RK), allocatable :: output(:,:,:,:,:,:,:,:,:)
-    integer(ik) :: ishape(ndim)
-    integer(ik) :: oshape(ndim-1)
-    integer(ik) :: n
-    integer(ik) :: howmany
-    integer(ik) :: stride
-    integer(ik) :: isize
-    integer(ik) :: osize
-    integer     :: i
+!     n = size(arr, kind=ik)
 
-    if (dim > ndim .OR. dim <= 0) then
-        ERROR STOP 'sum_hp: dim must be between 1 and 10'
-    endif
+!     if (n == 0_ik) then
+!         output = real(0, kind=RK)
+!         return
+!     endif
 
-    ishape(1:ndim) = shape(arr, kind=ik)
+!     allocate(arr_cpy(n))
 
-    oshape(1:dim-1)    = ishape(1:dim-1)
-    oshape(dim:ndim-1) = ishape(dim+1:ndim)
+!     arr_cpy(1:n) = reshape(arr, shape=[n])
 
-    stride = 1_ik
-    do i = 1, dim-1
-        stride = stride * ishape(i)
-    enddo
+!     call CORE(n           , &  !! IN
+!             & 1_ik        , &  !! IN
+!             & 1_ik        , &  !! IN
+!             & arr_cpy(1:n), &  !! IN
+!             & oarr(1:1)     )  !! OUT
 
-    n = ishape(dim)
+!     output = oarr(1)
 
-    howmany = 1
-    do i = dim+1, ndim
-        howmany = howmany * ishape(i)
-    enddo
-
-    isize = stride * n * howmany
-    osize = stride * howmany
-
-    allocate(arr_cpy(isize))
-    allocate(oarr(osize))
-    allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
-
-    if (n == 0_ik) then
-        output(:,:,:,:,:,:,:,:,:) = real(0, kind=RK)
-        return
-    endif
-
-    arr_cpy(1:isize) = reshape(arr, shape=[isize])
-
-    call CORE(n               , &  !! IN
-            & howmany         , &  !! IN
-            & stride          , &  !! IN
-            & arr_cpy(1:isize), &  !! IN
-            & oarr(:)           )  !! OUT
-
-    output(:,:,:,:,:,:,:,:,:) = reshape(oarr(:), shape=oshape)
-
-end function SUM_HP_DIM_10
+! end function SUM_HP_FULL_9
 
 
-#ifdef DEBUG
-function SUM_HP_FULL_10(arr) result(output)
-#else
-pure function SUM_HP_FULL_10(arr) result(output)
-#endif
-    real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+! #ifdef DEBUG
+! function SUM_HP_DIM_10(arr, dim) result(output)
+! #else
+! pure function SUM_HP_DIM_10(arr, dim) result(output)
+! #endif
+!     integer, parameter :: ndim = 10
 
-    real(RK), allocatable :: arr_cpy(:)
-    real(RK)    :: oarr(1)
-    real(RK)    :: output
-    integer(ik) :: n
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+!     integer , intent(in) :: dim
 
-    n = size(arr, kind=ik)
+!     real(RK), allocatable :: arr_cpy(:)
+!     real(RK), allocatable :: oarr(:)
+!     real(RK), allocatable :: output(:,:,:,:,:,:,:,:,:)
+!     integer(ik) :: ishape(ndim)
+!     integer(ik) :: oshape(ndim-1)
+!     integer(ik) :: n
+!     integer(ik) :: howmany
+!     integer(ik) :: stride
+!     integer(ik) :: isize
+!     integer(ik) :: osize
+!     integer     :: i
 
-    if (n == 0_ik) then
-        output = real(0, kind=RK)
-        return
-    endif
+!     if (dim > ndim .OR. dim <= 0) then
+!         ERROR STOP 'sum_hp: dim must be between 1 and 10'
+!     endif
 
-    allocate(arr_cpy(n))
+!     ishape(1:ndim) = shape(arr, kind=ik)
 
-    arr_cpy(1:n) = reshape(arr, shape=[n])
+!     oshape(1:dim-1)    = ishape(1:dim-1)
+!     oshape(dim:ndim-1) = ishape(dim+1:ndim)
 
-    call CORE(n           , &  !! IN
-            & 1_ik        , &  !! IN
-            & 1_ik        , &  !! IN
-            & arr_cpy(1:n), &  !! IN
-            & oarr(1:1)     )  !! OUT
+!     stride = 1_ik
+!     do i = 1, dim-1
+!         stride = stride * ishape(i)
+!     enddo
 
-    output = oarr(1)
+!     n = ishape(dim)
 
-end function SUM_HP_FULL_10
+!     howmany = 1
+!     do i = dim+1, ndim
+!         howmany = howmany * ishape(i)
+!     enddo
+
+!     isize = stride * n * howmany
+!     osize = stride * howmany
+
+!     allocate(arr_cpy(isize))
+!     allocate(oarr(osize))
+!     allocate(output(oshape(1),oshape(2),oshape(3),oshape(4),oshape(5),oshape(6),oshape(7),oshape(8),oshape(9)))
+
+!     if (n == 0_ik) then
+!         output(:,:,:,:,:,:,:,:,:) = real(0, kind=RK)
+!         return
+!     endif
+
+!     arr_cpy(1:isize) = reshape(arr, shape=[isize])
+
+!     call CORE(n               , &  !! IN
+!             & howmany         , &  !! IN
+!             & stride          , &  !! IN
+!             & arr_cpy(1:isize), &  !! IN
+!             & oarr(:)           )  !! OUT
+
+!     output(:,:,:,:,:,:,:,:,:) = reshape(oarr(:), shape=oshape)
+
+! end function SUM_HP_DIM_10
+
+
+! #ifdef DEBUG
+! function SUM_HP_FULL_10(arr) result(output)
+! #else
+! pure function SUM_HP_FULL_10(arr) result(output)
+! #endif
+!     real(RK), intent(in) :: arr(:,:,:,:,:,:,:,:,:,:)
+
+!     real(RK), allocatable :: arr_cpy(:)
+!     real(RK)    :: oarr(1)
+!     real(RK)    :: output
+!     integer(ik) :: n
+
+!     n = size(arr, kind=ik)
+
+!     if (n == 0_ik) then
+!         output = real(0, kind=RK)
+!         return
+!     endif
+
+!     allocate(arr_cpy(n))
+
+!     arr_cpy(1:n) = reshape(arr, shape=[n])
+
+!     call CORE(n           , &  !! IN
+!             & 1_ik        , &  !! IN
+!             & 1_ik        , &  !! IN
+!             & arr_cpy(1:n), &  !! IN
+!             & oarr(1:1)     )  !! OUT
+
+!     output = oarr(1)
+
+! end function SUM_HP_FULL_10
 
 
 

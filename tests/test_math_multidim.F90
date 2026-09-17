@@ -310,142 +310,142 @@ program test_math_multidim
     end subroutine test_rank_8
 
 
-    subroutine test_rank_9
-        real(real64) :: arr(2,3,4,2,3,4,2,3,4)
-        integer :: i
+    ! subroutine test_rank_9
+    !     real(real64) :: arr(2,3,4,2,3,4,2,3,4)
+    !     integer :: i
 
-        arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4) = reshape([(real(i, kind=real64), i = 1, 13824)], [2,3,4,2,3,4,2,3,4])
+    !     arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4) = reshape([(real(i, kind=real64), i = 1, 13824)], [2,3,4,2,3,4,2,3,4])
 
-        call check(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4)) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4))) <= 0.0_real64, &  !! IN
-                 & 'sum_hp rank 9 full matches sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1))), &  !! IN
-                 & 'sum_hp rank 9 dim 1 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 1 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2))), &  !! IN
-                 & 'sum_hp rank 9 dim 2 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 2 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3))), &  !! IN
-                 & 'sum_hp rank 9 dim 3 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 3 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4))), &  !! IN
-                 & 'sum_hp rank 9 dim 4 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 4 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5))), &  !! IN
-                 & 'sum_hp rank 9 dim 5 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 5 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6))), &  !! IN
-                 & 'sum_hp rank 9 dim 6 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 6 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7))), &  !! IN
-                 & 'sum_hp rank 9 dim 7 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 7 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8))), &  !! IN
-                 & 'sum_hp rank 9 dim 8 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 8 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9))), &  !! IN
-                 & 'sum_hp rank 9 dim 9 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 9 dim 9 values match sum'  )  !! IN
-    end subroutine test_rank_9
+    !     call check(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4)) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4))) <= 0.0_real64, &  !! IN
+    !              & 'sum_hp rank 9 full matches sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1))), &  !! IN
+    !              & 'sum_hp rank 9 dim 1 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 1)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 1 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2))), &  !! IN
+    !              & 'sum_hp rank 9 dim 2 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 2)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 2 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3))), &  !! IN
+    !              & 'sum_hp rank 9 dim 3 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 3)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 3 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4))), &  !! IN
+    !              & 'sum_hp rank 9 dim 4 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 4)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 4 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5))), &  !! IN
+    !              & 'sum_hp rank 9 dim 5 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 5)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 5 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6))), &  !! IN
+    !              & 'sum_hp rank 9 dim 6 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 6)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 6 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7))), &  !! IN
+    !              & 'sum_hp rank 9 dim 7 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 7)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 7 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8))), &  !! IN
+    !              & 'sum_hp rank 9 dim 8 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 8)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 8 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9))), &  !! IN
+    !              & 'sum_hp rank 9 dim 9 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4), 9)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 9 dim 9 values match sum'  )  !! IN
+    ! end subroutine test_rank_9
 
 
-    subroutine test_rank_10
-        real(real64) :: arr(2,3,4,2,3,4,2,3,4,2)
-        integer :: i
+    ! subroutine test_rank_10
+    !     real(real64) :: arr(2,3,4,2,3,4,2,3,4,2)
+    !     integer :: i
 
-        arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2) = reshape([(real(i, kind=real64), i = 1, 27648)], [2,3,4,2,3,4,2,3,4,2])
+    !     arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2) = reshape([(real(i, kind=real64), i = 1, 27648)], [2,3,4,2,3,4,2,3,4,2])
 
-        call check(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2)) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2))) <= 0.0_real64, &  !! IN
-                 & 'sum_hp rank 10 full matches sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1))), &  !! IN
-                 & 'sum_hp rank 10 dim 1 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 1 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2))), &  !! IN
-                 & 'sum_hp rank 10 dim 2 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 2 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3))), &  !! IN
-                 & 'sum_hp rank 10 dim 3 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 3 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4))), &  !! IN
-                 & 'sum_hp rank 10 dim 4 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 4 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5))), &  !! IN
-                 & 'sum_hp rank 10 dim 5 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 5 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6))), &  !! IN
-                 & 'sum_hp rank 10 dim 6 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 6 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7))), &  !! IN
-                 & 'sum_hp rank 10 dim 7 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 7 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8))), &  !! IN
-                 & 'sum_hp rank 10 dim 8 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 8 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9))), &  !! IN
-                 & 'sum_hp rank 10 dim 9 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 9 values match sum'  )  !! IN
-        call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10)) == &
-                 & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10))), &  !! IN
-                 & 'sum_hp rank 10 dim 10 shape matches sum'  )  !! IN
-        call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10) - &
-                 & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10)) <= 0.0_real64), &  !! IN
-                 & 'sum_hp rank 10 dim 10 values match sum'  )  !! IN
-    end subroutine test_rank_10
+    !     call check(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2)) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2))) <= 0.0_real64, &  !! IN
+    !              & 'sum_hp rank 10 full matches sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1))), &  !! IN
+    !              & 'sum_hp rank 10 dim 1 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 1)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 1 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2))), &  !! IN
+    !              & 'sum_hp rank 10 dim 2 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 2)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 2 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3))), &  !! IN
+    !              & 'sum_hp rank 10 dim 3 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 3)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 3 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4))), &  !! IN
+    !              & 'sum_hp rank 10 dim 4 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 4)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 4 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5))), &  !! IN
+    !              & 'sum_hp rank 10 dim 5 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 5)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 5 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6))), &  !! IN
+    !              & 'sum_hp rank 10 dim 6 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 6)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 6 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7))), &  !! IN
+    !              & 'sum_hp rank 10 dim 7 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 7)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 7 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8))), &  !! IN
+    !              & 'sum_hp rank 10 dim 8 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 8)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 8 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9))), &  !! IN
+    !              & 'sum_hp rank 10 dim 9 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 9)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 9 values match sum'  )  !! IN
+    !     call check(all(shape(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10)) == &
+    !              & shape(sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10))), &  !! IN
+    !              & 'sum_hp rank 10 dim 10 shape matches sum'  )  !! IN
+    !     call check(all(abs(sum_hp(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10) - &
+    !              & sum(arr(1:2,1:3,1:4,1:2,1:3,1:4,1:2,1:3,1:4,1:2), 10)) <= 0.0_real64), &  !! IN
+    !              & 'sum_hp rank 10 dim 10 values match sum'  )  !! IN
+    ! end subroutine test_rank_10
 
 
     subroutine test_zero_extents

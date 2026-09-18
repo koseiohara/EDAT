@@ -9,7 +9,9 @@ EXTRA_DIST = \
   pairwise_mean_spec.F90 \
   pairwise_variance_spec.F90 \
   pairwise_covariance_spec.F90 \
-  pairwise_corrcoef_spec.F90
+  pairwise_corrcoef_spec.F90 \
+  integral_core.F90 \
+  derivative_core.F90
 
 libedat_a_SOURCES = \
   c_qsort.c \
@@ -23,12 +25,8 @@ libedat_a_SOURCES = \
   edat_caseconverter.F90 \
   edat_string.F90 \
   edat_float.F90 \
-  integral_sp.F90 \
-  integral_dp.F90 \
-  integral_qp.F90 \
-  derivative_sp.F90 \
-  derivative_dp.F90 \
-  derivative_qp.F90 \
+  integral.F90 \
+  derivative.F90 \
   edat_met.F90 \
   edat_binio.F90
 
@@ -74,21 +72,13 @@ edat_math.$(OBJEXT): \
 
 edat_string.$(OBJEXT): edat_caseconverter.$(OBJEXT)
 
-integral_sp.$(OBJEXT): edat_math.$(OBJEXT)
-integral_dp.$(OBJEXT): edat_math.$(OBJEXT)
-integral_qp.$(OBJEXT): edat_math.$(OBJEXT)
+integral.$(OBJEXT): edat_math.$(OBJEXT)
 
-derivative_sp.$(OBJEXT): edat_math.$(OBJEXT)
-derivative_dp.$(OBJEXT): edat_math.$(OBJEXT)
-derivative_qp.$(OBJEXT): edat_math.$(OBJEXT)
+derivative.$(OBJEXT): edat_math.$(OBJEXT)
 
 edat_met.$(OBJEXT): \
-  integral_sp.$(OBJEXT) \
-  integral_dp.$(OBJEXT) \
-  integral_qp.$(OBJEXT) \
-  derivative_sp.$(OBJEXT) \
-  derivative_dp.$(OBJEXT) \
-  derivative_qp.$(OBJEXT)
+  integral.$(OBJEXT) \
+  derivative.$(OBJEXT)
 
 $(nodist_modinclude_DATA): libedat.a
 

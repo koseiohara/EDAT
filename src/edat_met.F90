@@ -2,12 +2,8 @@ module EDAT_Met
 
     use, intrinsic :: iso_fortran_env, only : rk=>real128
 
-    use integral_sp  , only : meridionalIntegral_sp, verticalIntegral_sp
-    use integral_dp  , only : meridionalIntegral_dp, verticalIntegral_dp
-    use integral_qp  , only : meridionalIntegral_qp, verticalIntegral_qp
-    use derivative_sp, only : zonalDerivative_sp, meridionalDerivative_sp, verticalDerivative_sp
-    use derivative_dp, only : zonalDerivative_dp, meridionalDerivative_dp, verticalDerivative_dp
-    use derivative_qp, only : zonalDerivative_qp, meridionalDerivative_qp, verticalDerivative_qp
+    use :: integral  , only : meridionalIntegral, verticalIntegral
+    use :: derivative, only : zonalDerivative, meridionalDerivative, verticalDerivative
 
     implicit none
 
@@ -32,36 +28,6 @@ module EDAT_Met
             & potential_temperature_dp, &
             & potential_temperature_qp
     end interface potential_temperature
-
-    interface meridionalIntegral
-        module procedure meridionalIntegral_sp, &
-                       & meridionalIntegral_dp, &
-                       & meridionalIntegral_qp
-    end interface meridionalIntegral
-
-    interface verticalIntegral
-        module procedure verticalIntegral_sp, &
-                       & verticalIntegral_dp, &
-                       & verticalIntegral_qp
-    end interface verticalIntegral
-
-    interface zonalDerivative
-        module procedure zonalDerivative_sp, &
-                       & zonalDerivative_dp, &
-                       & zonalDerivative_qp
-    end interface zonalDerivative
-
-    interface meridionalDerivative
-        module procedure meridionalDerivative_sp, &
-                       & meridionalDerivative_dp, &
-                       & meridionalDerivative_qp
-    end interface meridionalDerivative
-
-    interface verticalDerivative
-        module procedure verticalDerivative_sp, &
-                       & verticalDerivative_dp, &
-                       & verticalDerivative_qp
-    end interface verticalDerivative
 
     contains
 

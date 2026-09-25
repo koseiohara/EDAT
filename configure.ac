@@ -1,7 +1,7 @@
 
 AC_PREREQ([2.69])
 
-AC_INIT([EDAT], [0.2.0], [https://github.com/koseiohara/EDAT/issues])
+AC_INIT([EDAT], [0.2.1], [https://github.com/koseiohara/EDAT/issues])
 
 AC_CONFIG_SRCDIR([src/edat_math.F90])
 AC_CONFIG_AUX_DIR([build-aux])

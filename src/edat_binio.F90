@@ -10,12 +10,12 @@ module EDAT_BinIO
 
     type finfo
         private
-        integer        :: unit
-        character(128) :: file
-        character(16)  :: action
-        integer(int64) :: record
-        integer(int64) :: recl
-        integer(int64) :: recstep
+        integer                   :: unit
+        character(:), allocatable :: file
+        character(16)             :: action
+        integer(int64)            :: record
+        integer(int64)            :: recl
+        integer(int64)            :: recstep
 
         contains
 
@@ -171,7 +171,8 @@ module EDAT_BinIO
                & RECL   =work_recl      )
         endif
 
-        self%file    = file
+        ! self%file    = file
+        allocate(self%file, source=file)
         self%action  = action
         self%record  = work_record
         self%recl    = work_recl

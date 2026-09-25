@@ -287,7 +287,7 @@ pure subroutine ZDERIV(lev, input, psfc, output, undef, status)
     if (present(undef)) then
         work_undef = undef
     else
-        work_undef = DEFAULT
+        work_undef = DEFAULT_VAL
     endif
 
     dlev(1:nz-1) = lev(2:nz) - lev(1:nz-1)

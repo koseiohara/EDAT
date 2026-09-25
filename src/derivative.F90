@@ -31,37 +31,37 @@ module derivative
 
 
 #define RK real32
-#define DEFAULT -999.E+30_real32
+#define DEFAULT_VAL -999.E+30_real32
 #define XDERIV zonalDerivative_sp
 #define YDERIV meridionalDerivative_sp
 #define ZDERIV verticalDerivative_sp
 #include "derivative_core.F90"
 #undef RK
-#undef DEFAULT
+#undef DEFAULT_VAL
 #undef XDERIV
 #undef YDERIV
 #undef ZDERIV
 
 #define RK real64
-#define DEFAULT -999.E+30_real64
+#define DEFAULT_VAL -999.E+30_real64
 #define XDERIV zonalDerivative_dp
 #define YDERIV meridionalDerivative_dp
 #define ZDERIV verticalDerivative_dp
 #include "derivative_core.F90"
 #undef RK
-#undef DEFAULT
+#undef DEFAULT_VAL
 #undef XDERIV
 #undef YDERIV
 #undef ZDERIV
 
 #define RK real128
-#define DEFAULT -999.E+30_real128
+#define DEFAULT_VAL -999.E+30_real128
 #define XDERIV zonalDerivative_qp
 #define YDERIV meridionalDerivative_qp
 #define ZDERIV verticalDerivative_qp
 #include "derivative_core.F90"
 #undef RK
-#undef DEFAULT
+#undef DEFAULT_VAL
 #undef XDERIV
 #undef YDERIV
 #undef ZDERIV

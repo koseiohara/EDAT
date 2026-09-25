@@ -5,16 +5,7 @@
 !! stride: Number of contiguous lanes reduced independently per group.
 !! iarr: Flattened input groups, modified in place as reduction workspace.
 !! oarr: Reduced lanes, stored as one contiguous block per group.
-#ifdef DEBUG
-subroutine CORE(n, howmany, stride, iarr, oarr)
-#else
 pure subroutine CORE(n, howmany, stride, iarr, oarr)
-#endif
-
-#ifdef DEBUG
-    use, intrinsic :: iso_fortran_env, only : ounit=>output_unit
-#endif
-
     integer(ik), intent(in) :: n
     integer(ik), intent(in) :: howmany
     integer(ik), intent(in) :: stride
@@ -45,136 +36,80 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
               & howmany  , &  !! IN
               & iarr(:)    )  !! INOUT
 
-
     work_n = n_resized
     half_n = shiftr(work_n, 1)
     nwork  = half_n * stride
 
-
     if (work_n > 2) then
         allocate(work_arr(nwork))
-    endif
 
-    !! Alternate two reduction levels between iarr and work_arr, avoiding a copy after each level.
-    do i = 0, howmany-1
-        work_n = n_resized
-        do
-            if (work_n > 2) then
-                work_n = shiftr(work_n, 1)
-#ifdef DEBUG
-                write(ounit,'(A,I0)') 'i = ', i
-#endif
-                if (stride == 1) then
-                    skip_iarr = i * n_resized
-#ifndef DEBUG
+        !! Alternate two reduction levels between iarr and work_arr, avoiding a copy after each level.
+        do i = 0, howmany-1
+            work_n = n_resized
+            do
+                if (work_n > 2) then
+                    work_n = shiftr(work_n, 1)
+                    if (stride == 1) then
+                        skip_iarr = i * n_resized
 !$omp simd private(ioff, idx1, idx2)
-#endif
-                    do j = 1, work_n
-                        ioff = j - 1
-                        idx1 = ioff + ioff + 1
-                        idx2 = idx1 + 1
-#ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', j, &
-                                                        & ') = iarr(', skip_iarr+idx1, &
-                                                        & ') + iarr(', skip_iarr+idx2, ')'
-#endif
-                        work_arr(j) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
-                    enddo
-#ifndef DEBUG
+                        do j = 1, work_n
+                            ioff = j - 1
+                            idx1 = ioff + ioff + 1
+                            idx2 = idx1 + 1
+                            work_arr(j) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
+                        enddo
 !$omp end simd
-#endif
 
-                    work_n = shiftr(work_n, 1)
-#ifdef DEBUG
-                    write(ounit,'(A,I0)') 'i = ', i
-#endif
-                    skip_iarr = i * n_resized * stride
+                        work_n = shiftr(work_n, 1)
+                        skip_iarr = i * n_resized * stride
 
-#ifndef DEBUG
 !$omp simd private(idx1, idx2)
-#endif
-                    do j = 1, work_n
-
-#ifdef DEBUG
-                        write(ounit,'(A,I0)') 'j = ', j
-#endif
-                        idx1 = j + j - 1
-                        idx2 = idx1 + stride
-#ifdef DEBUG
-                        write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', skip_iarr+j, &
-                                                        & ') = work_arr(', idx1,&
-                                                        & ') + work_arr(', idx2, ')'
-#endif
-                        iarr(skip_iarr+j) = work_arr(idx1) + work_arr(idx2)
-                    enddo
-#ifndef DEBUG
+                        do j = 1, work_n
+                            idx1 = j + j - 1
+                            idx2 = idx1 + stride
+                            iarr(skip_iarr+j) = work_arr(idx1) + work_arr(idx2)
+                        enddo
 !$omp end simd
-#endif
+                    else
+                        skip_iarr = i * n_resized * stride
+
+                        do j = 1, work_n
+                            ioff     = (j - 1) * stride
+                            idx1_off = ioff + ioff
+!$omp simd private(idx1, idx2)
+                            do k = 1, stride
+                                idx1 = idx1_off + k
+                                idx2 = idx1 + stride
+                                work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
+                            enddo
+!$omp end simd
+                        enddo
+
+                        work_n = shiftr(work_n, 1)
+                        skip_iarr = i * n_resized * stride
+
+                        do j = 1, work_n
+                            ioff     = (j - 1) * stride
+                            idx1_off = ioff + ioff
+                            ioff     = ioff + skip_iarr
+!$omp simd private(idx1, idx2)
+                            do k = 1, stride
+                                idx1 = idx1_off + k
+                                idx2 = idx1 + stride
+                                iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
+                            enddo
+!$omp end simd
+                        enddo
+                    endif
+
+                    cycle
                 else
-                    skip_iarr = i * n_resized * stride
-
-                    do j = 1, work_n
-#ifdef DEBUG
-                        write(ounit,'(A,I0)') 'j = ', j
-#endif
-                        ioff     = (j - 1) * stride
-                        idx1_off = ioff + ioff
-#ifndef DEBUG
-!$omp simd private(idx1, idx2)
-#endif
-                        do k = 1, stride
-                            idx1 = idx1_off + k
-                            idx2 = idx1 + stride
-#ifdef DEBUG
-                            write(ounit,'(A,I0,A,I0,A,I0,A)') 'work_arr(', ioff+k, &
-                                                            & ') = iarr(', skip_iarr+idx1, &
-                                                            & ') + iarr(', skip_iarr+idx2, ')'
-#endif
-                            work_arr(ioff+k) = iarr(skip_iarr+idx1) + iarr(skip_iarr+idx2)
-                        enddo
-#ifndef DEBUG
-!$omp end simd
-#endif
-                    enddo
-
-                    work_n = shiftr(work_n, 1)
-#ifdef DEBUG
-                    write(ounit,'(A,I0)') 'i = ', i
-#endif
-                    skip_iarr = i * n_resized * stride
-
-                    do j = 1, work_n
-#ifdef DEBUG
-                        write(ounit,'(A,I0)') 'j = ', j
-#endif
-                        ioff     = (j - 1) * stride
-                        idx1_off = ioff + ioff
-                        ioff     = ioff + skip_iarr
-#ifndef DEBUG
-!$omp simd private(idx1, idx2)
-#endif
-                        do k = 1, stride
-                            idx1 = idx1_off + k
-                            idx2 = idx1 + stride
-#ifdef DEBUG
-                            write(ounit,'(A,I0,A,I0,A,I0,A)') 'iarr(', ioff+k, &
-                                                            & ') = work_arr(', idx1,&
-                                                            & ') + work_arr(', idx2, ')'
-#endif
-                            iarr(ioff+k) = work_arr(idx1) + work_arr(idx2)
-                        enddo
-#ifndef DEBUG
-!$omp end simd
-#endif
-                    enddo
+                    exit
                 endif
-
-                cycle
-            else
-                exit
-            endif
+            enddo
         enddo
-    enddo
+        deallocate(work_arr)
+    endif
 
     !! Finish the reduction according to whether the alternating stages left two positions or one.
     if (work_n == 2) then
@@ -182,11 +117,6 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
             skip_iarr = i * n_resized * stride
             skip_work = i * stride
             do j = 1, stride
-#ifdef DEBUG
-                write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, &
-                                                & ') = iarr(', skip_iarr+j, &
-                                                & ') + iarr(', skip_iarr+j+stride, ')'
-#endif
                 oarr(skip_work+j) = iarr(skip_iarr+j) + iarr(skip_iarr+j+stride)
             enddo
         enddo
@@ -195,17 +125,14 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
             skip_iarr = i * n_resized * stride
             skip_work = i * stride
             do j = 1, stride
-#ifdef DEBUG
-                write(ounit,'(A,I0,A,I0,A,I0,A)') 'oarr(', skip_work+j, ') = iarr(', skip_iarr+j, ')'
-#endif
                 oarr(skip_work+j) = iarr(skip_iarr+j)
             enddo
         enddo
     endif
 
-    if (allocated(work_arr)) then
-        deallocate(work_arr)
-    endif
+    ! if (allocated(work_arr)) then
+    !     deallocate(work_arr)
+    ! endif
 
 end subroutine CORE
 

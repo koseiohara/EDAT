@@ -44,12 +44,12 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
         allocate(work_arr(nwork))
 
         !! Alternate two reduction levels between iarr and work_arr, avoiding a copy after each level.
-        do i = 0, howmany-1
-            work_n = n_resized
-            do
-                if (work_n > 2) then
-                    work_n = shiftr(work_n, 1)
-                    if (stride == 1) then
+        if (stride == 1) then
+            do i = 0, howmany-1
+                work_n = n_resized
+                do
+                    if (work_n > 2) then
+                        work_n = shiftr(work_n, 1)
                         skip_iarr = i * n_resized
 !$omp simd private(ioff, idx1, idx2)
                         do j = 1, work_n
@@ -61,7 +61,6 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
 !$omp end simd
 
                         work_n = shiftr(work_n, 1)
-                        skip_iarr = i * n_resized * stride
 
 !$omp simd private(idx1, idx2)
                         do j = 1, work_n
@@ -70,7 +69,18 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                             iarr(skip_iarr+j) = work_arr(idx1) + work_arr(idx2)
                         enddo
 !$omp end simd
+                        cycle
                     else
+                        exit
+                    endif
+                enddo
+            enddo
+        else
+            do i = 0, howmany-1
+                work_n = n_resized
+                do
+                    if (work_n > 2) then
+                        work_n = shiftr(work_n, 1)
                         skip_iarr = i * n_resized * stride
 
                         do j = 1, work_n
@@ -86,7 +96,6 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                         enddo
 
                         work_n = shiftr(work_n, 1)
-                        skip_iarr = i * n_resized * stride
 
                         do j = 1, work_n
                             ioff     = (j - 1) * stride
@@ -100,14 +109,14 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
                             enddo
 !$omp end simd
                         enddo
-                    endif
 
-                    cycle
-                else
-                    exit
-                endif
+                        cycle
+                    else
+                        exit
+                    endif
+                enddo
             enddo
-        enddo
+        endif
         deallocate(work_arr)
     endif
 

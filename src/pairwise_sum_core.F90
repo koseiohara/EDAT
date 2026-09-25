@@ -139,10 +139,6 @@ pure subroutine CORE(n, howmany, stride, iarr, oarr)
         enddo
     endif
 
-    ! if (allocated(work_arr)) then
-    !     deallocate(work_arr)
-    ! endif
-
 end subroutine CORE
 
 
